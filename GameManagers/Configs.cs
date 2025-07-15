@@ -3,7 +3,7 @@
 /// <summary>
 /// The configuration settings for the Forgotten OOP game
 /// </summary>
-public struct GameConfigs()
+public struct Configs()
 {
     /// <summary>
     /// The maximum weight of items that can be carried by the player

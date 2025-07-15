@@ -3,14 +3,22 @@
 #region Using Directives
 
 using Forgotten_OOP.Injectables.Interfaces;
+using System.Collections.Generic;
 
 #endregion
 
 /// <summary>
 /// A console wrapper for the Forgotten OOP game
 /// </summary>
-public class GameConsole : IConsole
+public class GameConsole : IConsole, IConsoleHelper<GameConsole>
 {
+    #region Properties
+
+    /// <inheritdoc />
+    public List<string> Commands { get; set; } = [];
+
+    #endregion
+
     #region Public Methods
 
     /// <inheritdoc />
@@ -37,6 +45,12 @@ public class GameConsole : IConsole
     public void Clear()
     {
         Console.Clear();
+    }
+
+    /// <inheritdoc />
+    public void PrintHelp()
+    {
+        WriteLine("Available commands:");
     }
 
     #endregion

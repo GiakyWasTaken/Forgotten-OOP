@@ -14,12 +14,12 @@ public interface IGameManager
     /// <summary>
     /// The configuration settings for the game
     /// </summary>
-    public GameConfigs GameConfigs { get; }
+    public Configs GameConfigs { get; }
 
     /// <summary>
     /// The map of the game, containing all rooms
     /// </summary>
-    public Map Map { get; }
+    public Map GameMap { get; }
 
     /// <summary>
     /// Starts the game loop

@@ -41,7 +41,7 @@ public class MainMenu : IMainMenu
     /// <inheritdoc />
     public void Play()
     {
-        GameManager game = new(new GameConfigs());
+        GameManager game = new(new Configs());
         game.StartGameLoop();
     }
 

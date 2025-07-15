@@ -31,10 +31,10 @@ public class GameManager : IGameManager
     #region Properties
 
     /// <inheritdoc />
-    public GameConfigs GameConfigs { get; }
+    public Configs GameConfigs { get; }
 
     /// <inheritdoc />
-    public Map Map { get; }
+    public Map GameMap { get; }
 
     #endregion
 
@@ -44,11 +44,11 @@ public class GameManager : IGameManager
     /// Initializes a new instance of the <see cref="GameManager"/> class with the specified game configurations
     /// </summary>
     /// <param name="gameConfigs">A <see cref="GameConfigs"/> object containing the game configurations</param>
-    public GameManager(GameConfigs gameConfigs)
+    public GameManager(Configs gameConfigs)
     {
         GameConfigs = gameConfigs;
 
-        Map = InitializeMap();
+        GameMap = InitializeMap();
 
         SpawnItems();
 
