@@ -9,9 +9,6 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// <summary>
 /// Represents an item with properties for name, description, weight, and current room location
 /// </summary>
-/// <remarks>This interface defines the basic properties that an item should have, including its name,
-/// description, weight,  and the room it is currently located in. Implementations of this interface can represent
-/// various types of items  within a system, such as inventory items in a game or objects in a simulation</remarks>
 public interface IItem
 {
     /// <summary>

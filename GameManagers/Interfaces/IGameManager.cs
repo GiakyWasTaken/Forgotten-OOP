@@ -22,6 +22,11 @@ public interface IGameManager
     public Map<Room> GameMap { get; }
 
     /// <summary>
+    /// Gets the total number of actions performed
+    /// </summary>
+    public long ActionsCount { get; }
+
+    /// <summary>
     /// Starts the game loop
     /// </summary>
     public void StartGameLoop();

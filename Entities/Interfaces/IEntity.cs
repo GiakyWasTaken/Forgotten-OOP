@@ -1,8 +1,37 @@
-﻿using System;
+﻿namespace Forgotten_OOP.Entities.Interfaces;
 
-public class Class1
+#region Using Directives
+
+using Forgotten_OOP.Enums;
+using Forgotten_OOP.Mapping;
+using Forgotten_OOP.Mapping.Interfaces;
+
+#endregion
+
+/// <summary>
+/// Interface representing an entity in the game
+/// </summary>
+public interface IEntity
 {
-	public Class1()
-	{
-	}
+    /// <summary>
+    /// Gets the name of the entity
+    /// </summary>
+    public string Name { get; }
+
+    /// <summary>
+    /// Gets the current room of the entity
+    /// </summary>
+    public Room CurrentRoom { get; }
+
+    /// <summary>
+    /// Moves the object in the specified direction
+    /// </summary>
+    /// <param name="dir">The <see cref="Direction"/> in which to move the object</param>
+    public void Move(Direction dir);
+
+    /// <summary>
+    /// Moves the entity to the specified room
+    /// </summary>
+    /// <param name="room">The target room to which the entity will be teleported</param>
+    public void Teleport(IRoom room);
 }

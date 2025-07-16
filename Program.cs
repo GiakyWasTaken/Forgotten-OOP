@@ -14,15 +14,6 @@ using Microsoft.Extensions.DependencyInjection;
 /// </summary>
 public class Program
 {
-    #region Properties
-
-    /// <summary>
-    /// Declaration of GameLogger object
-    /// </summary>
-    public static ILogger GameLogger => ServiceHelper.GetService<ILogger>();
-
-    #endregion
-
     #region Public Methods
 
     /// <summary>
@@ -33,14 +24,13 @@ public class Program
     {
         ServiceCollection services = new(); // TODO Fix GameLogger
 
-        services.AddSingleton<ILogger, GameLogger>();
-        services.AddSingleton<IConsole, GameConsole>();
+        services.AddScoped<ILogger, GameLogger>();
+        services.AddScoped<IConsole, GameConsole>();
         services.AddTransient<GameManager>();
 
         ServiceProvider provider = services.BuildServiceProvider();
 
         ServiceHelper.SetProvider(provider);
-        GameLogger.InitializeLogger();
 
         MainMenu mainMenu = new();
         mainMenu.Show();

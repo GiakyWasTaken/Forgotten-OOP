@@ -24,6 +24,6 @@ public interface IRoom : IEquatable<IRoom>
     /// <summary>
     /// Gets a value indicating whether the current room is designated as a pink room
     /// </summary>
-    // Todo: defne what a pink room is or change the name to something more descriptive
+    // Todo: define what a pink room is or change the name to something more descriptive
     public bool IsPinkRoom { get; }
 }

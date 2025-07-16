@@ -3,29 +3,51 @@
 #region Using Directives
 
 using Forgotten_OOP.GameManagers.Interfaces;
+using Forgotten_OOP.Injectables;
+using Forgotten_OOP.Injectables.Interfaces;
 
 #endregion
 
 /// <summary>
 /// The main menu of the Forgotten OOP game
 /// </summary>
-public class MainMenu : IMainMenu
+public class MainMenu : IMainMenu, IConfigurable, IConsolable, ILoggable
 {
+    #region Private Fields
 
+    /// <summary>
+    /// Represents the game configurations
+    /// </summary>
+    private Configs configs = new();
+
+    #endregion
+
+    #region Properties
+
+    /// <inheritdoc />
+    public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
+
+    /// <inheritdoc />
+    public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
+
+    #endregion
 
     #region Public Methods
 
     /// <inheritdoc />
     public void Show()
     {
+        GameLogger.InitializeLogger();
 
-        Console.WriteLine("Welcome to Forgotten OOP!");
-        Console.WriteLine("1. Play");
-        Console.WriteLine("2. Settings");
-        Console.WriteLine("3. Exit");
-        Console.Write("Please select an option: ");
+        configs = ReadConfigs();
 
-        string? choice = Console.ReadLine();
+        GameConsole.WriteLine("Welcome to Forgotten OOP!");
+        GameConsole.WriteLine("1. Play");
+        GameConsole.WriteLine("2. Settings");
+        GameConsole.WriteLine("3. Exit");
+        GameConsole.WriteLine("Please select an option: ");
+
+        string choice = GameConsole.ReadLine();
 
         switch (choice)
         {
@@ -44,23 +66,43 @@ public class MainMenu : IMainMenu
     /// <inheritdoc />
     public void Play()
     {
-        GameManager game = new(new Configs());
-        Program.GameLogger.Log("Game Started");
+        GameManager game = new(configs);
+
+        GameLogger.Log("Game Started");
+
         game.StartGameLoop();
     }
 
     /// <inheritdoc />
     public void Settings()
     {
+        GameConsole.WriteLine("Settings Menu");
+
+        WriteConfigs(configs);
+
         throw new NotImplementedException();
     }
 
     /// <inheritdoc />
     public void Exit()
     {
-        Console.WriteLine("Thank you for playing Forgotten OOP!");
-        Program.GameLogger.Log("Game Exited");
+        GameConsole.WriteLine("Thank you for playing Forgotten OOP!");
+
+        GameLogger.Log("Game Exited");
+
         Environment.Exit(0);
+    }
+
+    // <inheritdoc />
+    public Configs ReadConfigs()
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public void WriteConfigs(Configs configs)
+    {
+        throw new NotImplementedException();
     }
 
     #endregion
