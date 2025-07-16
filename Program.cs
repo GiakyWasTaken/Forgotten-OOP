@@ -12,12 +12,14 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 /// The main class for the Forgotten OOP project
 /// </summary>
-public class Program : ILoggable
+public class Program
 {
     #region Properties
 
-    /// <inheritdoc />
-    public static ILogger GameLogger => ServiceHelper.GetService<ILogger>(); // TODO Fix GameLogger
+    /// <summary>
+    /// Declaration of GameLogger object
+    /// </summary>
+    public static ILogger GameLogger => ServiceHelper.GetService<ILogger>();
 
     #endregion
 
@@ -29,7 +31,7 @@ public class Program : ILoggable
     /// <param name="args">An array of command-line arguments</param>
     public static void Main(string[] args)
     {
-        ServiceCollection services = new();
+        ServiceCollection services = new(); // TODO Fix GameLogger
 
         services.AddSingleton<ILogger, GameLogger>();
         services.AddSingleton<IConsole, GameConsole>();
@@ -38,6 +40,7 @@ public class Program : ILoggable
         ServiceProvider provider = services.BuildServiceProvider();
 
         ServiceHelper.SetProvider(provider);
+        GameLogger.InitializeLogger();
 
         MainMenu mainMenu = new();
         mainMenu.Show();

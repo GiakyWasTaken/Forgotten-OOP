@@ -21,10 +21,11 @@ public class GameLogger : ILogger
     public void InitializeLogger()
     {
         DateTime now = DateTime.Now;
-        FileName = "Log - " + now + ".txt";
+        FileName = "Logs/Log - " + now.ToString("dd-MM-yyyy H-m-s") + ".txt";
         if(!File.Exists(FileName))
         {
-            File.Create(FileName);
+            FileStream stream = File.Create(FileName);
+            stream.Close();
             Log("Game Launched");
         }
     }
@@ -33,7 +34,7 @@ public class GameLogger : ILogger
     public void Log(string message)
     {
         DateTime now = DateTime.Now;
-        File.AppendAllText(FileName, "[" + now + "]: " + message);
+        File.AppendAllText(FileName, "[" + now + "]: " + message + "\n");
     }
 
     #endregion

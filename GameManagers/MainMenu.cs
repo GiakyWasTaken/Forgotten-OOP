@@ -11,13 +11,14 @@ using Forgotten_OOP.GameManagers.Interfaces;
 /// </summary>
 public class MainMenu : IMainMenu
 {
+
+
     #region Public Methods
 
     /// <inheritdoc />
     public void Show()
     {
 
-        GameLogger.InitializeLogger(); // TODO Fix GameLogger
         Console.WriteLine("Welcome to Forgotten OOP!");
         Console.WriteLine("1. Play");
         Console.WriteLine("2. Settings");
@@ -44,6 +45,7 @@ public class MainMenu : IMainMenu
     public void Play()
     {
         GameManager game = new(new Configs());
+        Program.GameLogger.Log("Game Started");
         game.StartGameLoop();
     }
 
@@ -57,6 +59,7 @@ public class MainMenu : IMainMenu
     public void Exit()
     {
         Console.WriteLine("Thank you for playing Forgotten OOP!");
+        Program.GameLogger.Log("Game Exited");
         Environment.Exit(0);
     }
 
