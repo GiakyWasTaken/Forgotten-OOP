@@ -19,7 +19,7 @@ public interface IGameManager
     /// <summary>
     /// The map of the game, containing all rooms
     /// </summary>
-    public Map GameMap { get; }
+    public Map<Room> GameMap { get; }
 
     /// <summary>
     /// Starts the game loop

@@ -12,7 +12,7 @@ using System;
 /// </summary>
 public static class ServiceHelper
 {
-    #region Attributes
+    #region Properties
 
     /// <summary>
     /// The service provider instance used to resolve services

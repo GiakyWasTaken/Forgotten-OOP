@@ -10,9 +10,12 @@ using System.Collections.Generic;
 /// <summary>
 /// A console wrapper for the Forgotten OOP game
 /// </summary>
-public class GameConsole : IConsole, IConsoleHelper<GameConsole>
+public class GameConsole : IConsole, IConsoleHelper<GameConsole>, ILoggable
 {
     #region Properties
+
+    /// <inheritdoc />
+    public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
 
     /// <inheritdoc />
     public List<string> Commands { get; set; } = [];
@@ -24,6 +27,7 @@ public class GameConsole : IConsole, IConsoleHelper<GameConsole>
     /// <inheritdoc />
     public void WriteLine(string message)
     {
+        // Todo: Implement a cool feature like colored text or slow typing effect
         Console.WriteLine(message);
     }
 

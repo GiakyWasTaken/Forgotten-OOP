@@ -3,6 +3,8 @@
 #region Using Directives
 
 using Forgotten_OOP.Enums;
+using Forgotten_OOP.Injectables;
+using Forgotten_OOP.Injectables.Interfaces;
 using Forgotten_OOP.Mapping.Interfaces;
 
 #endregion
@@ -10,25 +12,26 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// <summary>
 /// Represents a map in the Forgotten OOP game
 /// </summary>
-public class Map(int mapDimension = 6) : IMap<Room>
+public class Map<TRoom>(int mapDimension = 6) : IMap<TRoom>, IPrintableMap<TRoom>, IConsolable where TRoom : IRoom
 {
     #region Properties
 
-    public Room?[,] Layout { get; set; } = new Room[mapDimension, mapDimension];
+    /// <inheritdoc />
+    public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
 
     /// <inheritdoc />
-    public Room StartingRoom { get; set; }
+    public TRoom?[,] Layout { get; set; } = new TRoom[mapDimension, mapDimension];
 
     #endregion
 
     #region Public Methods
 
     /// <inheritdoc />
-    public bool TryGetRoom(int x, int y, out Room? room)
+    public bool TryGetRoom(int x, int y, out TRoom? room)
     {
         if (x < 0 || x >= mapDimension || y < 0 || y >= mapDimension)
         {
-            room = null;
+            room = default;
             return false;
         }
 
@@ -38,13 +41,13 @@ public class Map(int mapDimension = 6) : IMap<Room>
     }
 
     /// <inheritdoc />
-    public bool TryGetRoomInDirection(Room startingRoom, Direction direction, out Room? room)
+    public bool TryGetRoomInDirection(TRoom startingRoom, Direction direction, out TRoom? room)
     {
         (int x, int y) = GetRoomCoordinates(startingRoom);
 
         if (x < 0 || y < 0)
         {
-            room = null;
+            room = default;
             return false;
         }
 
@@ -86,7 +89,7 @@ public class Map(int mapDimension = 6) : IMap<Room>
 
                 break;
             default:
-                room = null;
+                room = default;
                 return false;
         }
 
@@ -94,7 +97,7 @@ public class Map(int mapDimension = 6) : IMap<Room>
     }
 
     /// <inheritdoc />
-    public Room GetRandomRoom()
+    public TRoom GetRandomRoom()
     {
         Random random = new();
         int x = random.Next(mapDimension);
@@ -110,13 +113,14 @@ public class Map(int mapDimension = 6) : IMap<Room>
     }
 
     /// <inheritdoc />
-    public Tuple<int, int> GetRoomCoordinates(Room room)
+    public Tuple<int, int> GetRoomCoordinates(TRoom room)
     {
         for (int i = 0; i < mapDimension; i++)
         {
             for (int j = 0; j < mapDimension; j++)
             {
-                if (Layout[i, j] == room)
+                // Todo: Use a more robust comparison if necessary
+                if (Layout[i, j]?.GetHashCode() == room.GetHashCode())
                 {
                     return new Tuple<int, int>(i, j);
                 }
@@ -124,6 +128,13 @@ public class Map(int mapDimension = 6) : IMap<Room>
         }
 
         throw new ArgumentException("Room not found in the map layout.");
+    }
+
+    /// <inheritdoc />
+    public void PrintMap()
+    {
+        GameConsole.Clear();
+        GameConsole.WriteLine("Map Layout");
     }
 
     #endregion

@@ -12,29 +12,21 @@ using Forgotten_OOP.Mapping;
 /// <summary>
 /// The main class for the Forgotten OOP game
 /// </summary>
-public class GameManager : IGameManager
+public class GameManager : IGameManager, IConsolable, ILoggable
 {
-    #region Attributes
-
-    /// <summary>
-    /// The game logger
-    /// </summary>
-    private readonly ILogger logger = ServiceHelper.GetService<ILogger>();
-
-    /// <summary>
-    /// The game console
-    /// </summary>
-    private readonly IConsole console = ServiceHelper.GetService<IConsole>();
-
-    #endregion
-
     #region Properties
+
+    /// <inheritdoc />
+    public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
+
+    /// <inheritdoc />
+    public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
 
     /// <inheritdoc />
     public Configs GameConfigs { get; }
 
     /// <inheritdoc />
-    public Map GameMap { get; }
+    public Map<Room> GameMap { get; }
 
     #endregion
 
@@ -91,9 +83,9 @@ public class GameManager : IGameManager
     /// Initializes the game map
     /// </summary>
     /// <returns>An <see cref="Map"/> object</returns>
-    private Map InitializeMap()
+    private Map<Room> InitializeMap()
     {
-        return new Map();
+        return new Map<Room>();
     }
 
     /// <summary>

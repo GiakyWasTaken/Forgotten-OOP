@@ -12,8 +12,15 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 /// The main class for the Forgotten OOP project
 /// </summary>
-public class Program
+public class Program : ILoggable
 {
+    #region Properties
+
+    /// <inheritdoc />
+    public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
+
+    #endregion
+
     #region Public Methods
 
     /// <summary>
