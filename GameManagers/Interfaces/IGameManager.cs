@@ -2,14 +2,19 @@
 
 #region Using Directives
 
-using Forgotten_OOP.Mapping;
+using Forgotten_OOP.Entities.Interfaces;
+using Forgotten_OOP.Mapping.Interfaces;
 
 #endregion
 
 /// <summary>
 /// Interface for the game manager
 /// </summary>
-public interface IGameManager
+public interface IGameManager<out TPlayer, TEntity, out TMap, TRoom>
+    where TPlayer : IPlayer<TRoom>
+    where TEntity : IEntity<TRoom>
+    where TMap : IMap<TRoom>
+    where TRoom : IRoom
 {
     /// <summary>
     /// The configuration settings for the game
@@ -17,9 +22,19 @@ public interface IGameManager
     public Configs GameConfigs { get; }
 
     /// <summary>
+    /// The player in the game
+    /// </summary>
+    public TPlayer Player { get; }
+
+    /// <summary>
+    /// Gets the collection of entities managed by this instance
+    /// </summary>
+    public List<TEntity> Entities { get; }
+
+    /// <summary>
     /// The map of the game, containing all rooms
     /// </summary>
-    public Map<Room> GameMap { get; }
+    public TMap GameMap { get; }
 
     /// <summary>
     /// Gets the total number of actions performed

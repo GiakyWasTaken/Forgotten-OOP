@@ -10,7 +10,7 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// <summary>
 /// Interface representing an entity in the game
 /// </summary>
-public interface IEntity
+public interface IEntity<TRoom> where TRoom : IRoom
 {
     /// <summary>
     /// Gets the name of the entity
@@ -20,7 +20,7 @@ public interface IEntity
     /// <summary>
     /// Gets the current room of the entity
     /// </summary>
-    public IRoom CurrentRoom { get; }
+    public TRoom CurrentRoom { get; }
 
     /// <summary>
     /// Moves the object in the specified direction
@@ -32,5 +32,5 @@ public interface IEntity
     /// Moves the entity to the specified room
     /// </summary>
     /// <param name="room">The target room to which the entity will be teleported</param>
-    public void Teleport(IRoom room);
+    public void Teleport(TRoom room);
 }

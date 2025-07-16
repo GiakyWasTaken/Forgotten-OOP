@@ -11,7 +11,7 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// <summary>
 /// Represents a room in the Forgotten OOP game
 /// </summary>
-public class Room(long id, IMap<IRoom> gameMap, bool isStartingRoom = false, bool isPinkRoom = false) : IRoom
+public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool isEnemySpawningRoom = true, bool isPinkRoom = false) : IRoom
 {
     #region Private Fields
 
@@ -23,7 +23,7 @@ public class Room(long id, IMap<IRoom> gameMap, bool isStartingRoom = false, boo
     /// <summary>
     /// Reference to the game map for spatial queries
     /// </summary>
-    private readonly IMap<IRoom>? gameMap = gameMap;
+    private readonly Map<Room>? gameMap = gameMap;
 
     #endregion
 
@@ -34,6 +34,9 @@ public class Room(long id, IMap<IRoom> gameMap, bool isStartingRoom = false, boo
 
     /// <inheritdoc />
     public bool IsStartingRoom { get; } = isStartingRoom;
+
+    /// <inheritdoc />
+    public bool IsEnemySpawningRoom { get; set; } = isEnemySpawningRoom;
 
     /// <inheritdoc />
     public bool IsPinkRoom { get; set; } = isPinkRoom;
@@ -72,9 +75,14 @@ public class Room(long id, IMap<IRoom> gameMap, bool isStartingRoom = false, boo
 
         foreach (Direction direction in Enum.GetValues<Direction>())
         {
-            gameMap.TryGetRoomInDirection(this, direction, out IRoom? room);
-
-            adjacentRooms[direction] = room;
+            if (gameMap.TryGetRoomInDirection(this, direction, out Room? room))
+            {
+                adjacentRooms[direction] = room;
+            }
+            else
+            {
+                adjacentRooms[direction] = null;
+            }
         }
 
         return adjacentRooms;

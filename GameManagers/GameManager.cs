@@ -1,19 +1,23 @@
-﻿namespace Forgotten_OOP.GameManagers;
+namespace Forgotten_OOP.GameManagers;
 
 #region Using Directives
 
+using System;
+using System.Collections.Generic;
+
+using Forgotten_OOP.Entities;
 using Forgotten_OOP.GameManagers.Interfaces;
 using Forgotten_OOP.Injectables;
 using Forgotten_OOP.Injectables.Interfaces;
+using Forgotten_OOP.Items;
 using Forgotten_OOP.Mapping;
-using System;
 
 #endregion
 
 /// <summary>
 /// The main class for the Forgotten OOP game
 /// </summary>
-public class GameManager : IGameManager, IConsolable, ILoggable
+public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConsolable, ILoggable
 {
     #region Properties
 
@@ -27,7 +31,13 @@ public class GameManager : IGameManager, IConsolable, ILoggable
     public Configs GameConfigs { get; }
 
     /// <inheritdoc />
-    public Map<Room> GameMap { get; } = new();
+    public Player Player { get; }
+
+    /// <inheritdoc />
+    public List<Entity> Entities { get; } = [];
+
+    /// <inheritdoc />
+    public Map<Room> GameMap { get; }
 
     /// <inheritdoc />
     public long ActionsCount { get; } = 0;
@@ -44,11 +54,13 @@ public class GameManager : IGameManager, IConsolable, ILoggable
     {
         GameConfigs = gameConfigs;
 
-        //GameMap = InitializeMap();
+        GameMap = InitializeMap();
 
-        //SpawnItems();
+        Player = new Player("Hero", GameMap.Layout[0, 0]!, GameMap, 3);
 
-        //SpawnEntities();
+        SpawnItems(GameMap);
+
+        SpawnEntities(GameMap);
     }
 
     #endregion
@@ -89,30 +101,90 @@ public class GameManager : IGameManager, IConsolable, ILoggable
     /// <returns>An <see cref="Map{Room}"/> object</returns>
     private Map<Room> InitializeMap()
     {
-        return new Map<Room>();
+        Map<Room> map = new();
+
+        for (int i = 0; i < map.Layout.GetLength(0); i++)
+        {
+            for (int j = 0; j < map.Layout.GetLength(1); j++)
+            {
+                // Create a new room with a unique ID and add it to the map layout
+                map.Layout[i, j] = new Room((i * map.Layout.GetLength(1)) + j, map);
+            }
+        }
+
+        // Set the starting room
+        map.Layout[0, 0] = new Room(0, map, isStartingRoom: true);
+
+        // Set the enemy spawning room
+        map.Layout[0, 1] = new Room(CreateRoomIdFromCoordinates(0, 1), map, isEnemySpawningRoom: false);
+        map.Layout[1, 0] = new Room(CreateRoomIdFromCoordinates(1, 0), map, isEnemySpawningRoom: false);
+        map.Layout[1, 1] = new Room(CreateRoomIdFromCoordinates(1, 1), map, isEnemySpawningRoom: false);
+
+        return map;
     }
 
     /// <summary>
     /// Spawns items in the game world
     /// </summary>
-    private void SpawnItems()
+    private void SpawnItems(Map<Room> map)
     {
-        throw new NotImplementedException("Item spawning logic is not implemented yet.");
+        // Spawn keys in the map
+        int keysSpawned = 0;
+
+        do
+        {
+            Room keySpawnRoom = map.GetRandomRoom();
+
+            if (keySpawnRoom.IsStartingRoom || keySpawnRoom.IsEnemySpawningRoom || !keySpawnRoom.IsPinkRoom)
+            {
+                continue;
+            }
+
+            // Todo: Use key class
+            Item key = new("Key", "A key to unlock doors", 0);
+
+            keySpawnRoom.ItemsOnGround.Push(key);
+
+            keysSpawned++;
+
+        } while (keysSpawned >= GameConfigs.NumKeys);
     }
 
     /// <summary>
     /// Spawns entities in the game world
     /// </summary>
-    private void SpawnEntities()
+    private void SpawnEntities(Map<Room> map)
     {
-        /* public Player player = new Player();
-         public Enemy enemyNPC = new Enemy();
-         public Entity allyNPC = new Entity();
+        // Spawn enemies in the map
+        int enemiesSpawned = 0;
 
-         List<Entity> entityList = new List<Entity>();
-         entityList.Add(player);
-         entityList.Add(enemyNPC);
-         entityList.Add(allyNPC);*/
+        do
+        {
+            Room enemySpawnRoom = map.GetRandomRoom();
+
+            if (!enemySpawnRoom.IsEnemySpawningRoom)
+            {
+                continue;
+            }
+
+            Enemy enemy = new("Minotaur", enemySpawnRoom, map, GameConfigs.EnemyDelay);
+
+            Entities.Add(enemy);
+
+            enemiesSpawned++;
+
+        } while (enemiesSpawned >= 1);
+    }
+
+    /// <summary>
+    /// Calculates a unique room identifier based on the given coordinates
+    /// </summary>
+    /// <param name="x">The x-coordinate of the room within the game map</param>
+    /// <param name="y">The y-coordinate of the room within the game map</param>
+    /// <returns>An integer representing the unique room identifier</returns>
+    private int CreateRoomIdFromCoordinates(int x, int y)
+    {
+        return x * GameMap.Layout.GetLength(1) + y;
     }
 
     #endregion

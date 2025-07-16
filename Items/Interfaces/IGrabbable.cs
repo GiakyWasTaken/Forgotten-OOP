@@ -6,10 +6,7 @@
 public interface IGrabbable : IItem
 {
     /// <summary>
-    /// Grabs the item, removing it from its current room
+    /// Grabs the item, typically adding it to a player's inventory or backpack
     /// </summary>
-    public void Grab()
-    {
-        CurrentRoom = null;
-    }
+    public void Grab();
 }

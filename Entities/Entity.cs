@@ -4,21 +4,21 @@
 
 using Forgotten_OOP.Entities.Interfaces;
 using Forgotten_OOP.Enums;
-using Forgotten_OOP.Mapping.Interfaces;
+using Forgotten_OOP.Mapping;
 
 #endregion
 
 /// <summary>
 /// Represents an entity in the Forgotten OOP game
 /// </summary>
-public class Entity(string name, IRoom startingRoom, IMap<IRoom> gameMap) : IEntity
+public class Entity(string name, Room startingRoom, Map<Room> gameMap) : IEntity<Room>
 {
     #region Private Fields
 
     /// <summary>
     /// Reference to the game map for navigation and room queries
     /// </summary>
-    private readonly IMap<IRoom> gameMap = gameMap;
+    private readonly Map<Room> gameMap = gameMap;
 
     #endregion
 
@@ -28,7 +28,7 @@ public class Entity(string name, IRoom startingRoom, IMap<IRoom> gameMap) : IEnt
     public string Name { get; } = name;
 
     /// <inheritdoc />
-    public IRoom CurrentRoom { get; private set; } = startingRoom;
+    public Room CurrentRoom { get; private set; } = startingRoom;
 
     #endregion
 
@@ -37,14 +37,14 @@ public class Entity(string name, IRoom startingRoom, IMap<IRoom> gameMap) : IEnt
     /// <inheritdoc />
     public void Move(Direction dir)
     {
-        if (gameMap.TryGetRoomInDirection(CurrentRoom, dir, out IRoom? nextRoom) && nextRoom != null)
+        if (gameMap.TryGetRoomInDirection(CurrentRoom, dir, out Room? nextRoom) && nextRoom != null)
         {
             CurrentRoom = nextRoom;
         }
     }
 
     /// <inheritdoc />
-    public void Teleport(IRoom room)
+    public void Teleport(Room room)
     {
         CurrentRoom = room;
     }

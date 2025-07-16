@@ -23,6 +23,11 @@ public interface IRoom : IEquatable<IRoom>
     public bool IsStartingRoom { get; }
 
     /// <summary>
+    /// Gets a value indicating whether the current room is designated as an enemy spawning room
+    /// </summary>
+    public bool IsEnemySpawningRoom { get; }
+
+    /// <summary>
     /// Gets a value indicating whether the current room is designated as a pink room
     /// </summary>
     // Todo: define what a pink room or create a derived interface or class for pink rooms

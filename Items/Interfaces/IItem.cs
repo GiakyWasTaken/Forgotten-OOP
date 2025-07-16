@@ -3,7 +3,6 @@
 #region Using Directives
 
 using Forgotten_OOP.GameManagers;
-using Forgotten_OOP.Mapping.Interfaces;
 
 #endregion
 
@@ -26,11 +25,6 @@ public interface IItem
     /// Gets the weight of the item
     /// </summary>
     public float Weight { get; }
-
-    /// <summary>
-    /// Gets or sets the current room in which the user is located
-    /// </summary>
-    public IRoom? CurrentRoom { get; set; }
 
     /// <summary>
     /// Uses the item in the context of the game

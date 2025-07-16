@@ -3,13 +3,14 @@
 #region Using Directives
 
 using Forgotten_OOP.Items.Interfaces;
+using Forgotten_OOP.Mapping.Interfaces;
 
 #endregion
 
 /// <summary>
 /// Interface representing a player in the game
 /// </summary>
-public interface IPlayer : IEntity
+public interface IPlayer<TRoom> : IEntity<TRoom> where TRoom : IRoom
 {
     /// <summary>
     /// Gets or sets the player's lives

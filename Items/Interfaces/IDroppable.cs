@@ -1,6 +1,10 @@
 ﻿namespace Forgotten_OOP.Items.Interfaces;
 
+#region Using Directives
+
 using Forgotten_OOP.Mapping.Interfaces;
+
+#endregion
 
 /// <summary>
 /// Represents an item that can be dropped or placed in a specific location
@@ -8,11 +12,11 @@ using Forgotten_OOP.Mapping.Interfaces;
 public interface IDroppable : IItem
 {
     /// <summary>
-    /// Drops the item in the specified room
+    /// Drops the item in the specified room, making it available for other entities to pick up
     /// </summary>
-    /// <param name="room"></param>
+    /// <param name="room">The room where the item will be dropped</param>
     public void Drop(IRoom room)
     {
-        CurrentRoom = room;
+        room.ItemsOnGround.Push(this);
     }
 }

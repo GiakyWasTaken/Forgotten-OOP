@@ -4,14 +4,14 @@
 
 using Forgotten_OOP.Entities.Interfaces;
 using Forgotten_OOP.Items.Interfaces;
-using Forgotten_OOP.Mapping.Interfaces;
+using Forgotten_OOP.Mapping;
 
 #endregion
 
 /// <summary>
 /// Represents a player in the Forgotten OOP game
 /// </summary>
-public class Player(string name, IRoom startingRoom, IMap<IRoom> gameMap, int lives) : Entity(name, startingRoom, gameMap), IPlayer
+public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives) : Entity(name, startingRoom, gameMap), IPlayer<Room>
 {
     #region Attributes
 
