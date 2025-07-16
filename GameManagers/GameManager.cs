@@ -88,7 +88,7 @@ public class GameManager : IGameManager, IConsolable, ILoggable
                 break;
             case "3":
                 OpenBag();
-               
+                Program.GameLogger.Log("Player opened bag");
                 break;
             
             default:
@@ -117,8 +117,12 @@ public class GameManager : IGameManager, IConsolable, ILoggable
             case "2":
                 //item.drop
                 break;
-            default:
+            case"3":
                 StartGameLoop();
+                Program.GameLogger.Log("Player closed bag");
+                break;
+            default:
+                Console.WriteLine("Invalid Input");
                 break;
         }
      
