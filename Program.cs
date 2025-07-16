@@ -17,7 +17,7 @@ public class Program : ILoggable
     #region Properties
 
     /// <inheritdoc />
-    public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
+    public static ILogger GameLogger => ServiceHelper.GetService<ILogger>(); // TODO Fix GameLogger
 
     #endregion
 
@@ -30,7 +30,6 @@ public class Program : ILoggable
     public static void Main(string[] args)
     {
         ServiceCollection services = new();
-        GameLogger.InitializeLogger();
 
         services.AddSingleton<ILogger, GameLogger>();
         services.AddSingleton<IConsole, GameConsole>();

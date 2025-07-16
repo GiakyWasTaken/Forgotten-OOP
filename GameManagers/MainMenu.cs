@@ -16,6 +16,8 @@ public class MainMenu : IMainMenu
     /// <inheritdoc />
     public void Show()
     {
+
+        GameLogger.InitializeLogger(); // TODO Fix GameLogger
         Console.WriteLine("Welcome to Forgotten OOP!");
         Console.WriteLine("1. Play");
         Console.WriteLine("2. Settings");

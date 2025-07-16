@@ -12,35 +12,28 @@ using Forgotten_OOP.Injectables.Interfaces;
 public class GameLogger : ILogger
 {
     #region Properties
-    string FileName = "";
+    string FileName="";
     #endregion
 
     #region Public Methods
 
     /// <inheritdoc />
-    /// <summary>
-    /// Creates the logs file
-    /// </summary>
     public void InitializeLogger()
     {
         DateTime now = DateTime.Now;
-        FileName = "Log - " + now;
+        FileName = "Log - " + now + ".txt";
         if(!File.Exists(FileName))
         {
-            File.Create(name);
+            File.Create(FileName);
             Log("Game Launched");
         }
     }
 
     /// <inheritdoc />
-    /// <summary>
-    /// Logs a message in the logs file
-    /// </summary>
     public void Log(string message)
     {
         DateTime now = DateTime.Now;
-        File.AppendAllText(FileName, "["+now"]: "message);
-        throw new NotImplementedException();
+        File.AppendAllText(FileName, "[" + now + "]: " + message);
     }
 
     #endregion
