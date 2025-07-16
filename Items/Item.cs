@@ -1,5 +1,7 @@
 ﻿namespace Forgotten_OOP.Items;
 
+using Forgotten_OOP.GameManagers;
+
 #region Using Directives
 
 using Forgotten_OOP.Items.Interfaces;
@@ -29,7 +31,7 @@ public class Item(string name, string description, float weight, IRoom? currentR
     #region Public Methods
 
     /// <inheritdoc />
-    public virtual void Use()
+    public virtual void Use(GameManager game)
     {
         throw new NotImplementedException();
     }

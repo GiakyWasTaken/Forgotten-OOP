@@ -2,6 +2,7 @@
 
 #region Using Directives
 
+using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Mapping.Interfaces;
 
 #endregion
@@ -32,7 +33,8 @@ public interface IItem
     public IRoom? CurrentRoom { get; set; }
 
     /// <summary>
-    /// Uses the item, performing an action associated with it
+    /// Uses the item in the context of the game
     /// </summary>
-    public void Use();
+    /// <param name="game">The game manager instance to interact with</param>
+    public void Use(GameManager game);
 }

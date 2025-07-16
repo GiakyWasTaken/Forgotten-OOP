@@ -2,6 +2,7 @@
 
 #region Using Directives
 
+using Forgotten_OOP.Enums;
 using Forgotten_OOP.Items.Interfaces;
 
 #endregion
@@ -24,6 +25,18 @@ public interface IRoom : IEquatable<IRoom>
     /// <summary>
     /// Gets a value indicating whether the current room is designated as a pink room
     /// </summary>
-    // Todo: define what a pink room is or change the name to something more descriptive
+    // Todo: define what a pink room or create a derived interface or class for pink rooms
     public bool IsPinkRoom { get; }
+
+    /// <summary>
+    /// Gets the coordinates of this room within the map
+    /// </summary>
+    /// <returns>A <see cref="Tuple{T1, T2}" /> containing the X and Y coordinates, or null if map is not available</returns>
+    public Tuple<int, int>? GetCoordinates();
+
+    /// <summary>
+    /// Gets adjacent rooms in all directions
+    /// </summary>
+    /// <returns>A <see cref="Dictionary{TKey, TValue}"/> of <see cref="Direction"/> and their corresponding <see cref="IRoom"/></returns>
+    public Dictionary<Direction, IRoom?> GetAdjacentRooms();
 }

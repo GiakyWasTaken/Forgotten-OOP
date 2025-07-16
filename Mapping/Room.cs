@@ -2,6 +2,7 @@
 
 #region Using Directives
 
+using Forgotten_OOP.Enums;
 using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Mapping.Interfaces;
 
@@ -10,7 +11,7 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// <summary>
 /// Represents a room in the Forgotten OOP game
 /// </summary>
-public class Room(long id, bool isStartingRoom = false, bool isPinkRoom = false) : IRoom
+public class Room(long id, IMap<IRoom> gameMap, bool isStartingRoom = false, bool isPinkRoom = false) : IRoom
 {
     #region Private Fields
 
@@ -18,6 +19,11 @@ public class Room(long id, bool isStartingRoom = false, bool isPinkRoom = false)
     /// Represents the unique identifier for an entity
     /// </summary>
     private readonly long id = id;
+
+    /// <summary>
+    /// Reference to the game map for spatial queries
+    /// </summary>
+    private readonly IMap<IRoom>? gameMap = gameMap;
 
     #endregion
 
@@ -35,6 +41,44 @@ public class Room(long id, bool isStartingRoom = false, bool isPinkRoom = false)
     #endregion
 
     #region Public Methods
+
+    /// <inheritdoc />
+    public Tuple<int, int>? GetCoordinates()
+    {
+        if (gameMap == null)
+        {
+            return null;
+        }
+
+        try
+        {
+            return gameMap.GetRoomCoordinates(this);
+        }
+        catch (ArgumentException)
+        {
+            return null;
+        }
+    }
+
+    /// <inheritdoc />
+    public Dictionary<Direction, IRoom?> GetAdjacentRooms()
+    {
+        Dictionary<Direction, IRoom?> adjacentRooms = [];
+
+        if (gameMap == null)
+        {
+            return adjacentRooms;
+        }
+
+        foreach (Direction direction in Enum.GetValues<Direction>())
+        {
+            gameMap.TryGetRoomInDirection(this, direction, out IRoom? room);
+
+            adjacentRooms[direction] = room;
+        }
+
+        return adjacentRooms;
+    }
 
     /// <inheritdoc />
     public bool Equals(IRoom? other)
@@ -77,6 +121,10 @@ public class Room(long id, bool isStartingRoom = false, bool isPinkRoom = false)
     #endregion
 
     #region Protected Methods
+
+    /// <summary>
+    /// Checks for equality with another <see cref="Room"/> instance
+    /// </summary>
     protected bool Equals(Room other)
     {
         return id == other.id && ItemsOnGround.Equals(other.ItemsOnGround);

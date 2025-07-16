@@ -4,7 +4,6 @@
 
 using Forgotten_OOP.Entities.Interfaces;
 using Forgotten_OOP.Enums;
-using Forgotten_OOP.Mapping;
 using Forgotten_OOP.Mapping.Interfaces;
 
 #endregion
@@ -12,15 +11,24 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// <summary>
 /// Represents an entity in the Forgotten OOP game
 /// </summary>
-public class Entity(string name, Room currentRoom) : IEntity
+public class Entity(string name, IRoom startingRoom, IMap<IRoom> gameMap) : IEntity
 {
+    #region Private Fields
+
+    /// <summary>
+    /// Reference to the game map for navigation and room queries
+    /// </summary>
+    private readonly IMap<IRoom> gameMap = gameMap;
+
+    #endregion
+
     #region Properties
 
     /// <inheritdoc />
     public string Name { get; } = name;
 
     /// <inheritdoc />
-    public Room CurrentRoom { get; } = currentRoom;
+    public IRoom CurrentRoom { get; private set; } = startingRoom;
 
     #endregion
 
@@ -29,13 +37,16 @@ public class Entity(string name, Room currentRoom) : IEntity
     /// <inheritdoc />
     public void Move(Direction dir)
     {
-        throw new NotImplementedException();
+        if (gameMap.TryGetRoomInDirection(CurrentRoom, dir, out IRoom? nextRoom) && nextRoom != null)
+        {
+            CurrentRoom = nextRoom;
+        }
     }
 
     /// <inheritdoc />
     public void Teleport(IRoom room)
     {
-        throw new NotImplementedException();
+        CurrentRoom = room;
     }
 
     #endregion

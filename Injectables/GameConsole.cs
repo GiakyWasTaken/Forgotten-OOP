@@ -28,6 +28,7 @@ public class GameConsole : IConsole, IConsoleHelper<GameConsole>, ILoggable
     public void WriteLine(string message)
     {
         // Todo: Implement a cool feature like colored text or slow typing effect
+        GameLogger.Log(message);
         Console.WriteLine(message);
     }
 
@@ -40,6 +41,7 @@ public class GameConsole : IConsole, IConsoleHelper<GameConsole>, ILoggable
     /// <inheritdoc />
     public string ReadLine(string prompt)
     {
+        GameLogger.Log(prompt);
         Console.Write(prompt);
 
         return Console.ReadLine() ?? string.Empty;

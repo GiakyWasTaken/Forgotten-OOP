@@ -7,6 +7,7 @@ using Forgotten_OOP.Injectables;
 using Forgotten_OOP.Injectables.Interfaces;
 using System.IO;
 using System.Text.Json;
+
 #endregion
 
 /// <summary>
@@ -20,6 +21,15 @@ public class MainMenu : IMainMenu, IConfigurable, IConsolable, ILoggable
     /// Represents the game configurations
     /// </summary>
     private Configs configs = new();
+
+    /// <summary>
+    /// Represents the JSON serializer options used for reading and writing configurations
+    /// </summary>
+    private readonly JsonSerializerOptions jsonSerializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = true
+    };
 
     #endregion
 
@@ -101,29 +111,26 @@ public class MainMenu : IMainMenu, IConfigurable, IConsolable, ILoggable
 
         if (File.Exists(configPath))
         {
-                string json = File.ReadAllText(configPath);
-                Configs loaded = JsonSerializer.Deserialize<Configs>(json);
-                return loaded;
+            string json = File.ReadAllText(configPath);
+            Configs loaded = JsonSerializer.Deserialize<Configs>(json);
+            return loaded;
         }
-        else
-        {
-            GameLogger.Log("Configuration file not found. Using deafult values");
-            return new Configs();
-        }
+
+        GameLogger.Log("Configuration file not found. Using default values");
+
+        return new Configs();
     }
 
     /// <inheritdoc />
-    public void WriteConfigs(Configs configs)
+    public void WriteConfigs(Configs newConfigs)
     {
         string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "configs.json");
-            // creation of .json file
-            string json = JsonSerializer.Serialize(configs, new JsonSerializerOptions
-            {
-                WriteIndented = true
-            });
+        // creation of .json file
+        string json = JsonSerializer.Serialize(newConfigs, jsonSerializerOptions);
 
-            File.WriteAllText(configPath, json);
-            GameLogger.Log("Configurazione salvata con successo.");
+        File.WriteAllText(configPath, json);
+
+        GameLogger.Log("Configuration file written successfully");
     }
 
     #endregion

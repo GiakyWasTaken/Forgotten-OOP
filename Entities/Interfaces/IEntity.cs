@@ -3,7 +3,6 @@
 #region Using Directives
 
 using Forgotten_OOP.Enums;
-using Forgotten_OOP.Mapping;
 using Forgotten_OOP.Mapping.Interfaces;
 
 #endregion
@@ -21,7 +20,7 @@ public interface IEntity
     /// <summary>
     /// Gets the current room of the entity
     /// </summary>
-    public Room CurrentRoom { get; }
+    public IRoom CurrentRoom { get; }
 
     /// <summary>
     /// Moves the object in the specified direction

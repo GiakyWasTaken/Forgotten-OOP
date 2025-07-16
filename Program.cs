@@ -19,8 +19,7 @@ public class Program
     /// <summary>
     /// The entry point of the application
     /// </summary>
-    /// <param name="args">An array of command-line arguments</param>
-    public static void Main(string[] args)
+    public static void Main()
     {
         ServiceCollection services = new(); // TODO Fix GameLogger
 
