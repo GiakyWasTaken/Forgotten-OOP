@@ -14,14 +14,18 @@ using Forgotten_OOP.Mapping;
 public class Entity
 {
     #region Properties
-    
+
+    public string Name { get; private set; }
+
+    public Room CurrentRoom { get; private set; }
 
     #endregion
 
     #region Contrusctor
-    public Entity()
+    public Entity( string name, Room currentRoom)
 	{
-        
+        Name= name;
+        CurrentRoom = currentRoom;
 	}
     #endregion
 
@@ -29,6 +33,11 @@ public class Entity
     public void Move()
     {
         throw new NotImplementedException("Entity Moving not implemented yet");
+    }
+
+    public void Teleport()
+    {
+        throw new NotImplementedException("Entity Teleport not implemented yet");
     }
     #endregion
 

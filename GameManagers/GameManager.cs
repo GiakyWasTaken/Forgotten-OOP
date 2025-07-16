@@ -1,11 +1,17 @@
 ﻿namespace Forgotten_OOP.GameManagers;
 
+using System.Numerics;
+using System;
+using System.Reflection.Metadata;
+
 #region Using Directives
 
 using Forgotten_OOP.GameManagers.Interfaces;
 using Forgotten_OOP.Injectables;
 using Forgotten_OOP.Injectables.Interfaces;
 using Forgotten_OOP.Mapping;
+using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 
 #endregion
 
@@ -28,6 +34,12 @@ public class GameManager : IGameManager, IConsolable, ILoggable
     /// <inheritdoc />
     public Map<Room> GameMap { get; }
 
+    /// <inheritdoc />
+    public long ActionsCount { get; } = 0;
+
+    /// <inheritdoc />
+    public Stack<IStorable> BackPack { get; }; //TODO: define IStorable
+
     #endregion
 
     #region Constructors
@@ -40,11 +52,11 @@ public class GameManager : IGameManager, IConsolable, ILoggable
     {
         GameConfigs = gameConfigs;
 
-        GameMap = InitializeMap();
+        //GameMap = InitializeMap();
 
-        SpawnItems();
+        //SpawnItems();
 
-        SpawnEntities();
+        //SpawnEntities();
     }
 
     #endregion
@@ -54,7 +66,62 @@ public class GameManager : IGameManager, IConsolable, ILoggable
     /// <inheritdoc />
     public void StartGameLoop()
     {
-        throw new NotImplementedException("GameManager loop logic is not implemented yet.");
+        Console.Clear();
+        //throw new NotImplementedException("Start game loop logic is not implemented yet.");
+        Console.WriteLine("What will you do now?");
+        Console.WriteLine("1. Interact");
+        Console.WriteLine("2. Move");
+        Console.WriteLine("3. Open bag");
+        Console.Write("Please select an option: ");
+
+        string? choice = Console.ReadLine();
+
+        switch (choice)
+        {
+            case "1":
+                //Add Item to bag / start event
+                
+                break;
+            case "2":
+                //Move
+                
+                break;
+            case "3":
+                OpenBag();
+               
+                break;
+            
+            default:
+                Console.WriteLine("Invalid Input");
+                break;
+        }
+        
+    }
+
+    public void OpenBag()
+    {
+        Console.Clear();
+        //Items pile
+        Console.WriteLine("what do you want to do?");
+        Console.WriteLine("1. Use item");
+        Console.WriteLine("2. Drop item");
+        Console.WriteLine("3. Close bag");
+        Console.Write("Please select an option: ");
+        string? choice = Console.ReadLine();
+
+        switch (choice)
+        {
+            case "1":
+                //depending on item, call relative function
+                break;
+            case "2":
+                //item.drop
+                break;
+            default:
+                StartGameLoop();
+                break;
+        }
+     
     }
 
     /// <inheritdoc />
@@ -101,7 +168,14 @@ public class GameManager : IGameManager, IConsolable, ILoggable
     /// </summary>
     private void SpawnEntities()
     {
-        throw new NotImplementedException("Entity spawning logic is not implemented yet.");
+       /* public Player player = new Player();
+        public Enemy enemyNPC = new Enemy();
+        public Entity allyNPC = new Entity();
+
+        List<Entity> entityList = new List<Entity>();
+        entityList.Add(player);
+        entityList.Add(enemyNPC);
+        entityList.Add(allyNPC);*/
     }
 
     #endregion
