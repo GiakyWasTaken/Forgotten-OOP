@@ -30,6 +30,7 @@ public class Program : ILoggable
     public static void Main(string[] args)
     {
         ServiceCollection services = new();
+        GameLogger.InitializeLogger();
 
         services.AddSingleton<ILogger, GameLogger>();
         services.AddSingleton<IConsole, GameConsole>();
