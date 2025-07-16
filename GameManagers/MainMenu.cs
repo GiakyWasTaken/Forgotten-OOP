@@ -5,7 +5,8 @@
 using Forgotten_OOP.GameManagers.Interfaces;
 using Forgotten_OOP.Injectables;
 using Forgotten_OOP.Injectables.Interfaces;
-
+using System.IO;
+using System.Text.Json;
 #endregion
 
 /// <summary>
@@ -96,13 +97,33 @@ public class MainMenu : IMainMenu, IConfigurable, IConsolable, ILoggable
     // <inheritdoc />
     public Configs ReadConfigs()
     {
-        throw new NotImplementedException();
+        string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "configs.json");    //obtains "configs.json" path
+
+        if (File.Exists(configPath))
+        {
+                string json = File.ReadAllText(configPath);
+                Configs loaded = JsonSerializer.Deserialize<Configs>(json);
+                return loaded;
+        }
+        else
+        {
+            GameLogger.Log("Configuration file not found. Using deafult values");
+            return new Configs();
+        }
     }
 
     /// <inheritdoc />
     public void WriteConfigs(Configs configs)
     {
-        throw new NotImplementedException();
+        string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "configs.json");
+            // creation of .json file
+            string json = JsonSerializer.Serialize(configs, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            File.WriteAllText(configPath, json);
+            GameLogger.Log("Configurazione salvata con successo.");
     }
 
     #endregion
