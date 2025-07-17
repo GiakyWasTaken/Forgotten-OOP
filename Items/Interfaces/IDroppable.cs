@@ -9,13 +9,13 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// <summary>
 /// Represents an item that can be dropped or placed in a specific location
 /// </summary>
-public interface IDroppable : IItem
+public interface IDroppable<in TRoom> : IItem where TRoom : IRoom<TRoom>
 {
     /// <summary>
     /// Drops the item in the specified room, making it available for other entities to pick up
     /// </summary>
     /// <param name="room">The room where the item will be dropped</param>
-    public void Drop(IRoom room)
+    public void Drop(TRoom room)
     {
         room.ItemsOnGround.Push(this);
     }

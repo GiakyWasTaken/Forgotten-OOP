@@ -4,19 +4,19 @@
 
 using System.Collections.Generic;
 
+using Forgotten_OOP.Commands.Interfaces;
+
 #endregion
 
 /// <summary>
 /// An interface for a helper that provides commands and help information for a console application
 /// </summary>
-/// <typeparam name="T">Type of console that the helper will use</typeparam>
-public interface IConsoleHelper<T> where T : IConsole
+public interface IConsoleHelper<TCommand> where TCommand : ICommand
 {
     /// <summary>
     /// A list of commands that the helper can execute
     /// </summary>
-    // Todo: change from string to Command class
-    public List<string> Commands { get; set; }
+    public List<TCommand> Commands { get; set; }
 
     /// <summary>
     /// Prints the help information and the available commands to the console

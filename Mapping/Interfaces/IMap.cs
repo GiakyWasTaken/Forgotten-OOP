@@ -9,7 +9,7 @@ using Forgotten_OOP.Enums;
 /// <summary>
 /// An interface for a map
 /// </summary>
-public interface IMap<TRoom> where TRoom : IRoom
+public interface IMap<TRoom> where TRoom : IRoom<TRoom>
 {
     /// <summary>
     /// Represents the layout of the map as a 2D array of rooms

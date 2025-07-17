@@ -10,7 +10,7 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// <summary>
 /// Interface representing a player in the game
 /// </summary>
-public interface IPlayer<TRoom> : IEntity<TRoom> where TRoom : IRoom
+public interface IPlayer<TRoom> : IEntity<TRoom> where TRoom : IRoom<TRoom>
 {
     /// <summary>
     /// Gets or sets the player's lives
@@ -25,7 +25,7 @@ public interface IPlayer<TRoom> : IEntity<TRoom> where TRoom : IRoom
     /// <summary>
     /// Gets or sets the backpack of the player, which contains storable items
     /// </summary>
-    public Stack<IStorable> Backpack { get; }
+    public Stack<IStorable<TRoom>> Backpack { get; }
 
     /// <summary>
     /// Gets the current weight of the items in the backpack

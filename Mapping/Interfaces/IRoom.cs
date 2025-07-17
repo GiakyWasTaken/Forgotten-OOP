@@ -10,7 +10,7 @@ using Forgotten_OOP.Items.Interfaces;
 /// <summary>
 /// An interface for a room
 /// </summary>
-public interface IRoom : IEquatable<IRoom>
+public interface IRoom<TSelf> : IEquatable<TSelf> where TSelf : IRoom<TSelf>
 {
     /// <summary>
     /// Gets or sets the collection of items currently on the ground
@@ -42,6 +42,6 @@ public interface IRoom : IEquatable<IRoom>
     /// <summary>
     /// Gets adjacent rooms in all directions
     /// </summary>
-    /// <returns>A <see cref="Dictionary{TKey, TValue}"/> of <see cref="Direction"/> and their corresponding <see cref="IRoom"/></returns>
-    public Dictionary<Direction, IRoom?> GetAdjacentRooms();
+    /// <returns>A <see cref="Dictionary{TKey, TValue}"/> of <see cref="Direction"/> and their corresponding <see cref="TRoom"/></returns>
+    public Dictionary<Direction, TSelf?> GetAdjacentRooms();
 }

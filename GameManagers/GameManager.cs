@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.Entities;
+using Forgotten_OOP.Enums;
 using Forgotten_OOP.GameManagers.Interfaces;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Items;
@@ -41,7 +42,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     public Map<Room> GameMap { get; }
 
     /// <inheritdoc />
-    public long ActionsCount { get; } = 0;
+    public long ActionsCount { get; private set; }
 
     #endregion
 
@@ -72,6 +73,40 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     public void StartGameLoop()
     {
 
+    }
+
+    /// <inheritdoc />
+    public void IncrementActionsCount()
+    {
+        ActionsCount++;
+        GameLogger.Log($"Action count incremented: {ActionsCount}");
+
+        Entities.ForEach(entity =>
+        {
+            if (entity is Enemy enemy && ActionsCount % enemy.ActionDelay == 0)
+            {
+                Dictionary<Direction, Room?> adjRooms = enemy.CurrentRoom.GetAdjacentRooms();
+
+                List<Room> availableRooms = [];
+
+                foreach (Direction direction in adjRooms.Keys)
+                {
+                    if (adjRooms[direction] is { IsPinkRoom: false } room)
+                    {
+                        availableRooms.Add(room);
+                    }
+                }
+
+                if (availableRooms.Count > 0)
+                {
+                    Room nextRoom = availableRooms[Random.Shared.Next(availableRooms.Count)];
+
+                    enemy.Move(nextRoom);
+
+                    GameLogger.Log($"{enemy.Name} moved to room {nextRoom.GetCoordinates()}");
+                }
+            }
+        });
     }
 
     /// <inheritdoc />

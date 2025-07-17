@@ -44,6 +44,15 @@ public class Entity(string name, Room startingRoom, Map<Room> gameMap) : IEntity
     }
 
     /// <inheritdoc />
+    public void Move(Room room)
+    {
+        if (CurrentRoom.GetAdjacentRooms().ContainsValue(room))
+        {
+            CurrentRoom = room;
+        }
+    }
+
+    /// <inheritdoc />
     public void Teleport(Room room)
     {
         CurrentRoom = room;

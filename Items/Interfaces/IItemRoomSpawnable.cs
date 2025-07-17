@@ -9,7 +9,7 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// <summary>
 /// An interface for items that can spawn in specific rooms
 /// </summary>
-public interface IItemRoomSpawnable<in TRoom> : IItem where TRoom : IRoom
+public interface IItemRoomSpawnable<in TRoom> : IItem where TRoom : IRoom<TRoom>
 {
     /// <summary>
     /// Determines whether an entity can spawn in the specified room

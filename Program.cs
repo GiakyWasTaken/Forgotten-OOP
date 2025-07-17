@@ -27,8 +27,8 @@ public class Program
     {
         ServiceCollection services = new(); // TODO Fix GameLogger
 
-        services.AddScoped<ILogger, GameLogger>();
-        services.AddScoped<IConsole, GameConsole>();
+        services.AddTransient<ILogger, GameLogger>();
+        services.AddTransient<IConsole, GameConsole>();
         services.AddTransient<GameManager>();
 
         ServiceProvider provider = services.BuildServiceProvider();

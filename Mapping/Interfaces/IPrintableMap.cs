@@ -3,8 +3,7 @@
 /// <summary>
 /// Represents a map that can be printed to the console
 /// </summary>
-/// <typeparam name="TRoom">The type of room contained within the map. Must implement the <see cref="IRoom"/> interface</typeparam>
-public interface IPrintableMap<TRoom> where TRoom : IRoom
+public interface IPrintableMap<TRoom> where TRoom : IRoom<TRoom>
 {
     /// <summary>
     /// Prints the map to the console

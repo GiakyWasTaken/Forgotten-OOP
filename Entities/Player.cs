@@ -22,7 +22,7 @@ public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives
     public List<IGrabbable> KeyItems { get; } = [];
 
     /// <inheritdoc />
-    public Stack<IStorable> Backpack { get; } = new();
+    public Stack<IStorable<Room>> Backpack { get; } = new();
 
     #endregion
 

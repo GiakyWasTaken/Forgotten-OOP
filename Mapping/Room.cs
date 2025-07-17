@@ -11,7 +11,7 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// <summary>
 /// Represents a room in the Forgotten OOP game
 /// </summary>
-public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool isEnemySpawningRoom = true, bool isPinkRoom = false) : IRoom
+public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool isEnemySpawningRoom = true, bool isPinkRoom = false) : IRoom<Room>
 {
     #region Private Fields
 
@@ -64,9 +64,9 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
     }
 
     /// <inheritdoc />
-    public Dictionary<Direction, IRoom?> GetAdjacentRooms()
+    public Dictionary<Direction, Room?> GetAdjacentRooms()
     {
-        Dictionary<Direction, IRoom?> adjacentRooms = [];
+        Dictionary<Direction, Room?> adjacentRooms = [];
 
         if (gameMap == null)
         {
@@ -89,7 +89,7 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
     }
 
     /// <inheritdoc />
-    public bool Equals(IRoom? other)
+    public bool Equals(Room? other)
     {
         if (other is null)
         {
@@ -101,7 +101,7 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
             return true;
         }
 
-        return other.GetType() == GetType() && Equals((Room)other);
+        return other.GetType() == GetType() && Equals(other);
     }
 
     /// <inheritdoc />
@@ -126,16 +126,10 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
         return HashCode.Combine(id, ItemsOnGround);
     }
 
-    #endregion
-
-    #region Protected Methods
-
-    /// <summary>
-    /// Checks for equality with another <see cref="Room"/> instance
-    /// </summary>
-    protected bool Equals(Room other)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return id == other.id && ItemsOnGround.Equals(other.ItemsOnGround);
+        return $"Room ID: {id} with coordinates {GetCoordinates()}";
     }
 
     #endregion

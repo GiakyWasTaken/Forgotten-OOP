@@ -12,7 +12,7 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// <summary>
 /// Represents a map in the Forgotten OOP game
 /// </summary>
-public class Map<TRoom>(int mapDimension = 6) : IMap<TRoom>, IPrintableMap<TRoom>, IConsolable where TRoom : IRoom
+public class Map<TRoom>(int mapDimension = 6) : IMap<TRoom>, IPrintableMap<TRoom>, IConsolable where TRoom : IRoom<TRoom>
 {
     #region Properties
 

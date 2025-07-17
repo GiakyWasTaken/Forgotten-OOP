@@ -14,7 +14,7 @@ public interface IGameManager<out TPlayer, TEntity, out TMap, TRoom>
     where TPlayer : IPlayer<TRoom>
     where TEntity : IEntity<TRoom>
     where TMap : IMap<TRoom>
-    where TRoom : IRoom
+    where TRoom : IRoom<TRoom>
 {
     /// <summary>
     /// The configuration settings for the game
@@ -45,6 +45,11 @@ public interface IGameManager<out TPlayer, TEntity, out TMap, TRoom>
     /// Starts the game loop
     /// </summary>
     public void StartGameLoop();
+
+    /// <summary>
+    /// Increments the count of actions performed in the game
+    /// </summary>
+    public void IncrementActionsCount();
 
     /// <summary>
     /// Saves the current game state

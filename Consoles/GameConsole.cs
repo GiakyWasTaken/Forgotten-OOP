@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 
+using Forgotten_OOP.Commands;
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Logging.Interfaces;
@@ -13,7 +14,7 @@ using Forgotten_OOP.Logging.Interfaces;
 /// <summary>
 /// A console wrapper for the Forgotten OOP game
 /// </summary>
-public class GameConsole : IConsole, IConsoleHelper<GameConsole>, ILoggable
+public class GameConsole : IConsole, IConsoleHelper<BaseCommand>, ILoggable
 {
     #region Properties
 
@@ -21,7 +22,7 @@ public class GameConsole : IConsole, IConsoleHelper<GameConsole>, ILoggable
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
 
     /// <inheritdoc />
-    public List<string> Commands { get; set; } = [];
+    public List<BaseCommand> Commands { get; set; } = [];
 
     #endregion
 
@@ -60,6 +61,11 @@ public class GameConsole : IConsole, IConsoleHelper<GameConsole>, ILoggable
     public void PrintHelp()
     {
         WriteLine("Available commands:");
+
+        foreach (BaseCommand command in Commands)
+        {
+            WriteLine($"- {command}");
+        }
     }
 
     #endregion
