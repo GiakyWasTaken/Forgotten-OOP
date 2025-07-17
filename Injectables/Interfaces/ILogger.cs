@@ -1,4 +1,6 @@
-﻿namespace Forgotten_OOP.Injectables.Interfaces;
+﻿using Forgotten_OOP.Mapping;
+
+namespace Forgotten_OOP.Injectables.Interfaces;
 
 /// <summary>
 /// An interface for logging to file

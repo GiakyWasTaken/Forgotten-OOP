@@ -30,6 +30,27 @@ public class GameLogger : ILogger
     /// <inheritdoc />
     public void InitializeLogger()
     {
+        if(!Directory.Exists("Logs"))
+        {
+            Directory.CreateDirectory("Logs");
+        }
+
+        if (!Directory.Exists("Logs/Archive"))
+        {
+            Directory.CreateDirectory("Logs/Archive");
+        }
+
+        foreach (string file in Directory.GetFiles("Logs"))
+        {
+            string fileToMove = Path.GetFileName(file);
+            string destination = Path.Combine("Logs/Archive", fileToMove);
+
+            if (!File.Exists(destination))
+            {
+                File.Move(file, destination);
+            }
+        }
+
         DateTime now = DateTime.Now;
 
         fileName = "Logs/Log - " + now.ToString("dd-MM-yyyy H-m-s") + ".log";
