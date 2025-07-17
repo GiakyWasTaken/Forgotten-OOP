@@ -1,8 +1,8 @@
-﻿namespace Forgotten_OOP.Injectables;
+﻿namespace Forgotten_OOP.Logging;
 
 #region Using Directives
 
-using Forgotten_OOP.Injectables.Interfaces;
+using Forgotten_OOP.Logging.Interfaces;
 
 #endregion
 
@@ -30,22 +30,19 @@ public class GameLogger : ILogger
     /// <inheritdoc />
     public void InitializeLogger()
     {
-        if(!Directory.Exists("Logs"))
+        if (isInitialized)
         {
-            Directory.CreateDirectory("Logs");
+            return;
         }
 
-        if (!Directory.Exists("Logs/Archive"))
-        {
-            Directory.CreateDirectory("Logs/Archive");
-        }
+        Directory.CreateDirectory("Logs/Archive");
 
         foreach (string file in Directory.GetFiles("Logs"))
         {
             string fileToMove = Path.GetFileName(file);
             string destination = Path.Combine("Logs/Archive", fileToMove);
 
-            if (!File.Exists(destination))
+            if (!File.Exists(destination) && fileToMove.EndsWith(".log"))
             {
                 File.Move(file, destination);
             }
@@ -76,6 +73,7 @@ public class GameLogger : ILogger
         }
 
         DateTime now = DateTime.Now;
+
         File.AppendAllText(fileName, "[" + now + "]: " + message + "\n");
     }
 

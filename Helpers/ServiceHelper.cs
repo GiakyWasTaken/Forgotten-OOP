@@ -1,4 +1,4 @@
-﻿namespace Forgotten_OOP.Injectables;
+﻿namespace Forgotten_OOP.Helpers;
 
 #region Using Directives
 

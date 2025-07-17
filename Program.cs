@@ -2,9 +2,13 @@
 
 #region Using Directives
 
+using Forgotten_OOP.Consoles;
+using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.GameManagers;
-using Forgotten_OOP.Injectables;
-using Forgotten_OOP.Injectables.Interfaces;
+using Forgotten_OOP.Helpers;
+using Forgotten_OOP.Logging;
+using Forgotten_OOP.Logging.Interfaces;
+
 using Microsoft.Extensions.DependencyInjection;
 
 #endregion

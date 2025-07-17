@@ -2,9 +2,9 @@
 
 #region Using Directives
 
+using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.Enums;
-using Forgotten_OOP.Injectables;
-using Forgotten_OOP.Injectables.Interfaces;
+using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Mapping.Interfaces;
 
 #endregion

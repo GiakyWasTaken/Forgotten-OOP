@@ -1,4 +1,4 @@
-﻿namespace Forgotten_OOP.Injectables.Interfaces;
+﻿namespace Forgotten_OOP.Logging.Interfaces;
 
 /// <summary>
 /// Represents an entity that can perform logging operations using a game console interface

@@ -1,9 +1,12 @@
-﻿namespace Forgotten_OOP.Injectables;
+﻿namespace Forgotten_OOP.Consoles;
 
 #region Using Directives
 
-using Forgotten_OOP.Injectables.Interfaces;
 using System.Collections.Generic;
+
+using Forgotten_OOP.Consoles.Interfaces;
+using Forgotten_OOP.Helpers;
+using Forgotten_OOP.Logging.Interfaces;
 
 #endregion
 

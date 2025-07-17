@@ -1,4 +1,4 @@
-﻿namespace Forgotten_OOP.Injectables.Interfaces;
+﻿namespace Forgotten_OOP.Consoles.Interfaces;
 
 /// <summary>
 /// An interface for console operations
