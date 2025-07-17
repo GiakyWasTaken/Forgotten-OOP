@@ -25,7 +25,7 @@ public class Program
     /// </summary>
     public static void Main()
     {
-        ServiceCollection services = new(); // TODO Fix GameLogger
+        ServiceCollection services = new(); 
 
         services.AddTransient<ILogger, GameLogger>();
         services.AddTransient<IConsole, GameConsole>();
