@@ -1,7 +1,10 @@
-﻿using Forgotten_OOP.Entities;
+﻿using Forgotten_OOP.Consoles.Interfaces;
+using Forgotten_OOP.Entities;
 using Forgotten_OOP.GameManagers;
+using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Logging;
+using Forgotten_OOP.Logging.Interfaces;
 using Forgotten_OOP.Mapping;
 using System;
 using System.Collections.Generic;
@@ -13,8 +16,11 @@ namespace Forgotten_OOP.Items
 {
     internal class Bandage : Item, IStorable<Room>
     {
-        
+        /// <inheritdoc />
+        public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
 
+        /// <inheritdoc />
+        public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
         public Bandage(string name, string description, float weight) : base(name, description, weight)
         {
             name = "Bende";
@@ -30,7 +36,7 @@ namespace Forgotten_OOP.Items
         void IItem.Use(GameManager game)
         {
             game.Player.Lives += 1;
-            game.GameLogger.Log("Player used bandages");
+            GameLogger.Log("Player used bandages");
             game.IncrementActionsCount();
         }
     }

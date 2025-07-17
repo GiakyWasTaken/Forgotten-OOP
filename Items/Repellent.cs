@@ -7,14 +7,22 @@ using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Mapping;
 using Forgotten_OOP.Entities;
+using Forgotten_OOP.Consoles.Interfaces;
+using Forgotten_OOP.Helpers;
+using Forgotten_OOP.Logging.Interfaces;
 
 namespace Forgotten_OOP.Items
 {
     internal class Repellent : Item, IStorable<Room>
     {
+        /// <inheritdoc />
+        public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
+
+        /// <inheritdoc />
+        public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
         public Repellent(string name, string description, float weight) : base(name, description, weight)
         {
-            name = "Repellente";
+            name = "Scacciapresenze";
             description = "Utilizzarlo scaccia il mostro";
             weight = 4.0f;
         }
@@ -31,11 +39,12 @@ namespace Forgotten_OOP.Items
                 if (entity is Enemy enemy)
                 {
                     enemy.Teleport(game.GameMap.GetRandomRoom());
-                    game.GameLogger.Log("Player used Repellent");
-                    game.GameLogger.Log($"{enemy.Name} moved to room {enemy.CurrentRoom}");
+                    GameLogger.Log("Player used Repellent");
+                    GameLogger.Log($"{enemy.Name} moved to room {enemy.CurrentRoom}");
                     game.IncrementActionsCount();
                 }
             });
+            GameConsole.WriteLine("pop the baby"); //TODO: insert line 
         }
     }
 }
