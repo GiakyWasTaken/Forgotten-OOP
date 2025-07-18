@@ -25,7 +25,7 @@ namespace Forgotten_OOP.Items
         public GuardianEye(string name, string description, float weight) : base(name, description, weight)
         {
             name = "Occhio del Guardiano";
-            description = "Ti dice dietro quale porta il mostro si sta nascondendo";
+            description = "Un occhio del guardiano, quando Lui si avvicina, l’Occhio indica con precisione in quale stanza adiacente si nasconde. E' uno strumento molto potente, usalo con saggezza";
             weight = 6.0f;
         }
 
@@ -47,7 +47,7 @@ namespace Forgotten_OOP.Items
                         Direction dir = (Direction)i;
                         if (ADJ[dir].GetCoordinates() == game.Player.CurrentRoom.GetCoordinates())
                         {
-                            GameConsole.WriteLine("(WIP) il mostro si trova a " + (Direction)(5 - i));
+                            GameConsole.WriteLine("Il Guardiano vede ciò che gli altri non possono: L’Ushigami si trova nella stanza a " + (Direction)(5 - i));
                         }
                     }
                 }
