@@ -29,9 +29,11 @@ namespace Forgotten_OOP.Items
             weight = 6.0f;
         }
 
-        void IGrabbable.Grab()
+        void IGrabbable.Grab(GameManager game)
         {
-            throw new NotImplementedException();
+            game.Player.Backpack.Push(this);
+            game.GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
+            GameConsole.WriteLine($"Hai raccolto: {Name}"); ;
         }
 
         void IItem.Use(GameManager game)

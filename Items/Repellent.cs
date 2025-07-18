@@ -38,9 +38,11 @@ public class Repellent : Item, IStorable<Room>
     #endregion
 
     #region Public Methods
-    void IGrabbable.Grab()
+    void IGrabbable.Grab(GameManager game)
     {
-        throw new NotImplementedException();
+        game.Player.Backpack.Push(this);
+        game.GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
+        GameConsole.WriteLine($"Hai raccolto: {Name}"); ;
     }
 
     void IItem.Use(GameManager game)

@@ -1,4 +1,6 @@
-﻿namespace Forgotten_OOP.Items.Interfaces;
+﻿using Forgotten_OOP.GameManagers;
+
+namespace Forgotten_OOP.Items.Interfaces;
 
 /// <summary>
 /// Represents an item that can be grabbed or interacted with
@@ -8,5 +10,5 @@ public interface IGrabbable : IItem
     /// <summary>
     /// Grabs the item, typically adding it to a player's inventory or backpack
     /// </summary>
-    public void Grab();
+    void Grab(GameManager game);
 }
