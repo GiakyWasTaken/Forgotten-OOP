@@ -64,14 +64,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        if(game.Player.GetCurrentWeight() + game.Player.CurrentRoom.ItemsOnGround.Peek().Weight <= 10)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return game.Player.GetCurrentWeight() + game.Player.CurrentRoom.ItemsOnGround.Peek().Weight <= 10;
     }
 
     #endregion
