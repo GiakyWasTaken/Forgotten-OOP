@@ -1,5 +1,7 @@
 ﻿namespace Forgotten_OOP.Entities.Interfaces;
 
+using Forgotten_OOP.GameManagers;
+
 #region Using Directives
 
 using Forgotten_OOP.Items.Interfaces;
@@ -32,5 +34,10 @@ public interface IPlayer<TRoom> : IEntity<TRoom> where TRoom : IRoom<TRoom>
     /// </summary>
     /// <returns>The sum of the weights of all items in the backpack</returns>
     public float GetCurrentWeight();
+
+    /// <summary>
+    /// Changes player's lives
+    /// </summary>
+    public void LifeChange(int change, GameManager game);
 
 }

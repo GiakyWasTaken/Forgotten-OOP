@@ -1,22 +1,24 @@
 ﻿namespace Forgotten_OOP.Commands;
 
-using Forgotten_OOP.Consoles.Interfaces;
 
 #region Using Directives
 
+using Forgotten_OOP.Consoles;
+using Forgotten_OOP.Entities;
+using Forgotten_OOP.Enums;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
-using Forgotten_OOP.Items.Interfaces;
-using Forgotten_OOP.Logging;
 using Forgotten_OOP.Logging.Interfaces;
 using Forgotten_OOP.Mapping;
+using Forgotten_OOP.Consoles.Interfaces;
+using System.Runtime.CompilerServices;
 
 #endregion
 
 /// <summary>
 /// Represents a command to use an item from the player's inventory within the game
 /// </summary>
-public class UseItemCommand(GameManager game) : BaseCommand
+public class EnemyMoveCommand(GameManager game, Direction dir) : BaseCommand
 {
     #region Private Fields
     /// <inheritdoc />
@@ -26,13 +28,14 @@ public class UseItemCommand(GameManager game) : BaseCommand
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
     #endregion
 
+
     #region Properties
 
     /// <inheritdoc />
-    public override string Name => "Use";
+    public override string Name => "Move Enemy";
 
     /// <inheritdoc />
-    public override string Description => "Use an item from your inventory";
+    public override string Description => "Moves the enemy";
 
     #endregion
 
@@ -43,9 +46,14 @@ public class UseItemCommand(GameManager game) : BaseCommand
     {
         if (GetAvailability())
         {
-            game.Player.Backpack.Pop().Use(game);
-            game.IncrementActionsCount();
-            
+            game.Entities.ForEach(entity =>
+            {
+                if (entity is Enemy enemy)
+                {
+                    enemy.Move(dir);
+                    GameLogger.Log("Enemy moved in direction " +dir);
+                }
+            });
         }
     }
 
@@ -56,10 +64,17 @@ public class UseItemCommand(GameManager game) : BaseCommand
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        game.Player.Backpack.TryPeek(out IStorable<Room>? item);
-
-        return item != null;
+        bool check = false;
+        game.Entities.ForEach(entity =>
+        {
+            if (entity is Enemy enemy)
+            {
+                game.GameMap.TryGetRoomInDirection(enemy.CurrentRoom, dir, out Room? room);
+               check = true;
+            }
+        });
+        
+        return check;
     }
-
     #endregion
 }

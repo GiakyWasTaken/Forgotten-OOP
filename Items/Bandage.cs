@@ -52,7 +52,7 @@ public class Bandage : Item, IStorable<Room>
     {
         if (game.Player.Lives < 3)
         {
-            game.Player.Lives += 1;
+            game.Player.LifeChange(1, game);
             game.GameLogger.Log("Player used bandages");
             game.IncrementActionsCount();
             GameConsole.WriteLine("La ferita si chiude... mi sento molto meglio");
