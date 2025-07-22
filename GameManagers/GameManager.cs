@@ -85,7 +85,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         {
             if (entity is Enemy enemy && ActionsCount % enemy.ActionDelay == 0)
             {
-                Dictionary<Direction, Room?> adjRooms = enemy.CurrentRoom.GetAdjacentRooms();
+                Dictionary<Direction, Room> adjRooms = enemy.CurrentRoom.GetAdjacentRooms();
 
                 List<Room> availableRooms = [];
 
@@ -132,31 +132,72 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     #region Private Methods
 
     /// <summary>
-    /// Initializes the game map
+    /// Initializes and returns a new map with a predefined layout of rooms
     /// </summary>
-    /// <returns>An <see cref="Map{Room}"/> object</returns>
+    /// <returns>A <see cref="Map{Room}"/> object containing the initialized layout of rooms</returns>
     private Map<Room> InitializeMap()
     {
-        Map<Room> map = new();
+        const int mapLen = 7;
+        const int maxCoordinates = mapLen - 1;
 
-        for (int i = 0; i < map.Layout.GetLength(0); i++)
+        Map<Room> map = new(7);
+
+        // Initialize the map layout with rooms
+        for (int y = 0; y < mapLen; y++)
         {
-            for (int j = 0; j < map.Layout.GetLength(1); j++)
+            for (int x = 0; x < mapLen; x++)
             {
-                // Create a new room with a unique ID and add it to the map layout
-                map.Layout[i, j] = new Room((i * map.Layout.GetLength(1)) + j, map);
+                // Skip angles and some center rooms
+                if ((x == y || Math.Abs(x - maxCoordinates) == y) && x % 2 == 0)
+                {
+                    continue;
+                }
+
+                int roomId = GenRoomId(y, x);
+
+                bool isStartingRoom = false;
+                bool isEnemySpawningRoom = true;
+                bool isPinkRoom = false;
+
+                // Set pink and starting rooms
+                if (x is 0 or maxCoordinates || y is 0 or maxCoordinates)
+                {
+                    isStartingRoom = x == maxCoordinates && y == maxCoordinates - 1;
+                    isPinkRoom = !isStartingRoom;
+                    isEnemySpawningRoom = false;
+                }
+
+                map.Layout[x, y] = new Room(roomId, map, isStartingRoom, isEnemySpawningRoom, isPinkRoom);
             }
         }
 
-        // Set the starting room
-        map.Layout[0, 0] = new Room(0, map, isStartingRoom: true);
+        // Set adjacent rooms to starting room not being enemy spawning rooms
+        foreach (Room adjRoomToSpawn in map.StartingRoom.GetAdjacentRooms().Values.Where(room => room.IsEnemySpawningRoom))
+        {
+            adjRoomToSpawn.IsEnemySpawningRoom = false;
 
-        // Set the enemy spawning room
-        map.Layout[0, 1] = new Room(CreateRoomIdFromCoordinates(0, 1), map, isEnemySpawningRoom: false);
-        map.Layout[1, 0] = new Room(CreateRoomIdFromCoordinates(1, 0), map, isEnemySpawningRoom: false);
-        map.Layout[1, 1] = new Room(CreateRoomIdFromCoordinates(1, 1), map, isEnemySpawningRoom: false);
+            foreach (Room adjRoomToAdjRoom in adjRoomToSpawn.GetAdjacentRooms().Values.Where(adjRoomToAdjRoom => adjRoomToAdjRoom.IsEnemySpawningRoom))
+            {
+                adjRoomToAdjRoom.IsEnemySpawningRoom = false;
+            }
+        }
+
+        // Remove all pink rooms except for keys and npc spawning rooms
+        map.Layout
+            .Cast<Room?>()
+            .Where(room => room is { IsPinkRoom: true })
+            .OrderBy(_ => Random.Shared.Next())
+            .Skip(GameConfigs.NumKeys + 1)
+            .ToList()
+            .ForEach(room =>
+            {
+                Tuple<int, int> coordinates = map.GetRoomCoordinates(room!);
+                map.Layout[coordinates.Item1, coordinates.Item2] = null;
+            });
 
         return map;
+
+        static int GenRoomId(int x, int y) => y * mapLen + x;
     }
 
     /// <summary>
@@ -210,17 +251,6 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
             enemiesSpawned++;
 
         } while (enemiesSpawned >= 1);
-    }
-
-    /// <summary>
-    /// Calculates a unique room identifier based on the given coordinates
-    /// </summary>
-    /// <param name="x">The x-coordinate of the room within the game map</param>
-    /// <param name="y">The y-coordinate of the room within the game map</param>
-    /// <returns>An integer representing the unique room identifier</returns>
-    private int CreateRoomIdFromCoordinates(int x, int y)
-    {
-        return x * GameMap.Layout.GetLength(1) + y;
     }
 
     #endregion

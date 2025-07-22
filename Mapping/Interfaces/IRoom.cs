@@ -42,6 +42,6 @@ public interface IRoom<TSelf> : IEquatable<TSelf> where TSelf : IRoom<TSelf>
     /// <summary>
     /// Gets adjacent rooms in all directions
     /// </summary>
-    /// <returns>A <see cref="Dictionary{TKey, TValue}"/> of <see cref="Direction"/> and their corresponding <see cref="TRoom"/></returns>
-    public Dictionary<Direction, TSelf?> GetAdjacentRooms();
+    /// <returns>A <see cref="Dictionary{TKey, TValue}"/> of <see cref="Direction"/> and their corresponding <see cref="TSelf"/></returns>
+    public Dictionary<Direction, TSelf> GetAdjacentRooms();
 }

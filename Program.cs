@@ -25,10 +25,10 @@ public class Program
     /// </summary>
     public static void Main()
     {
-        ServiceCollection services = new(); 
+        ServiceCollection services = new();
 
-        services.AddTransient<ILogger, GameLogger>();
-        services.AddTransient<IConsole, GameConsole>();
+        services.AddSingleton<ILogger, GameLogger>();
+        services.AddSingleton<IConsole, GameConsole>();
         services.AddTransient<GameManager>();
 
         ServiceProvider provider = services.BuildServiceProvider();

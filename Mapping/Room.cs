@@ -64,9 +64,9 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
     }
 
     /// <inheritdoc />
-    public Dictionary<Direction, Room?> GetAdjacentRooms()
+    public Dictionary<Direction, Room> GetAdjacentRooms()
     {
-        Dictionary<Direction, Room?> adjacentRooms = [];
+        Dictionary<Direction, Room> adjacentRooms = [];
 
         if (gameMap == null)
         {
@@ -75,13 +75,9 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
 
         foreach (Direction direction in Enum.GetValues<Direction>())
         {
-            if (gameMap.TryGetRoomInDirection(this, direction, out Room? room))
+            if (gameMap.TryGetRoomInDirection(this, direction, out Room? room) && room != null)
             {
                 adjacentRooms[direction] = room;
-            }
-            else
-            {
-                adjacentRooms[direction] = null;
             }
         }
 

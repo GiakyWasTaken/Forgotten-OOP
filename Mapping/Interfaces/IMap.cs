@@ -27,6 +27,17 @@ public interface IMap<TRoom> where TRoom : IRoom<TRoom>
     public bool TryGetRoom(int x, int y, out TRoom? room);
 
     /// <summary>
+    /// Attempts to retrieve the room located in the specified direction from the given coordinates
+    /// </summary>
+    /// <param name="x">The x-coordinate of the starting room</param>
+    /// <param name="y">The y-coordinate of the starting room</param>
+    /// <param name="direction">The direction in which to look for the adjacent room</param>
+    /// <param name="room">When this method returns, contains the room found in the specified direction, if any; otherwise, <see
+    /// langword="null"/></param>
+    /// <returns><see langword="true"/> if a room is found in the specified direction; otherwise, <see langword="false"/></returns>
+    public bool TryGetRoomInDirection(int x, int y, Direction direction, out TRoom? room);
+
+    /// <summary>
     /// Attempts to retrieve the room located in the specified direction from the starting room
     /// </summary>
     /// <param name="startingRoom">The room from which to start the search</param>

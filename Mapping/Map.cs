@@ -2,6 +2,8 @@
 
 #region Using Directives
 
+using System.Text;
+
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.Enums;
 using Forgotten_OOP.Helpers;
@@ -12,7 +14,7 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// <summary>
 /// Represents a map in the Forgotten OOP game
 /// </summary>
-public class Map<TRoom>(int mapDimension = 6) : IMap<TRoom>, IPrintableMap<TRoom>, IConsolable where TRoom : IRoom<TRoom>
+public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, IConsolable where TRoom : IRoom<TRoom>
 {
     #region Properties
 
@@ -22,6 +24,19 @@ public class Map<TRoom>(int mapDimension = 6) : IMap<TRoom>, IPrintableMap<TRoom
     /// <inheritdoc />
     public TRoom?[,] Layout { get; set; } = new TRoom[mapDimension, mapDimension];
 
+    /// <summary>
+    /// Gets the starting room from the map layout
+    /// </summary>
+    public TRoom StartingRoom
+    {
+        get
+        {
+            return Layout.Cast<TRoom?>()
+                .FirstOrDefault(room => room?.IsStartingRoom == true)
+                ?? throw new KeyNotFoundException("No starting room found in the map layout.");
+        }
+    }
+
     #endregion
 
     #region Public Methods
@@ -29,71 +44,65 @@ public class Map<TRoom>(int mapDimension = 6) : IMap<TRoom>, IPrintableMap<TRoom
     /// <inheritdoc />
     public bool TryGetRoom(int x, int y, out TRoom? room)
     {
-        if (x < 0 || x >= mapDimension || y < 0 || y >= mapDimension)
+        room = default;
+
+        try
         {
-            room = default;
+            TRoom? retRoom = Layout[x, y];
+
+            if (retRoom == null)
+            {
+                return false;
+            }
+
+            room = retRoom;
+            return true;
+        }
+        catch (IndexOutOfRangeException)
+        {
             return false;
         }
+    }
 
-        room = Layout[x, y];
+    /// <inheritdoc />
+    public bool TryGetRoomInDirection(int x, int y, Direction direction, out TRoom? room)
+    {
+        room = default;
 
-        return room != null;
+        switch (direction)
+        {
+            case Direction.North:
+                y--;
+                break;
+            case Direction.South:
+                y++;
+                break;
+            case Direction.East:
+                x--;
+                break;
+            case Direction.West:
+                x++;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+        }
+
+        return TryGetRoom(x, y, out room);
     }
 
     /// <inheritdoc />
     public bool TryGetRoomInDirection(TRoom startingRoom, Direction direction, out TRoom? room)
     {
-        (int x, int y) = GetRoomCoordinates(startingRoom);
-
-        if (x < 0 || y < 0)
+        try
+        {
+            (int x, int y) = GetRoomCoordinates(startingRoom);
+            return TryGetRoomInDirection(x, y, direction, out room);
+        }
+        catch (KeyNotFoundException)
         {
             room = default;
             return false;
         }
-
-        room = Layout[x, y];
-
-        if (room == null)
-        {
-            return false;
-        }
-
-        switch (direction)
-        {
-            case Direction.North:
-                if (x > 0)
-                {
-                    room = Layout[x - 1, y];
-                }
-
-                break;
-            case Direction.South:
-                if (x < mapDimension - 1)
-                {
-                    room = Layout[x + 1, y];
-                }
-
-                break;
-            case Direction.East:
-                if (y < mapDimension - 1)
-                {
-                    room = Layout[x, y + 1];
-                }
-
-                break;
-            case Direction.West:
-                if (y > 0)
-                {
-                    room = Layout[x, y - 1];
-                }
-
-                break;
-            default:
-                room = default;
-                return false;
-        }
-
-        return room != null;
     }
 
     /// <inheritdoc />
@@ -127,14 +136,59 @@ public class Map<TRoom>(int mapDimension = 6) : IMap<TRoom>, IPrintableMap<TRoom
             }
         }
 
-        throw new ArgumentException("Room not found in the map layout.");
+        throw new KeyNotFoundException($"Room {room} not found in the map layout.");
     }
 
     /// <inheritdoc />
     public void PrintMap()
     {
+        var mapBuilder = new StringBuilder();
+        mapBuilder.AppendLine("Map Layout");
+
+        for (int i = 0; i < Layout.GetLength(0); i++)
+        {
+            // Print top border of cells
+            for (int j = 0; j < Layout.GetLength(1); j++)
+            {
+                mapBuilder.Append("+---");
+            }
+
+            mapBuilder.AppendLine("+");
+
+            // Print cell contents
+            for (int j = 0; j < Layout.GetLength(1); j++)
+            {
+                mapBuilder.Append('|');
+
+                TRoom? room = Layout[i, j];
+
+                // Determine the character to represent the room
+                string roomChar = room switch
+                {
+                    null => "   ",
+                    _ when room.IsStartingRoom => " S ",
+                    _ when room.IsEnemySpawningRoom => " E ",
+                    _ when room.IsPinkRoom => " P ",
+                    _ => " N "
+                };
+
+                mapBuilder.Append(roomChar);
+            }
+
+            mapBuilder.AppendLine("|");
+        }
+
+        // Print bottom border
+        for (int j = 0; j < Layout.GetLength(1); j++)
+        {
+            mapBuilder.Append("+---");
+        }
+
+        mapBuilder.AppendLine("+");
+
+        // Output the entire map at once
         GameConsole.Clear();
-        GameConsole.WriteLine("Map Layout");
+        GameConsole.WriteLine(mapBuilder.ToString());
     }
 
     #endregion
