@@ -219,24 +219,14 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     private void SpawnEntities(Map<Room> map)
     {
         // Spawn enemies in the map
-        int enemiesSpawned = 0;
+        List<Room> spawningRooms = [.. map.Rooms.Where(room => room is { IsEnemySpawningRoom: true })];
 
-        do
-        {
-            Room enemySpawnRoom = map.GetRandomRoom();
+        Entities.Add(new Enemy("Minotaur", spawningRooms[Random.Shared.Next(spawningRooms.Count)], map, GameConfigs.EnemyDelay));
 
-            if (!enemySpawnRoom.IsEnemySpawningRoom)
-            {
-                continue;
-            }
+        // Spawn good npc in the map in the last pink room
+        List<Room> pinkRooms = [.. map.Rooms.Where(room => room is { IsPinkRoom: true })];
 
-            Enemy enemy = new("Minotaur", enemySpawnRoom, map, GameConfigs.EnemyDelay);
-
-            Entities.Add(enemy);
-
-            enemiesSpawned++;
-
-        } while (enemiesSpawned >= 1);
+        Entities.Add(new Entity("Marlo", pinkRooms[^1], map));
     }
 
     #endregion

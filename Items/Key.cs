@@ -2,9 +2,8 @@
 
 #region Using Directives
 
+using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Items.Interfaces;
-
-using GameManagers;
 
 #endregion
 

@@ -5,6 +5,7 @@ namespace Forgotten_OOP.Mapping;
 using System.Text;
 
 using Forgotten_OOP.Consoles.Interfaces;
+using Forgotten_OOP.Entities.Interfaces;
 using Forgotten_OOP.Enums;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Items.Interfaces;
@@ -192,7 +193,7 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
     }
 
     /// <inheritdoc />
-    public void PrintMap()
+    public void PrintMap(List<IEntity<TRoom>>? entities = null)
     {
         var mapBuilder = new StringBuilder();
         mapBuilder.AppendLine("Map Layout");
@@ -219,10 +220,13 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
                 {
                     null => "   ",
                     _ when room.ItemsOnGround.Any(item => item is IKeyItem) => " K ",
+                    _ when entities?.Any(entity => entity is IEnemy<TRoom> && entity.CurrentRoom.Equals(room)) == true => " M ",
+                    _ when entities?.Any(entity => entity is IPlayer<TRoom> && entity.CurrentRoom.Equals(room)) == true => " Y ",
+                    _ when entities?.Any(entity => entity.CurrentRoom.Equals(room)) == true => " N ",
                     _ when room.IsStartingRoom => " S ",
                     _ when room.IsEnemySpawningRoom => " E ",
                     _ when room.IsPinkRoom => " P ",
-                    _ => " N "
+                    _ => $" {room.ItemsOnGround.Count} "
                 };
 
                 mapBuilder.Append(roomChar);
