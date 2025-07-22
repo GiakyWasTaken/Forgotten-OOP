@@ -10,7 +10,7 @@ using Forgotten_OOP.Items.Interfaces;
 /// <summary>
 /// Represents an item with properties for name, description, weight, and current room location
 /// </summary>
-public class Item(string name, string description, float weight)
+public abstract class Item(string name, string description, float weight)
     : IItem
 {
     #region Properties
@@ -29,10 +29,7 @@ public class Item(string name, string description, float weight)
     #region Public Methods
 
     /// <inheritdoc />
-    public virtual void Use(GameManager game)
-    {
-        throw new NotImplementedException();
-    }
+    public abstract void Use(GameManager game);
 
     #endregion
 }

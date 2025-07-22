@@ -7,6 +7,7 @@ using System.Text;
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.Enums;
 using Forgotten_OOP.Helpers;
+using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Mapping.Interfaces;
 
 #endregion
@@ -33,6 +34,49 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
     /// <inheritdoc />
     public TRoom?[,] Layout { get; set; } = new TRoom[mapDimension, mapDimension];
 
+    /// <inheritdoc />
+    public List<TRoom> Rooms
+    {
+        get
+        {
+            List<TRoom> rooms = [];
+
+            for (int y = 0; y < mapDimension; y++)
+            {
+                for (int x = 0; x < mapDimension; x++)
+                {
+                    TRoom? room = Layout[x, y];
+                    if (room != null)
+                    {
+                        rooms.Add(room);
+                    }
+                }
+            }
+
+            return rooms;
+        }
+        set
+        {
+            foreach (TRoom room in value)
+            {
+                if (room == null)
+                {
+                    throw new ArgumentNullException(nameof(value), "Room cannot be null.");
+                }
+
+                try
+                {
+                    Tuple<int, int> coordinates = GetRoomCoordinates(room);
+                    Layout[coordinates.Item1, coordinates.Item2] = room;
+                }
+                catch (KeyNotFoundException)
+                {
+                    throw new ArgumentException($"Room {room} does not exist in the map layout.", nameof(value));
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// Gets the starting room from the map layout
     /// </summary>
@@ -40,8 +84,8 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
     {
         get
         {
-            return Layout.Cast<TRoom?>()
-                .FirstOrDefault(room => room?.IsStartingRoom == true)
+            return Rooms
+                .FirstOrDefault(room => room.IsStartingRoom)
                 ?? throw new KeyNotFoundException("No starting room found in the map layout.");
         }
     }
@@ -174,6 +218,7 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
                 string roomChar = room switch
                 {
                     null => "   ",
+                    _ when room.ItemsOnGround.Any(item => item is IKeyItem) => " K ",
                     _ when room.IsStartingRoom => " S ",
                     _ when room.IsEnemySpawningRoom => " E ",
                     _ when room.IsPinkRoom => " P ",

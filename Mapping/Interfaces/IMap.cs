@@ -17,6 +17,11 @@ public interface IMap<TRoom> where TRoom : IRoom<TRoom>
     public TRoom?[,] Layout { get; set; }
 
     /// <summary>
+    /// Gets the collection of rooms available in the current context
+    /// </summary>
+    public List<TRoom> Rooms { get; }
+
+    /// <summary>
     /// Attempts to retrieve a room at the specified coordinates
     /// </summary>
     /// <param name="x">The x-coordinate of the room to retrieve</param>

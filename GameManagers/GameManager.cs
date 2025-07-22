@@ -58,7 +58,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
         GameMap = InitializeMap();
 
-        Player = new Player("Hero", GameMap.Layout[0, 0]!, GameMap, 3);
+        Player = new Player("Hero", GameMap.StartingRoom, GameMap, 3);
 
         SpawnItems(GameMap);
 
@@ -179,15 +179,14 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         }
 
         // Remove all pink rooms except for keys and npc spawning rooms
-        map.Layout
-            .Cast<Room?>()
+        map.Rooms
             .Where(room => room is { IsPinkRoom: true })
             .OrderBy(_ => Random.Shared.Next())
             .Skip(GameConfigs.NumKeys + 1)
             .ToList()
             .ForEach(room =>
             {
-                Tuple<int, int> coordinates = map.GetRoomCoordinates(room!);
+                Tuple<int, int> coordinates = map.GetRoomCoordinates(room);
                 map.Layout[coordinates.Item1, coordinates.Item2] = null;
             });
 
@@ -202,25 +201,16 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     private void SpawnItems(Map<Room> map)
     {
         // Spawn keys in the map
-        int keysSpawned = 0;
+        List<Room> pinkRooms = [.. map.Rooms.Where(room => room is { IsPinkRoom: true })];
 
-        do
+        for (int i = 0; i < GameConfigs.NumKeys; i++)
         {
-            Room keySpawnRoom = map.GetRandomRoom();
+            pinkRooms[i].ItemsOnGround.Push(new Key());
+        }
 
-            if (keySpawnRoom.IsStartingRoom || keySpawnRoom.IsEnemySpawningRoom || !keySpawnRoom.IsPinkRoom)
-            {
-                continue;
-            }
+        map.Rooms = pinkRooms;
 
-            // Todo: Use key class
-            Item key = new("Key", "A key to unlock doors", 0);
-
-            keySpawnRoom.ItemsOnGround.Push(key);
-
-            keysSpawned++;
-
-        } while (keysSpawned >= GameConfigs.NumKeys);
+        GameLogger.Log($"Spawned {GameConfigs.NumKeys} keys in the map.");
     }
 
     /// <summary>

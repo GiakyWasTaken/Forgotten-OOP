@@ -21,7 +21,7 @@ public interface IPlayer<TRoom> : IEntity<TRoom> where TRoom : IRoom<TRoom>
     /// <summary>
     /// Gets or sets the list of items that the player has
     /// </summary>
-    public List<IGrabbable> KeyItems { get; }
+    public List<IKeyItem> KeyItems { get; }
 
     /// <summary>
     /// Gets or sets the backpack of the player, which contains storable items

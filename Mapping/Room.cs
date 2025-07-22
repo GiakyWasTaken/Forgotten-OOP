@@ -97,35 +97,30 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
             return true;
         }
 
-        return other.GetType() == GetType() && Equals(other);
+        return id == other.id && GetCoordinates()?.Equals(other.GetCoordinates()) == true;
     }
 
     /// <inheritdoc />
     public override bool Equals(object? obj)
     {
-        if (obj is null)
+        if (obj is null || obj.GetType() != GetType())
         {
             return false;
         }
 
-        if (ReferenceEquals(this, obj))
-        {
-            return true;
-        }
-
-        return obj.GetType() == GetType() && Equals((Room)obj);
+        return Equals(obj as Room);
     }
 
     /// <inheritdoc />
     public override int GetHashCode()
     {
-        return HashCode.Combine(id, ItemsOnGround);
+        return HashCode.Combine(id, GetCoordinates());
     }
 
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"Room ID: {id} with coordinates {GetCoordinates()}";
+        return $"Room with coordinates {GetCoordinates()}";
     }
 
     #endregion

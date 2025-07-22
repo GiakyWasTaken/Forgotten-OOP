@@ -37,7 +37,7 @@ public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives
     public int Lives { get; set; } = lives;
 
     /// <inheritdoc />
-    public List<IGrabbable> KeyItems { get; } = [];
+    public List<IKeyItem> KeyItems { get; } = [];
 
     /// <inheritdoc />
     public Stack<IStorable<Room>> Backpack { get; } = new();
