@@ -10,7 +10,7 @@ using Forgotten_OOP.Items.Interfaces;
 /// <summary>
 /// An interface for a room
 /// </summary>
-public interface IRoom<TSelf> : IEquatable<TSelf> where TSelf : IRoom<TSelf>
+public interface IRoom<TSelf> : IEquatable<TSelf> where TSelf : IRoom<TSelf>, IEquatable<TSelf>
 {
     /// <summary>
     /// Gets or sets the collection of items currently on the ground

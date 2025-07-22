@@ -1,4 +1,4 @@
-﻿namespace Forgotten_OOP.Mapping;
+namespace Forgotten_OOP.Mapping;
 
 #region Using Directives
 
@@ -16,6 +16,15 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// </summary>
 public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, IConsolable where TRoom : IRoom<TRoom>
 {
+    #region Private Fields
+
+    /// <summary>
+    /// Represents the dimension of the map (number of rooms along one side)
+    /// </summary>
+    private readonly int mapDimension = mapDimension;
+
+    #endregion
+
     #region Properties
 
     /// <inheritdoc />
@@ -124,14 +133,13 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
     /// <inheritdoc />
     public Tuple<int, int> GetRoomCoordinates(TRoom room)
     {
-        for (int i = 0; i < mapDimension; i++)
+        for (int y = 0; y < mapDimension; y++)
         {
-            for (int j = 0; j < mapDimension; j++)
+            for (int x = 0; x < mapDimension; x++)
             {
-                // Todo: Use a more robust comparison if necessary
-                if (Layout[i, j]?.GetHashCode() == room.GetHashCode())
+                if (room.Equals(Layout[x, y]))
                 {
-                    return new Tuple<int, int>(i, j);
+                    return new Tuple<int, int>(x, y);
                 }
             }
         }
@@ -145,10 +153,10 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
         var mapBuilder = new StringBuilder();
         mapBuilder.AppendLine("Map Layout");
 
-        for (int i = 0; i < Layout.GetLength(0); i++)
+        for (int y = 0; y < mapDimension; y++)
         {
             // Print top border of cells
-            for (int j = 0; j < Layout.GetLength(1); j++)
+            for (int x = 0; x < mapDimension; x++)
             {
                 mapBuilder.Append("+---");
             }
@@ -156,11 +164,11 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
             mapBuilder.AppendLine("+");
 
             // Print cell contents
-            for (int j = 0; j < Layout.GetLength(1); j++)
+            for (int x = 0; x < mapDimension; x++)
             {
                 mapBuilder.Append('|');
 
-                TRoom? room = Layout[i, j];
+                TRoom? room = Layout[x, y];
 
                 // Determine the character to represent the room
                 string roomChar = room switch
@@ -179,7 +187,7 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
         }
 
         // Print bottom border
-        for (int j = 0; j < Layout.GetLength(1); j++)
+        for (int y = 0; y < mapDimension; y++)
         {
             mapBuilder.Append("+---");
         }

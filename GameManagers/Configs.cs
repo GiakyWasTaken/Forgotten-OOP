@@ -6,6 +6,11 @@
 public struct Configs()
 {
     /// <summary>
+    /// The dimension of the map, representing the max number of rooms in each direction
+    /// </summary>
+    public int MapDimension = 7;
+
+    /// <summary>
     /// The maximum weight of items that can be carried by the player
     /// </summary>
     public float MaxWeight = 10f;

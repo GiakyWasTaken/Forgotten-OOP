@@ -1,4 +1,4 @@
-﻿namespace Forgotten_OOP.Mapping;
+namespace Forgotten_OOP.Mapping;
 
 #region Using Directives
 
@@ -36,7 +36,7 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
     public bool IsStartingRoom { get; } = isStartingRoom;
 
     /// <inheritdoc />
-    public bool IsEnemySpawningRoom { get; set; } = isEnemySpawningRoom;
+    public bool IsEnemySpawningRoom { get; set; } = isEnemySpawningRoom && !isPinkRoom;
 
     /// <inheritdoc />
     public bool IsPinkRoom { get; set; } = isPinkRoom;

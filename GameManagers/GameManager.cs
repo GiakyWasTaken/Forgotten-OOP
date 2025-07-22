@@ -137,15 +137,14 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     /// <returns>A <see cref="Map{Room}"/> object containing the initialized layout of rooms</returns>
     private Map<Room> InitializeMap()
     {
-        const int mapLen = 7;
-        const int maxCoordinates = mapLen - 1;
+        int maxCoordinates = GameConfigs.MapDimension - 1;
 
-        Map<Room> map = new(7);
+        Map<Room> map = new(GameConfigs.MapDimension);
 
         // Initialize the map layout with rooms
-        for (int y = 0; y < mapLen; y++)
+        for (int y = 0; y < Math.Ceiling(GameConfigs.MapDimension / 2.0f); y++)
         {
-            for (int x = 0; x < mapLen; x++)
+            for (int x = 0; x < Math.Ceiling(GameConfigs.MapDimension / 2.0f); x++)
             {
                 // Skip angles and some center rooms
                 if ((x == y || Math.Abs(x - maxCoordinates) == y) && x % 2 == 0)
@@ -153,23 +152,20 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
                     continue;
                 }
 
-                int roomId = GenRoomId(y, x);
+                PlaceMirrored(x, y);
+                PlaceMirrored(maxCoordinates - x, y);
+                PlaceMirrored(x, maxCoordinates - y);
+                PlaceMirrored(maxCoordinates - x, maxCoordinates - y);
+                continue;
 
-                bool isStartingRoom = false;
-                bool isEnemySpawningRoom = true;
-                bool isPinkRoom = false;
-
-                // Set pink and starting rooms
-                if (x is 0 or maxCoordinates || y is 0 or maxCoordinates)
-                {
-                    isStartingRoom = x == maxCoordinates && y == maxCoordinates - 1;
-                    isPinkRoom = !isStartingRoom;
-                    isEnemySpawningRoom = false;
-                }
-
-                map.Layout[x, y] = new Room(roomId, map, isStartingRoom, isEnemySpawningRoom, isPinkRoom);
+                // Create and place all 4 mirrored rooms
+                void PlaceMirrored(int mx, int my) =>
+                    map.Layout[mx, my] ??= new Room(GenRoomId(mx, my), map,
+                        isPinkRoom: x == 0 || x == maxCoordinates || y == 0 || y == maxCoordinates);
             }
         }
+
+        map.Layout[maxCoordinates - 1, maxCoordinates] = new Room(GenRoomId(maxCoordinates - 1, maxCoordinates), map, isStartingRoom: true);
 
         // Set adjacent rooms to starting room not being enemy spawning rooms
         foreach (Room adjRoomToSpawn in map.StartingRoom.GetAdjacentRooms().Values.Where(room => room.IsEnemySpawningRoom))
@@ -197,7 +193,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
         return map;
 
-        static int GenRoomId(int x, int y) => y * mapLen + x;
+        int GenRoomId(int x, int y) => y * GameConfigs.MapDimension + x;
     }
 
     /// <summary>
