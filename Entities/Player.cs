@@ -1,32 +1,34 @@
 ﻿namespace Forgotten_OOP.Entities;
 
-using Forgotten_OOP.Consoles;
-
 #region Using Directives
 
-using Forgotten_OOP.Entities.Interfaces;
-using Forgotten_OOP.Items.Interfaces;
-using Forgotten_OOP.Logging;
-using Forgotten_OOP.Mapping;
-using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Consoles.Interfaces;
+using Forgotten_OOP.Entities.Interfaces;
+using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
+using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Logging.Interfaces;
-using Forgotten_OOP.Enums;
-using Forgotten_OOP.Mapping.Interfaces;
+using Forgotten_OOP.Mapping;
 #endregion
 
 /// <summary>
 /// Represents a player in the Forgotten OOP game
 /// </summary>
-public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives) : Entity(name, startingRoom, gameMap), IPlayer<Room>, IFollowable
+public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives) : Entity(name, startingRoom, gameMap), IPlayer<Room>, IFollowable, IConsolable, ILoggable
 {
     #region Private Fields
+
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
 
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
+
+    /// <summary>
+    /// Represents the current room the player is in
+    /// </summary>
+    private Room currentRoom = startingRoom;
+
     #endregion
 
     #region Attributes
@@ -43,17 +45,16 @@ public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives
     /// <inheritdoc />
     public List<Entity> FollowingEntities { get; set; } = [];
 
-    private Room _currentRoom = startingRoom;
-
     /// <inheritdoc />
     public override Room CurrentRoom
     {
-        get => _currentRoom;
+        get => currentRoom;
         protected set
         {
-            if (_currentRoom != value)
+            if (!currentRoom.Equals(value))
             {
-                _currentRoom = value;
+                currentRoom = value;
+
                 foreach (Entity entity in FollowingEntities)
                 {
                     entity.Move(value);
@@ -72,12 +73,14 @@ public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives
         return Backpack.Sum(item => item.Weight);
     }
 
+    // Todo: remove
     public void LifeChange(int change, GameManager game)
     {
-        this.Lives += change;
+        Lives += change;
         GameLogger.Log("player lives changed by " + change);
-        if (this.Lives == 0) { 
-        //TODO: Gameover message
+        if (Lives == 0)
+        {
+            //TODO: Gameover message
         }
 
         if (change < 0)
@@ -91,20 +94,18 @@ public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives
                     while (check)
                     {
                         teleportTo = game.GameMap.GetRandomRoom();
-                        if (!teleportTo.IsPinkRoom && !teleportTo.Equals(this.CurrentRoom) && !teleportTo.Equals(enemy.CurrentRoom))
+                        if (!teleportTo.IsPinkRoom && !teleportTo.Equals(CurrentRoom) && !teleportTo.Equals(enemy.CurrentRoom))
                         {
-                            this.Teleport(teleportTo);
+                            Teleport(teleportTo);
                             check = false;
-                            GameLogger.Log("Teleported player to " + this.CurrentRoom + " after taking damage");
+                            GameLogger.Log("Teleported player to " + CurrentRoom + " after taking damage");
                         }
                     }
                 }
             });
-            
+
         }
     }
-
-    
 
     #endregion
 }

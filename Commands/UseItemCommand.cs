@@ -1,13 +1,11 @@
 ﻿namespace Forgotten_OOP.Commands;
 
-using Forgotten_OOP.Consoles.Interfaces;
-
 #region Using Directives
 
+using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Items.Interfaces;
-using Forgotten_OOP.Logging;
 using Forgotten_OOP.Logging.Interfaces;
 using Forgotten_OOP.Mapping;
 
@@ -16,14 +14,16 @@ using Forgotten_OOP.Mapping;
 /// <summary>
 /// Represents a command to use an item from the player's inventory within the game
 /// </summary>
-public class UseItemCommand(GameManager game) : BaseCommand
+public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
     #region Private Fields
+
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
 
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
+
     #endregion
 
     #region Properties
@@ -45,7 +45,7 @@ public class UseItemCommand(GameManager game) : BaseCommand
         {
             game.Player.Backpack.Pop().Use(game);
             game.IncrementActionsCount();
-            
+
         }
     }
 

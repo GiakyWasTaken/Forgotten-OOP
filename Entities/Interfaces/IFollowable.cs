@@ -1,14 +1,15 @@
 ﻿namespace Forgotten_OOP.Entities.Interfaces;
 
-using Forgotten_OOP.Mapping;
-using System;
+#region Using Directives
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
+#endregion
 
-internal interface IFollowable
+/// <summary>
+/// Interface representing an entity that can be followed by other entities
+/// </summary>
+public interface IFollowable
 {
     /// <summary>
     /// Gets or sets the list of entities following the player

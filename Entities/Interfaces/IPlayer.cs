@@ -1,13 +1,10 @@
 ﻿namespace Forgotten_OOP.Entities.Interfaces;
 
-
-
 #region Using Directives
 
+using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Mapping.Interfaces;
-using Forgotten_OOP.Enums;
-using Forgotten_OOP.GameManagers;
 
 #endregion
 
@@ -41,5 +38,4 @@ public interface IPlayer<TRoom> : IEntity<TRoom> where TRoom : IRoom<TRoom>
     /// Changes player's lives
     /// </summary>
     public void LifeChange(int change, GameManager game);
-
 }

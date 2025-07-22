@@ -1,6 +1,10 @@
-﻿using Forgotten_OOP.GameManagers;
+﻿namespace Forgotten_OOP.Items.Interfaces;
 
-namespace Forgotten_OOP.Items.Interfaces;
+#region Using Directives
+
+using Forgotten_OOP.GameManagers;
+
+#endregion
 
 /// <summary>
 /// Represents an item that can be grabbed or interacted with
