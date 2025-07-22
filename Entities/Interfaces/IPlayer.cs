@@ -1,11 +1,13 @@
 ﻿namespace Forgotten_OOP.Entities.Interfaces;
 
-using Forgotten_OOP.GameManagers;
+
 
 #region Using Directives
 
 using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Mapping.Interfaces;
+using Forgotten_OOP.Enums;
+using Forgotten_OOP.GameManagers;
 
 #endregion
 

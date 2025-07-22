@@ -12,12 +12,14 @@ using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Logging.Interfaces;
+using Forgotten_OOP.Enums;
+using Forgotten_OOP.Mapping.Interfaces;
 #endregion
 
 /// <summary>
 /// Represents a player in the Forgotten OOP game
 /// </summary>
-public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives) : Entity(name, startingRoom, gameMap), IPlayer<Room>
+public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives) : Entity(name, startingRoom, gameMap), IPlayer<Room>, IFollowable
 {
     #region Private Fields
     /// <inheritdoc />
@@ -37,6 +39,28 @@ public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives
 
     /// <inheritdoc />
     public Stack<IStorable<Room>> Backpack { get; } = new();
+
+    /// <inheritdoc />
+    public List<Entity> FollowingEntities { get; set; } = [];
+
+    private Room _currentRoom = startingRoom;
+
+    /// <inheritdoc />
+    public override Room CurrentRoom
+    {
+        get => _currentRoom;
+        protected set
+        {
+            if (_currentRoom != value)
+            {
+                _currentRoom = value;
+                foreach (Entity entity in FollowingEntities)
+                {
+                    entity.Move(value);
+                }
+            }
+        }
+    }
 
     #endregion
 
@@ -79,6 +103,8 @@ public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives
             
         }
     }
+
+    
 
     #endregion
 }

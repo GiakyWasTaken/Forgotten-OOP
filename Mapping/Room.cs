@@ -25,6 +25,7 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
     /// </summary>
     private readonly Map<Room>? gameMap = gameMap;
 
+
     #endregion
 
     #region Properties

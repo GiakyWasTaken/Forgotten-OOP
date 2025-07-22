@@ -28,7 +28,7 @@ public class Entity(string name, Room startingRoom, Map<Room> gameMap) : IEntity
     public string Name { get; } = name;
 
     /// <inheritdoc />
-    public Room CurrentRoom { get; private set; } = startingRoom;
+    public virtual Room CurrentRoom { get; protected set; } = startingRoom;
 
     #endregion
 
