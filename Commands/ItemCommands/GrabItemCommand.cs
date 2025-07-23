@@ -3,18 +3,17 @@
 #region Using Directives
 
 using Forgotten_OOP.Consoles.Interfaces;
-using Forgotten_OOP.Enums;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
+using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Logging.Interfaces;
-using Forgotten_OOP.Mapping;
 
 #endregion
 
 /// <summary>
-/// Represents a command to use an item from the player's inventory within the game
+/// Represents a command to grab an item from the within the game
 /// </summary>
-public class PlayerMoveCommand(GameManager game, Direction dir) : BaseCommand, IConsolable, ILoggable
+public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
     #region Private Fields
 
@@ -29,10 +28,10 @@ public class PlayerMoveCommand(GameManager game, Direction dir) : BaseCommand, I
     #region Properties
 
     /// <inheritdoc />
-    public override string Name => "Move Player";
+    public override string Name => "Grab";
 
     /// <inheritdoc />
-    public override string Description => "Moves the player";
+    public override string Description => "Grab an item on the floor";
 
     #endregion
 
@@ -41,11 +40,22 @@ public class PlayerMoveCommand(GameManager game, Direction dir) : BaseCommand, I
     /// <inheritdoc />
     public override void Execute()
     {
-        if (GetAvailability())
+        if (!GetAvailability())
         {
-            game.Player.Move(dir);
+            return;
+        }
+
+        IItem itemToGrab = game.Player.CurrentRoom.ItemsOnGround.Peek();
+
+        if (itemToGrab is IGrabbable grabbable)
+        {
+            game.Player.CurrentRoom.ItemsOnGround.Pop();
+            grabbable.Grab(game);
             game.IncrementActionsCount();
-            GameLogger.Log("Player moved in direction" + dir);
+        }
+        else
+        {
+            GameConsole.WriteLine("Non posso raccoglierlo");
         }
     }
 
@@ -56,8 +66,7 @@ public class PlayerMoveCommand(GameManager game, Direction dir) : BaseCommand, I
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        game.GameMap.TryGetRoomInDirection(game.Player.CurrentRoom, dir, out Room? room);
-        return room != null;
+        return game.Player.GetCurrentWeight() + game.Player.CurrentRoom.ItemsOnGround.Peek().Weight <= 10;
     }
 
     #endregion

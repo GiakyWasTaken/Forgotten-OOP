@@ -4,7 +4,9 @@ namespace Forgotten_OOP.GameManagers;
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
+using Forgotten_OOP.Commands.Interfaces;
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.Entities;
 using Forgotten_OOP.Enums;
@@ -36,7 +38,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     public Player Player { get; }
 
     /// <inheritdoc />
-    public List<Entity> Entities { get; } = [];
+    public List<Entity> Entities { get; }
 
     /// <inheritdoc />
     public Map<Room> GameMap { get; }
@@ -56,13 +58,15 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     {
         GameConfigs = gameConfigs;
 
+        PopulateCommands();
+
         GameMap = InitializeMap();
 
         Player = new Player("Hero", GameMap.StartingRoom, GameMap, 3);
 
         SpawnItems(GameMap);
 
-        SpawnEntities(GameMap);
+        Entities = SpawnEntities(GameMap);
     }
 
     #endregion
@@ -72,7 +76,23 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     /// <inheritdoc />
     public void StartGameLoop()
     {
+        bool? win;
 
+        do
+        {
+            ICommand cmd = GameConsole.ReadCommand();
+
+            cmd.Execute();
+
+            ProcessEntities();
+
+            win = CheckWinLoseCon();
+
+        } while (win == null);
+
+        GameConsole.WriteLine(win == true
+            ? "Congratulations! You have completed the game"
+            : "Game Over! Better luck next time");
     }
 
     /// <inheritdoc />
@@ -81,32 +101,6 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         ActionsCount++;
         GameLogger.Log($"Action count incremented: {ActionsCount}");
 
-        Entities.ForEach(entity =>
-        {
-            if (entity is Enemy enemy && ActionsCount % enemy.ActionDelay == 0)
-            {
-                Dictionary<Direction, Room> adjRooms = enemy.CurrentRoom.GetAdjacentRooms();
-
-                List<Room> availableRooms = [];
-
-                foreach (Direction direction in adjRooms.Keys)
-                {
-                    if (adjRooms[direction] is { IsPinkRoom: false } room)
-                    {
-                        availableRooms.Add(room);
-                    }
-                }
-
-                if (availableRooms.Count > 0)
-                {
-                    Room nextRoom = availableRooms[Random.Shared.Next(availableRooms.Count)];
-
-                    enemy.Move(nextRoom);
-
-                    GameLogger.Log($"{enemy.Name} moved to room {nextRoom.GetCoordinates()}");
-                }
-            }
-        });
     }
 
     /// <inheritdoc />
@@ -196,6 +190,44 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     }
 
     /// <summary>
+    /// Populates the list of available commands by instantiating all non-abstract classes that implement the <see
+    /// cref="ICommand"/> interface within the current assembly
+    /// </summary>
+    private void PopulateCommands()
+    {
+        // Find all command classes that derive from BaseCommand
+        List<Type> commandTypes = Assembly.GetExecutingAssembly()
+            .GetTypes()
+            .Where(t => t is { IsClass: true, IsAbstract: false } && typeof(ICommand).IsAssignableFrom(t))
+            .ToList();
+
+        List<ICommand> commands = [];
+
+        foreach (var type in commandTypes)
+        {
+            // Check if the command has a constructor that takes GameManager
+            var constructorWithGameManager = type.GetConstructor([typeof(GameManager)]);
+            if (constructorWithGameManager != null)
+            {
+                // Create an instance with this as parameter
+                commands.Add((ICommand)constructorWithGameManager.Invoke([this]));
+            }
+            else
+            {
+                // Try to create with parameterless constructor
+                var parameterlessConstructor = type.GetConstructor(Type.EmptyTypes);
+                if (parameterlessConstructor != null)
+                {
+                    commands.Add((ICommand)parameterlessConstructor.Invoke([]));
+                }
+            }
+        }
+
+        GameConsole.Commands = commands;
+        GameLogger.Log($"Populated {commands.Count} commands automatically.");
+    }
+
+    /// <summary>
     /// Spawns items in the game world
     /// </summary>
     private void SpawnItems(Map<Room> map)
@@ -216,17 +248,80 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     /// <summary>
     /// Spawns entities in the game world
     /// </summary>
-    private void SpawnEntities(Map<Room> map)
+    private List<Entity> SpawnEntities(Map<Room> map)
     {
+        List<Entity> entities = [];
+
         // Spawn enemies in the map
         List<Room> spawningRooms = [.. map.Rooms.Where(room => room is { IsEnemySpawningRoom: true })];
 
-        Entities.Add(new Enemy("Minotaur", spawningRooms[Random.Shared.Next(spawningRooms.Count)], map, GameConfigs.EnemyDelay));
+        entities.Add(new Enemy("Minotaur", spawningRooms[Random.Shared.Next(spawningRooms.Count)], map, GameConfigs.EnemyDelay));
 
         // Spawn good npc in the map in the last pink room
         List<Room> pinkRooms = [.. map.Rooms.Where(room => room is { IsPinkRoom: true })];
 
-        Entities.Add(new Entity("Marlo", pinkRooms[^1], map));
+        entities.Add(new Entity("Marlo", pinkRooms[^1], map));
+
+        return entities;
+    }
+
+    /// <summary>
+    /// Processes the entities in the game, such as enemies and NPCs
+    /// </summary>
+    private void ProcessEntities()
+    {
+        Player.FollowingEntities.ForEach(entity =>
+        {
+            entity.Move(Player.CurrentRoom);
+        });
+
+        // Move enemies in the game world based on their action delay
+        Entities.Where(entity => entity is Enemy enemy && ActionsCount % enemy.ActionDelay == 0)
+            .ToList()
+            .ForEach(enemy =>
+            {
+                Dictionary<Direction, Room> adjRooms = enemy.CurrentRoom.GetAdjacentRooms();
+
+                List<Room> availableRooms = [];
+
+                foreach (Direction direction in adjRooms.Keys)
+                {
+                    if (adjRooms[direction] is { IsPinkRoom: false } room)
+                    {
+                        availableRooms.Add(room);
+                    }
+                }
+
+                if (availableRooms.Count > 0)
+                {
+                    Room nextRoom = availableRooms[Random.Shared.Next(availableRooms.Count)];
+
+                    enemy.Move(nextRoom);
+
+                    GameLogger.Log($"{enemy.Name} moved to room {nextRoom.GetCoordinates()}");
+                }
+            });
+    }
+
+    /// <summary>
+    /// Determines the win or lose condition for the player in the game
+    /// </summary>
+    /// <returns><see langword="true"/> if the player has won; <see langword="false"/> if the player has lost; otherwise, <see
+    /// langword="null"/> if the game is still ongoing</returns>
+    private bool? CheckWinLoseCon()
+    {
+        // Check if the player has won or lost the game
+        if (Player.CurrentRoom.IsStartingRoom && Player.FollowingEntities.Any(entity => entity.Name == "Marlo"))
+        {
+            return true;
+        }
+
+        if (Player.Lives <= 0)
+        {
+            return false;
+        }
+
+        return null;
     }
 
     #endregion

@@ -109,7 +109,8 @@ public class MainMenu : IMainMenu, IConfigurable, IConsolable, ILoggable
     // <inheritdoc />
     public Configs ReadConfigs()
     {
-        string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "configs.json");    //obtains "configs.json" path
+        // Obtains "configs.json" path
+        string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "configs.json");
 
         if (File.Exists(configPath))
         {
@@ -127,7 +128,8 @@ public class MainMenu : IMainMenu, IConfigurable, IConsolable, ILoggable
     public void WriteConfigs(Configs newConfigs)
     {
         string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "configs.json");
-        // creation of .json file
+
+        // Creation of .json file
         string json = JsonSerializer.Serialize(newConfigs, jsonSerializerOptions);
 
         File.WriteAllText(configPath, json);

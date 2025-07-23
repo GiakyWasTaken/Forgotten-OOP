@@ -1,20 +1,20 @@
-﻿namespace Forgotten_OOP.Commands;
+﻿namespace Forgotten_OOP.Commands.PlayerCommands;
 
 #region Using Directives
 
 using Forgotten_OOP.Consoles.Interfaces;
+using Forgotten_OOP.Enums;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
-using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Logging.Interfaces;
 using Forgotten_OOP.Mapping;
 
 #endregion
 
 /// <summary>
-/// Represents a command to use an item from the player's inventory within the game
+/// Represents a command to move the player west within the game map
 /// </summary>
-public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
+public class PlayerMoveWestCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
     #region Private Fields
 
@@ -29,10 +29,10 @@ public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILogga
     #region Properties
 
     /// <inheritdoc />
-    public override string Name => "Use";
+    public override string Name => "West";
 
     /// <inheritdoc />
-    public override string Description => "Use an item from your inventory";
+    public override string Description => "Moves the player towards west";
 
     #endregion
 
@@ -41,12 +41,14 @@ public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILogga
     /// <inheritdoc />
     public override void Execute()
     {
-        if (GetAvailability())
+        if (!GetAvailability())
         {
-            game.Player.Backpack.Pop().Use(game);
-            game.IncrementActionsCount();
-
+            return;
         }
+
+        game.Player.Move(Direction.West);
+        game.IncrementActionsCount();
+        GameLogger.Log("Player moved in direction west");
     }
 
     #endregion
@@ -56,9 +58,8 @@ public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILogga
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        game.Player.Backpack.TryPeek(out IStorable<Room>? item);
-
-        return item != null;
+        game.GameMap.TryGetRoomInDirection(game.Player.CurrentRoom, Direction.West, out Room? room);
+        return room != null;
     }
 
     #endregion

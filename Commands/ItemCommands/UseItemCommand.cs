@@ -7,13 +7,14 @@ using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Logging.Interfaces;
+using Forgotten_OOP.Mapping;
 
 #endregion
 
 /// <summary>
-/// Represents a command to grab an item from the within the game
+/// Represents a command to use an item from the player's inventory within the game
 /// </summary>
-public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
+public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
     #region Private Fields
 
@@ -28,10 +29,10 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     #region Properties
 
     /// <inheritdoc />
-    public override string Name => "Grab";
+    public override string Name => "Use";
 
     /// <inheritdoc />
-    public override string Description => "Grab an item on the floor";
+    public override string Description => "Use an item from your inventory";
 
     #endregion
 
@@ -40,20 +41,13 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     public override void Execute()
     {
-        if (GetAvailability())
+        if (!GetAvailability())
         {
-            IItem itemToGrab = game.Player.CurrentRoom.ItemsOnGround.Peek();
-            if (itemToGrab is IGrabbable grabbable)
-            {
-                game.Player.CurrentRoom.ItemsOnGround.Pop();
-                grabbable.Grab(game);
-                game.IncrementActionsCount();
-            }
-            else
-            {
-                GameConsole.WriteLine("Non posso raccoglierlo");
-            }
+            return;
         }
+
+        game.Player.Backpack.Pop().Use(game);
+        game.IncrementActionsCount();
     }
 
     #endregion
@@ -63,7 +57,9 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        return game.Player.GetCurrentWeight() + game.Player.CurrentRoom.ItemsOnGround.Peek().Weight <= 10;
+        game.Player.Backpack.TryPeek(out IStorable<Room>? item);
+
+        return item != null;
     }
 
     #endregion

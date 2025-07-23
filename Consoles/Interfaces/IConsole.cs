@@ -1,10 +1,23 @@
 ﻿namespace Forgotten_OOP.Consoles.Interfaces;
 
+#region Using Directives
+
+using System.Collections.Generic;
+
+using Forgotten_OOP.Commands.Interfaces;
+
+#endregion
+
 /// <summary>
 /// An interface for console operations
 /// </summary>
 public interface IConsole
 {
+    /// <summary>
+    /// A list of commands that the helper can execute
+    /// </summary>
+    public List<ICommand> Commands { get; set; }
+
     /// <summary>
     /// Writes a message to the console
     /// </summary>
@@ -25,7 +38,25 @@ public interface IConsole
     public string ReadLine(string prompt);
 
     /// <summary>
+    /// Reads and returns the next command from the input stream
+    /// </summary>
+    /// <returns>A <see cref="ICommand"/> object representing the next command</returns>
+    public ICommand ReadCommand();
+
+    /// <summary>
+    /// Reads and returns the next command from the input stream
+    /// </summary>
+    /// <param name="prompt">A string to display before reading the command</param>
+    /// <returns>A <see cref="ICommand"/> object representing the next command</returns>
+    public ICommand ReadCommand(string prompt);
+
+    /// <summary>
     /// Clears the console output
     /// </summary>
     public void Clear();
+
+    /// <summary>
+    /// Prints the help information and the available commands to the console
+    /// </summary>
+    public void PrintHelp();
 }

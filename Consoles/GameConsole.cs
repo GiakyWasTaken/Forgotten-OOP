@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-using Forgotten_OOP.Commands;
+using Forgotten_OOP.Commands.Interfaces;
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Logging.Interfaces;
@@ -14,7 +14,7 @@ using Forgotten_OOP.Logging.Interfaces;
 /// <summary>
 /// A console wrapper for the Forgotten OOP game
 /// </summary>
-public class GameConsole : IConsole, IConsoleHelper<BaseCommand>, ILoggable
+public class GameConsole : IConsole, ILoggable
 {
     #region Properties
 
@@ -22,7 +22,7 @@ public class GameConsole : IConsole, IConsoleHelper<BaseCommand>, ILoggable
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
 
     /// <inheritdoc />
-    public List<BaseCommand> Commands { get; set; } = [];
+    public List<ICommand> Commands { get; set; } = [];
 
     #endregion
 
@@ -48,7 +48,33 @@ public class GameConsole : IConsole, IConsoleHelper<BaseCommand>, ILoggable
         GameLogger.Log(prompt);
         Console.Write(prompt);
 
-        return Console.ReadLine() ?? string.Empty;
+        return ReadLine();
+    }
+
+    /// <inheritdoc />
+    public ICommand ReadCommand()
+    {
+        ICommand? command;
+
+        do
+        {
+            string input = ReadLine();
+
+            command = Commands.FirstOrDefault(cmd => input.StartsWith(cmd.Name, StringComparison.InvariantCultureIgnoreCase));
+
+            // Todo: implement a re prompt mechanism if command is null
+        } while (command is not { IsAvailable: true });
+
+        return command;
+    }
+
+    /// <inheritdoc />
+    public ICommand ReadCommand(string prompt)
+    {
+        GameLogger.Log(prompt);
+        Console.Write(prompt);
+
+        return ReadCommand();
     }
 
     /// <inheritdoc />
@@ -62,9 +88,9 @@ public class GameConsole : IConsole, IConsoleHelper<BaseCommand>, ILoggable
     {
         WriteLine("Available commands:");
 
-        foreach (BaseCommand command in Commands)
+        foreach (ICommand command in Commands)
         {
-            WriteLine($"- {command}");
+            WriteLine($"{command}");
         }
     }
 
