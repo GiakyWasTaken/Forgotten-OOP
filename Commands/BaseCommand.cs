@@ -56,7 +56,7 @@ public abstract class BaseCommand : ICommand
     /// Determines the availability of the command based on game state or conditions
     /// </summary>
     /// <returns>True if the command is available, otherwise false</returns>
-    protected abstract bool GetAvailability();
+    protected virtual bool GetAvailability() => false;
 
     #endregion
 }

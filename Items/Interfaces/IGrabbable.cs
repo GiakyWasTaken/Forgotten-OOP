@@ -2,7 +2,7 @@
 
 #region Using Directives
 
-using Forgotten_OOP.GameManagers;
+using Forgotten_OOP.Entities;
 
 #endregion
 
@@ -14,5 +14,5 @@ public interface IGrabbable : IItem
     /// <summary>
     /// Grabs the item, typically adding it to a player's inventory or backpack
     /// </summary>
-    public void Grab(GameManager game);
+    public void Grab(Player player);
 }

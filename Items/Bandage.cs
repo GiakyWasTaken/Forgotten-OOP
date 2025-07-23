@@ -3,6 +3,7 @@
 #region Using Directives
 
 using Forgotten_OOP.Consoles.Interfaces;
+using Forgotten_OOP.Entities;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Items.Interfaces;
@@ -11,7 +12,10 @@ using Forgotten_OOP.Mapping;
 
 #endregion
 
-public class Bandage() : Item("Bende", "Una benda curativa, permettono di recuperare una vita.", 2.0f), IStorable<Room>,
+/// <summary>
+/// Represents a healing bandage item that can be stored, logged, and used within the game.
+/// </summary>
+public class Bandage() : Item("Bende", "Una benda curativa, permettono di recuperare una vita"), IStorable<Room>,
     IConsolable, ILoggable
 {
     #region Private Fields
@@ -24,16 +28,14 @@ public class Bandage() : Item("Bende", "Una benda curativa, permettono di recupe
 
     #endregion
 
-    #region Public Methods
+    #region Properties
 
     /// <inheritdoc />
-    public void Grab(GameManager game)
-    {
-        // Todo: remove game from grab
-        game.Player.Backpack.Push(this);
-        game.GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
-        GameConsole.WriteLine($"Hai raccolto: {Name}"); ;
-    }
+    public float Weight => 2.0f;
+
+    #endregion
+
+    #region Public Methods
 
     /// <inheritdoc />
     public override void Use(GameManager game)
@@ -41,7 +43,7 @@ public class Bandage() : Item("Bende", "Una benda curativa, permettono di recupe
         if (game.Player.Lives < 3)
         {
             game.Player.LifeChange(1, game);
-            game.GameLogger.Log("Player used bandages");
+            GameLogger.Log("Player used bandages");
             game.IncrementActionsCount();
             GameConsole.WriteLine("La ferita si chiude... mi sento molto meglio");
         }
@@ -49,6 +51,15 @@ public class Bandage() : Item("Bende", "Una benda curativa, permettono di recupe
         {
             GameConsole.WriteLine("Non sono ferito, non c'è ne è bisogno");
         }
+    }
+
+    /// <inheritdoc />
+    public void Grab(Player player)
+    {
+        // Todo: remove game from grab
+        player.Backpack.Push(this);
+        GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
+        GameConsole.WriteLine($"Hai raccolto: {Name}"); ;
     }
 
     #endregion

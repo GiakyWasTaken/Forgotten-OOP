@@ -18,8 +18,7 @@ using Forgotten_OOP.Mapping;
 /// </summary>
 public class TeleportVial()
     : Item("Fiala del Teletrasporto",
-        "Una pozione che trasporta istantaneamente chi la beve in una stanza casuale del dungeon. Se un compagno si trova con te, ti seguirà automaticamente",
-        4.0f), IStorable<Room>, IConsolable, ILoggable
+        "Una pozione che trasporta istantaneamente chi la beve in una stanza casuale del dungeon. Se un compagno si trova con te, ti seguirà automaticamente"), IStorable<Room>, IConsolable, ILoggable
 {
     #region Private Fields
 
@@ -31,34 +30,35 @@ public class TeleportVial()
 
     #endregion
 
-    #region Public Methods
+    #region Properties
 
     /// <inheritdoc />
-    public void Grab(GameManager game)
-    {
-        game.Player.Backpack.Push(this);
-        game.GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
-        GameConsole.WriteLine($"Hai raccolto: {Name}"); ;
-    }
+    public float Weight => 4.0f;
+
+    #endregion
+
+    #region Public Methods
 
     /// <inheritdoc />
     public override void Use(GameManager game)
     {
         game.Entities.ForEach(entity =>
         {
-            if (entity is Enemy enemy)
+            if (entity is not Enemy enemy)
             {
-                bool check = true;
+                return;
+            }
 
-                while (check)
+            bool check = true;
+
+            while (check)
+            {
+                Room teleportTo = game.GameMap.GetRandomRoom();
+
+                if (!teleportTo.IsPinkRoom && !teleportTo.Equals(game.Player.CurrentRoom) && !teleportTo.Equals(enemy.CurrentRoom))
                 {
-                    Room teleportTo = game.GameMap.GetRandomRoom();
-
-                    if (!teleportTo.IsPinkRoom && !teleportTo.Equals(game.Player.CurrentRoom) && !teleportTo.Equals(enemy.CurrentRoom))
-                    {
-                        game.Player.Teleport(teleportTo);
-                        check = false;
-                    }
+                    game.Player.Teleport(teleportTo);
+                    check = false;
                 }
             }
         });
@@ -72,5 +72,14 @@ public class TeleportVial()
 
         GameConsole.WriteLine("Chiudi gli occhi per un secondo, senti un soffio di vento. Quando li riapri, ti trovi in una stanza diversa");
     }
+
+    /// <inheritdoc />
+    public void Grab(Player player)
+    {
+        player.Backpack.Push(this);
+        GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
+        GameConsole.WriteLine($"Hai raccolto: {Name}");
+    }
+
     #endregion
 }

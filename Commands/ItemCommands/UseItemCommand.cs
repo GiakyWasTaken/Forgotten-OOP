@@ -1,4 +1,4 @@
-﻿namespace Forgotten_OOP.Commands;
+﻿namespace Forgotten_OOP.Commands.ItemCommands;
 
 #region Using Directives
 

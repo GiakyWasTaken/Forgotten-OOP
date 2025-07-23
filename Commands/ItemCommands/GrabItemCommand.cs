@@ -1,4 +1,4 @@
-﻿namespace Forgotten_OOP.Commands;
+﻿namespace Forgotten_OOP.Commands.ItemCommands;
 
 #region Using Directives
 
@@ -7,6 +7,7 @@ using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Logging.Interfaces;
+using Forgotten_OOP.Mapping;
 
 #endregion
 
@@ -50,7 +51,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
         if (itemToGrab is IGrabbable grabbable)
         {
             game.Player.CurrentRoom.ItemsOnGround.Pop();
-            grabbable.Grab(game);
+            grabbable.Grab(game.Player);
             game.IncrementActionsCount();
         }
         else
@@ -66,7 +67,9 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        return game.Player.GetCurrentWeight() + game.Player.CurrentRoom.ItemsOnGround.Peek().Weight <= 10;
+        IItem itemOnFloor = game.Player.CurrentRoom.ItemsOnGround.Peek();
+
+        return itemOnFloor is not IStorable<Room> storableItem || game.Player.GetCurrentWeight() + storableItem.Weight <= 10;
     }
 
     #endregion

@@ -22,11 +22,6 @@ public interface IItem
     public string Description { get; }
 
     /// <summary>
-    /// Gets the weight of the item
-    /// </summary>
-    public float Weight { get; }
-
-    /// <summary>
     /// Uses the item in the context of the game
     /// </summary>
     /// <param name="game">The game manager instance to interact with</param>

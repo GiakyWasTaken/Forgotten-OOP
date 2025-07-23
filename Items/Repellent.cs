@@ -15,7 +15,7 @@ using Forgotten_OOP.Mapping;
 /// <summary>
 /// Represents a repellent item that can be used to cause enemies to move away
 /// </summary>
-public class Repellent() : Item("Scaccia-Presenze", "Se usato, Lui si allontanerà rapidamente", 4.0f), IStorable<Room>,
+public class Repellent() : Item("Scaccia-Presenze", "Se usato, Lui si allontanerà rapidamente"), IStorable<Room>,
     IConsolable, ILoggable
 {
     #region Private Fields
@@ -28,44 +28,53 @@ public class Repellent() : Item("Scaccia-Presenze", "Se usato, Lui si allontaner
 
     #endregion
 
-    #region Public Methods
+    #region Properties
 
     /// <inheritdoc />
-    public void Grab(GameManager game)
-    {
-        game.Player.Backpack.Push(this);
-        game.GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
-        GameConsole.WriteLine($"Hai raccolto: {Name}"); ;
-    }
+    public float Weight => 4.0f;
+
+    #endregion
+
+    #region Public Methods
 
     /// <inheritdoc />
     public override void Use(GameManager game)
     {
         game.Entities.ForEach(entity =>
         {
-            if (entity is Enemy enemy)
+            if (entity is not Enemy enemy)
             {
-                bool check = true;
-
-                while (check)
-                {
-                    Room teleportTo = game.GameMap.GetRandomRoom();
-
-                    if (!teleportTo.IsPinkRoom && !teleportTo.Equals(game.Player.CurrentRoom))
-                    {
-                        enemy.Teleport(teleportTo);
-                        check = false;
-                    }
-                }
-
-                GameLogger.Log("Player used Repellent");
-                GameLogger.Log($"{enemy.Name} moved to room {enemy.CurrentRoom}");
-
-                game.IncrementActionsCount();
-
-                GameConsole.WriteLine("La miscela si disperde. Lo senti allontanarsi");
+                return;
             }
+
+            bool check = true;
+
+            while (check)
+            {
+                Room teleportTo = game.GameMap.GetRandomRoom();
+
+                if (!teleportTo.IsPinkRoom && !teleportTo.Equals(game.Player.CurrentRoom))
+                {
+                    enemy.Teleport(teleportTo);
+                    check = false;
+                }
+            }
+
+            GameLogger.Log("Player used Repellent");
+            GameLogger.Log($"{enemy.Name} moved to room {enemy.CurrentRoom}");
+
+            game.IncrementActionsCount();
+
+            GameConsole.WriteLine("La miscela si disperde. Lo senti allontanarsi");
         });
+    }
+
+    /// <inheritdoc />
+    public void Grab(Player player)
+    {
+        player.Backpack.Push(this);
+        GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
+        GameConsole.WriteLine($"Hai raccolto: {Name}"); ;
     }
 
     #endregion

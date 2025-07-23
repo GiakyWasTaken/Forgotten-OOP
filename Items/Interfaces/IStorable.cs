@@ -11,4 +11,8 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// </summary>
 public interface IStorable<in TRoom> : IGrabbable, IDroppable<TRoom> where TRoom : IRoom<TRoom>
 {
+    /// <summary>
+    /// Gets the weight of the item
+    /// </summary>
+    public float Weight { get; }
 }
