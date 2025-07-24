@@ -1,4 +1,4 @@
-﻿namespace Forgotten_OOP.GameManagers.Interfaces;
+﻿namespace Forgotten_OOP.Menu.Interfaces;
 
 /// <summary>
 /// The interface for the main menu of the game

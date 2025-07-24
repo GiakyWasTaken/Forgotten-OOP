@@ -1,14 +1,12 @@
-﻿namespace Forgotten_OOP.GameManagers;
+﻿namespace Forgotten_OOP.Menu;
 
 #region Using Directives
 
-using System.IO;
-using System.Text.Json;
-
 using Forgotten_OOP.Consoles.Interfaces;
-using Forgotten_OOP.GameManagers.Interfaces;
+using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Logging.Interfaces;
+using Forgotten_OOP.Menu.Interfaces;
 
 #endregion
 
@@ -98,8 +96,6 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
 
         Environment.Exit(0);
     }
-
-    
 
     #endregion
 }

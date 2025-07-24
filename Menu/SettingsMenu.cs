@@ -1,17 +1,17 @@
-﻿namespace Forgotten_OOP.GameManagers;
+﻿namespace Forgotten_OOP.Menu;
 
 #region Using Directives
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
+
 using Forgotten_OOP.Consoles.Interfaces;
+using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.GameManagers.Interfaces;
 using Forgotten_OOP.Helpers;
-using Forgotten_OOP.Logging;
 using Forgotten_OOP.Logging.Interfaces;
+using Forgotten_OOP.Menu.Interfaces;
+
 #endregion
 
 public class SettingsMenu : ISettingsMenu, IConfigurable
@@ -35,7 +35,6 @@ public class SettingsMenu : ISettingsMenu, IConfigurable
 
     #endregion
 
-
     #region Properties
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
@@ -48,9 +47,9 @@ public class SettingsMenu : ISettingsMenu, IConfigurable
     #region Public Methods
     public void ChangeEnemyDelay()
     {
-        GameConsole.WriteLine("Vuoi cambiare l'Enemy Delay? Default = 3, Attuale = "+ReadConfigs().EnemyDelay);
+        GameConsole.WriteLine("Vuoi cambiare l'Enemy Delay? Default = 3, Attuale = " + ReadConfigs().EnemyDelay);
         string input = GameConsole.ReadLine();
-        if(int.TryParse(input, out _))
+        if (int.TryParse(input, out _))
         {
             configs.EnemyDelay = int.Parse(input);
         }
@@ -105,7 +104,7 @@ public class SettingsMenu : ISettingsMenu, IConfigurable
 
     public void Show()
     {
-        while(true)
+        while (true)
         {
             GameConsole.WriteLine("Cose vuoi fare?");
             GameConsole.WriteLine("1: Cambia Enemy Delay");
@@ -117,7 +116,7 @@ public class SettingsMenu : ISettingsMenu, IConfigurable
             GameConsole.WriteLine("_____________________");
 
             string choice = GameConsole.ReadLine();
-            switch(choice)
+            switch (choice)
             {
                 case "1":
                     ChangeEnemyDelay();
@@ -177,5 +176,5 @@ public class SettingsMenu : ISettingsMenu, IConfigurable
     }
 
     #endregion
-    
+
 }

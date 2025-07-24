@@ -8,6 +8,7 @@ using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Logging;
 using Forgotten_OOP.Logging.Interfaces;
+using Forgotten_OOP.Menu;
 
 using Microsoft.Extensions.DependencyInjection;
 
