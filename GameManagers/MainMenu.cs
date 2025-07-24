@@ -15,7 +15,7 @@ using Forgotten_OOP.Logging.Interfaces;
 /// <summary>
 /// The main menu of the Forgotten OOP game
 /// </summary>
-public class MainMenu : IMainMenu, IConfigurable, IConsolable, ILoggable
+public class MainMenu : IMainMenu, IConsolable, ILoggable
 {
     #region Private Fields
 
@@ -23,15 +23,6 @@ public class MainMenu : IMainMenu, IConfigurable, IConsolable, ILoggable
     /// Represents the game configurations
     /// </summary>
     private Configs configs = new();
-
-    /// <summary>
-    /// Represents the JSON serializer options used for reading and writing configurations
-    /// </summary>
-    private readonly JsonSerializerOptions jsonSerializerOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = true
-    };
 
     #endregion
 
@@ -52,7 +43,7 @@ public class MainMenu : IMainMenu, IConfigurable, IConsolable, ILoggable
     {
         GameLogger.InitializeLogger();
 
-        configs = ReadConfigs();
+        //configs = ReadConfigs();
 
         GameConsole.WriteLine("Welcome to Forgotten OOP!");
         GameConsole.WriteLine("1. Play");
@@ -93,7 +84,7 @@ public class MainMenu : IMainMenu, IConfigurable, IConsolable, ILoggable
         SettingsMenu settingsMenu = new();
         settingsMenu.Show();
 
-        WriteConfigs(configs);
+        // WriteConfigs(configs);
 
         throw new NotImplementedException();
     }
@@ -108,36 +99,7 @@ public class MainMenu : IMainMenu, IConfigurable, IConsolable, ILoggable
         Environment.Exit(0);
     }
 
-    /// <inheritdoc />
-    public Configs ReadConfigs()
-    {
-        // Obtains "configs.json" path
-        string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "configs.json");
-
-        if (File.Exists(configPath))
-        {
-            string json = File.ReadAllText(configPath);
-            Configs loaded = JsonSerializer.Deserialize<Configs>(json);
-            return loaded;
-        }
-
-        GameLogger.Log("Configuration file not found. Using default values");
-
-        return new Configs();
-    }
-
-    /// <inheritdoc />
-    public void WriteConfigs(Configs newConfigs)
-    {
-        string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "configs.json");
-
-        // Creation of .json file
-        string json = JsonSerializer.Serialize(newConfigs, jsonSerializerOptions);
-
-        File.WriteAllText(configPath, json);
-
-        GameLogger.Log("Configuration file written successfully");
-    }
+    
 
     #endregion
 }
