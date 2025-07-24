@@ -30,12 +30,21 @@ public class SettingsMenu : ISettingsMenu, IConfigurable, ILoggable, IConsolable
         WriteIndented = true
     };
 
+    /// <summary>
+    /// Represents the configuration settings for the application
+    /// </summary>
+    private Configs configs = new();
+
     #endregion
 
     #region Properties
 
     /// <inheritdoc />
-    public Configs Configs { get; set; } = new();
+    public Configs Configs
+    {
+        get => configs;
+        set => configs = value;
+    }
 
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
@@ -95,65 +104,65 @@ public class SettingsMenu : ISettingsMenu, IConfigurable, ILoggable, IConsolable
     /// <inheritdoc />
     public void ChangeEnemyDelay()
     {
-        GameConsole.WriteLine("Vuoi cambiare l'Enemy Delay? Default = 3, Attuale = " + Configs.EnemyDelay);
+        GameConsole.WriteLine("Vuoi cambiare l'Enemy Delay? Default = 3, Attuale = " + configs.EnemyDelay);
 
         string input = GameConsole.ReadLine();
 
         if (int.TryParse(input, out int num))
         {
-            Configs.EnemyDelay = num;
+            configs.EnemyDelay = num;
         }
     }
 
     /// <inheritdoc />
     public void ChangeMapDimension()
     {
-        GameConsole.WriteLine("Vuoi cambiare la dimensione della mappa? Default = 7, Attuale = " + Configs.MapDimension);
+        GameConsole.WriteLine("Vuoi cambiare la dimensione della mappa? Default = 7, Attuale = " + configs.MapDimension);
 
         string input = GameConsole.ReadLine();
 
         if (int.TryParse(input, out int num))
         {
-            Configs.MapDimension = num;
+            configs.MapDimension = num;
         }
     }
 
     /// <inheritdoc />
     public void ChangeMaxWeight()
     {
-        GameConsole.WriteLine("Vuoi cambiare il peso massimo trasportabile? Default = 10.0, Attuale = " + Configs.MaxWeight);
+        GameConsole.WriteLine("Vuoi cambiare il peso massimo trasportabile? Default = 10.0, Attuale = " + configs.MaxWeight);
 
         string input = GameConsole.ReadLine();
 
         if (float.TryParse(input, out float num))
         {
-            Configs.MaxWeight = num;
+            configs.MaxWeight = num;
         }
     }
 
     /// <inheritdoc />
     public void ChangeNumItems()
     {
-        GameConsole.WriteLine("Vuoi cambiare il numero di Item generati nelle stanze? Default = 10, Attuale = " + Configs.NumItems);
+        GameConsole.WriteLine("Vuoi cambiare il numero di Item generati nelle stanze? Default = 10, Attuale = " + configs.NumItems);
 
         string input = GameConsole.ReadLine();
 
         if (int.TryParse(input, out int num))
         {
-            Configs.NumItems = num;
+            configs.NumItems = num;
         }
     }
 
     /// <inheritdoc />
     public void ChangeNumKeys()
     {
-        GameConsole.WriteLine("Vuoi cambiare il numero di chiavi generate nelle stanze? Default = 10, Attuale = " + Configs.NumKeys);
+        GameConsole.WriteLine("Vuoi cambiare il numero di chiavi generate nelle stanze? Default = 10, Attuale = " + configs.NumKeys);
 
         string input = GameConsole.ReadLine();
 
         if (int.TryParse(input, out int num))
         {
-            Configs.NumKeys = num;
+            configs.NumKeys = num;
         }
     }
 
