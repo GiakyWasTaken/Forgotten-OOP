@@ -14,9 +14,11 @@ using Forgotten_OOP.Menu.Interfaces;
 
 #endregion
 
-public class SettingsMenu : ISettingsMenu, IConfigurable
+/// <summary>
+/// Provides a menu interface for configuring game settings, such as enemy delay, map dimensions, and item counts
+/// </summary>
+public class SettingsMenu : ISettingsMenu, IConfigurable, ILoggable, IConsolable
 {
-
     #region Private Fields
 
     /// <summary>
@@ -28,14 +30,13 @@ public class SettingsMenu : ISettingsMenu, IConfigurable
         WriteIndented = true
     };
 
-    /// <summary>
-    /// Represents the game configurations
-    /// </summary>
-    private Configs configs = new();
-
     #endregion
 
     #region Properties
+
+    /// <inheritdoc />
+    public Configs Configs { get; set; } = new();
+
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
 
@@ -45,65 +46,12 @@ public class SettingsMenu : ISettingsMenu, IConfigurable
     #endregion
 
     #region Public Methods
-    public void ChangeEnemyDelay()
-    {
-        GameConsole.WriteLine("Vuoi cambiare l'Enemy Delay? Default = 3, Attuale = " + ReadConfigs().EnemyDelay);
-        string input = GameConsole.ReadLine();
-        if (int.TryParse(input, out _))
-        {
-            configs.EnemyDelay = int.Parse(input);
-        }
-    }
 
-    public void ChangeMapDimension()
-    {
-        GameConsole.WriteLine("Vuoi cambiare la dimensione della mappa? Default = 7, Attuale = " + ReadConfigs().MapDimension);
-        string input = GameConsole.ReadLine();
-        if (int.TryParse(input, out _))
-        {
-            configs.MapDimension = int.Parse(input);
-        }
-    }
-
-    public void ChangeMaxWeight()
-    {
-        GameConsole.WriteLine("Vuoi cambiare il peso massimo trasportabile? Default = 10.0, Attuale = " + ReadConfigs().MaxWeight);
-        string input = GameConsole.ReadLine();
-        if (float.TryParse(input, out _))
-        {
-            configs.MaxWeight = float.Parse(input);
-        }
-    }
-
-    public void ChangeNumItems()
-    {
-        GameConsole.WriteLine("Vuoi cambiare il numero di Item generati nelle stanze? Default = 10, Attuale = " + ReadConfigs().NumItems);
-        string input = GameConsole.ReadLine();
-        if (int.TryParse(input, out _))
-        {
-            configs.NumItems = int.Parse(input);
-        }
-    }
-
-    public void ChangeNumKeys()
-    {
-        GameConsole.WriteLine("Vuoi cambiare il numero di chiavi generate nelle stanze? Default = 10, Attuale = " + ReadConfigs().NumKeys);
-        string input = GameConsole.ReadLine();
-        if (int.TryParse(input, out _))
-        {
-            configs.NumKeys = int.Parse(input);
-        }
-    }
-
-    public void Exit()
-    {
-        MainMenu mainMenu = new();
-        WriteConfigs(configs);
-        mainMenu.Show();
-    }
-
+    /// <inheritdoc />
     public void Show()
     {
+        Configs = ReadConfigs();
+
         while (true)
         {
             GameConsole.WriteLine("Cose vuoi fare?");
@@ -116,6 +64,7 @@ public class SettingsMenu : ISettingsMenu, IConfigurable
             GameConsole.WriteLine("_____________________");
 
             string choice = GameConsole.ReadLine();
+
             switch (choice)
             {
                 case "1":
@@ -134,14 +83,78 @@ public class SettingsMenu : ISettingsMenu, IConfigurable
                     ChangeNumKeys();
                     break;
                 case "6":
-                    break;
+                    WriteConfigs(Configs);
+                    return;
                 default:
                     GameConsole.WriteLine("Scelta non riconosciuta, riprova");
                     break;
             }
-            break;
         }
-        Exit();
+    }
+
+    /// <inheritdoc />
+    public void ChangeEnemyDelay()
+    {
+        GameConsole.WriteLine("Vuoi cambiare l'Enemy Delay? Default = 3, Attuale = " + Configs.EnemyDelay);
+
+        string input = GameConsole.ReadLine();
+
+        if (int.TryParse(input, out int num))
+        {
+            Configs.EnemyDelay = num;
+        }
+    }
+
+    /// <inheritdoc />
+    public void ChangeMapDimension()
+    {
+        GameConsole.WriteLine("Vuoi cambiare la dimensione della mappa? Default = 7, Attuale = " + Configs.MapDimension);
+
+        string input = GameConsole.ReadLine();
+
+        if (int.TryParse(input, out int num))
+        {
+            Configs.MapDimension = num;
+        }
+    }
+
+    /// <inheritdoc />
+    public void ChangeMaxWeight()
+    {
+        GameConsole.WriteLine("Vuoi cambiare il peso massimo trasportabile? Default = 10.0, Attuale = " + Configs.MaxWeight);
+
+        string input = GameConsole.ReadLine();
+
+        if (float.TryParse(input, out float num))
+        {
+            Configs.MaxWeight = num;
+        }
+    }
+
+    /// <inheritdoc />
+    public void ChangeNumItems()
+    {
+        GameConsole.WriteLine("Vuoi cambiare il numero di Item generati nelle stanze? Default = 10, Attuale = " + Configs.NumItems);
+
+        string input = GameConsole.ReadLine();
+
+        if (int.TryParse(input, out int num))
+        {
+            Configs.NumItems = num;
+        }
+    }
+
+    /// <inheritdoc />
+    public void ChangeNumKeys()
+    {
+        GameConsole.WriteLine("Vuoi cambiare il numero di chiavi generate nelle stanze? Default = 10, Attuale = " + Configs.NumKeys);
+
+        string input = GameConsole.ReadLine();
+
+        if (int.TryParse(input, out int num))
+        {
+            Configs.NumKeys = num;
+        }
     }
 
     /// <inheritdoc />
@@ -150,31 +163,48 @@ public class SettingsMenu : ISettingsMenu, IConfigurable
         // Obtains "configs.json" path
         string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "configs.json");
 
-        if (File.Exists(configPath))
+        Configs loaded = new();
+
+        try
         {
-            string json = File.ReadAllText(configPath);
-            Configs loaded = JsonSerializer.Deserialize<Configs>(json);
-            return loaded;
+            if (File.Exists(configPath))
+            {
+                string json = File.ReadAllText(configPath);
+
+                loaded = JsonSerializer.Deserialize<Configs>(json, jsonSerializerOptions);
+            }
+            else
+            {
+                GameLogger.Log("Configuration file not found. Using default values");
+            }
+        }
+        catch (Exception ex)
+        {
+            GameLogger.Log($"Error reading configuration file: {ex.Message}");
         }
 
-        GameLogger.Log("Configuration file not found. Using default values");
-
-        return new Configs();
+        return loaded;
     }
 
     /// <inheritdoc />
     public void WriteConfigs(Configs newConfigs)
     {
-        string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "configs.json");
+        try
+        {
+            string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "configs.json");
 
-        // Creation of .json file
-        string json = JsonSerializer.Serialize(newConfigs, jsonSerializerOptions);
+            // Creation of .json file
+            string json = JsonSerializer.Serialize(newConfigs, jsonSerializerOptions);
 
-        File.WriteAllText(configPath, json);
+            File.WriteAllText(configPath, json);
 
-        GameLogger.Log("Configuration file written successfully");
+            GameLogger.Log("Configuration file written successfully");
+        }
+        catch (Exception ex)
+        {
+            GameLogger.Log($"Error writing configuration file: {ex.Message}");
+        }
     }
 
     #endregion
-
 }

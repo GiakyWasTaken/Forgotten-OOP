@@ -16,11 +16,6 @@ public interface IMainMenu
     public void Play();
 
     /// <summary>
-    /// Opens the settings menu
-    /// </summary>
-    public void Settings();
-
-    /// <summary>
     /// Exits the game
     /// </summary>
     public void Exit();

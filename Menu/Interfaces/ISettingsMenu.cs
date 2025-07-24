@@ -11,11 +11,6 @@ public interface ISettingsMenu
     public void Show();
 
     /// <summary>
-    /// Exits the settings menu
-    /// </summary>
-    public void Exit();
-
-    /// <summary>
     /// Changes the MapDimension config value
     /// </summary>
     public void ChangeMapDimension();

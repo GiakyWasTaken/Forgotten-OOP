@@ -3,30 +3,36 @@
 /// <summary>
 /// The configuration settings for the Forgotten OOP game
 /// </summary>
-public struct Configs()
+[Serializable]
+public struct Configs
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Configs"/> class
+    /// </summary>
+    public Configs() { }
+
     /// <summary>
     /// The dimension of the map, representing the max number of rooms in each direction
     /// </summary>
-    public int MapDimension = 7;
+    public int MapDimension { get; set; } = 7;
 
     /// <summary>
     /// The maximum weight of items that can be carried by the player
     /// </summary>
-    public float MaxWeight = 10f;
+    public float MaxWeight { get; set; } = 10f;
 
     /// <summary>
     /// The number of actions before the enemy can move
     /// </summary>
-    public int EnemyDelay = 3;
+    public int EnemyDelay { get; set; } = 3;
 
     /// <summary>
     /// The number of spawnable keys in the game
     /// </summary>
-    public int NumKeys = 1;
+    public int NumKeys { get; set; } = 1;
 
     /// <summary>
     /// The number of spawnable items in the game
     /// </summary>
-    public int NumItems = 10;
+    public int NumItems { get; set; } = 10;
 }

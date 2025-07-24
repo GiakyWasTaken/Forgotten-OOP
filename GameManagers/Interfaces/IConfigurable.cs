@@ -6,6 +6,11 @@
 public interface IConfigurable
 {
     /// <summary>
+    /// Represents the configuration settings for the game
+    /// </summary>
+    public Configs Configs { get; set; }
+
+    /// <summary>
     /// Reads the configuration settings from a file or other source
     /// </summary>
     /// <returns>A <see cref="Configs"/> struct containing the configuration settings</returns>

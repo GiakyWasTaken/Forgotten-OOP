@@ -20,7 +20,7 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
     /// <summary>
     /// Represents the game configurations
     /// </summary>
-    private Configs configs = new();
+    private Configs configs;
 
     #endregion
 
@@ -41,28 +41,41 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
     {
         GameLogger.InitializeLogger();
 
-        //configs = ReadConfigs();
-
         GameConsole.WriteLine("Welcome to Forgotten OOP!");
-        GameConsole.WriteLine("1. Play");
-        GameConsole.WriteLine("2. Settings");
-        GameConsole.WriteLine("3. Exit");
-        GameConsole.WriteLine("Please select an option: ");
 
-        string choice = GameConsole.ReadLine();
+        SettingsMenu settingsMenu = new();
+        configs = settingsMenu.ReadConfigs();
 
-        switch (choice)
+        do
         {
-            case "1":
-                Play();
-                break;
-            case "2":
-                Settings();
-                break;
-            default:
-                Exit();
-                break;
-        }
+            GameConsole.WriteLine("Please select an option: ");
+            GameConsole.WriteLine("1. Play");
+            GameConsole.WriteLine("2. Settings");
+            GameConsole.WriteLine("3. Exit");
+
+            string choice = GameConsole.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    // Play the game
+                    configs = settingsMenu.Configs;
+                    Play();
+
+                    break;
+                case "2":
+                    // Show settings menu
+                    settingsMenu.Show();
+
+                    break;
+                default:
+                    // Exit the game
+                    Exit();
+
+                    return;
+            }
+
+        } while (true);
     }
 
     /// <inheritdoc />
@@ -73,18 +86,6 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
         GameLogger.Log("Game Started");
 
         game.StartGameLoop();
-    }
-
-    /// <inheritdoc />
-    public void Settings()
-    {
-        GameConsole.WriteLine("Settings Menu");
-        SettingsMenu settingsMenu = new();
-        settingsMenu.Show();
-
-        // WriteConfigs(configs);
-
-        throw new NotImplementedException();
     }
 
     /// <inheritdoc />
