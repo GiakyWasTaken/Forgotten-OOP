@@ -48,6 +48,7 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
         }
 
         game.Player.Backpack.Pop().Drop(game.Player.CurrentRoom);
+        game.IncrementActionsCount();
     }
 
     #endregion

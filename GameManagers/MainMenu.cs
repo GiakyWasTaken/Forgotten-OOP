@@ -90,6 +90,8 @@ public class MainMenu : IMainMenu, IConfigurable, IConsolable, ILoggable
     public void Settings()
     {
         GameConsole.WriteLine("Settings Menu");
+        SettingsMenu settingsMenu = new();
+        settingsMenu.Show();
 
         WriteConfigs(configs);
 
@@ -106,7 +108,7 @@ public class MainMenu : IMainMenu, IConfigurable, IConsolable, ILoggable
         Environment.Exit(0);
     }
 
-    // <inheritdoc />
+    /// <inheritdoc />
     public Configs ReadConfigs()
     {
         // Obtains "configs.json" path
