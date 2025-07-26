@@ -128,13 +128,13 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
             case Direction.North:
                 y--;
                 break;
+            case Direction.West:
+                x--;
+                break;
             case Direction.South:
                 y++;
                 break;
             case Direction.East:
-                x--;
-                break;
-            case Direction.West:
                 x++;
                 break;
             default:
