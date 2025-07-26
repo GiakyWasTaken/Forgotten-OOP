@@ -17,12 +17,6 @@ public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives
 {
     #region Private Fields
 
-    /// <inheritdoc />
-    public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
-
-    /// <inheritdoc />
-    public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
-
     /// <summary>
     /// Represents the current room the player is in
     /// </summary>
@@ -30,7 +24,13 @@ public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives
 
     #endregion
 
-    #region Attributes
+    #region Properties
+
+    /// <inheritdoc />
+    public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
+
+    /// <inheritdoc />
+    public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
 
     /// <inheritdoc />
     public int Lives { get; set; } = lives;
@@ -50,14 +50,18 @@ public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives
         get => currentRoom;
         protected set
         {
-            if (!currentRoom.Equals(value))
+            if (currentRoom.Equals(value))
             {
-                currentRoom = value;
+                return;
+            }
 
-                foreach (Entity entity in FollowingEntities)
-                {
-                    entity.Move(value);
-                }
+            currentRoom = value;
+
+            foreach (Entity entity in FollowingEntities)
+            {
+                entity.Move(value);
+
+                GameLogger.Log($"{entity.Name} followed the player moving to {CurrentRoom}");
             }
         }
     }

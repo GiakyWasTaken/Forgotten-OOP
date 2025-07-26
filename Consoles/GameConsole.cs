@@ -43,12 +43,6 @@ public class GameConsole : IConsole, ILoggable
     #region Public Methods
 
     /// <inheritdoc />
-    public void WriteLine(string message = "", bool skipWriteAnimation = false)
-    {
-        Write(message.TrimEnd() + "\n", skipWriteAnimation);
-    }
-
-    /// <inheritdoc />
     public void Write(string message, bool skipWriteAnimation = false)
     {
         GameLogger.Log(message);
@@ -84,6 +78,12 @@ public class GameConsole : IConsole, ILoggable
                 Thread.Sleep(CharDelay);
             }
         }
+    }
+
+    /// <inheritdoc />
+    public void WriteLine(string message = "", bool skipWriteAnimation = false)
+    {
+        Write(message.TrimEnd() + "\n", skipWriteAnimation);
     }
 
     /// <inheritdoc />

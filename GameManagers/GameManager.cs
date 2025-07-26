@@ -83,19 +83,41 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
         Entities.AddRange(SpawnEntities(GameMap));
 
-        GameConsole.WriteLine("Ti trovi poco fuori il villaggio di Kuroka, hai trovato una grotta con un ingresso ad un dungeon di classe di classe S, uno tra i più pericolosi in assoluto.\n" +
-            "Per questo motivo, l'entrata principale è stata sbarrata da tante travi di legno che sembravano essere state fissate in fretta e furia.\n" +
-            "Nessuno di inesperto dovrebbe addentrarsi qui dentro, soprattutto tu, un cercatore di livello decisamente più basso rispetto a quello richiesto.\n" +
-            "Ma non puoi tirarti indietro, tuo fratello è intrappolato lì, è l'unica persona che ti rimane e non vuoi perderlo.\n" +
+        GameConsole.WriteLine("Ti trovi poco fuori il villaggio di Kuroka, hai trovato una grotta con un ingresso ad un dungeon di classe di classe S, uno tra i piï¿½ pericolosi in assoluto.\n" +
+            "Per questo motivo, l'entrata principale ï¿½ stata sbarrata da tante travi di legno che sembravano essere state fissate in fretta e furia.\n" +
+            "Nessuno di inesperto dovrebbe addentrarsi qui dentro, soprattutto tu, un cercatore di livello decisamente piï¿½ basso rispetto a quello richiesto.\n" +
+            "Ma non puoi tirarti indietro, tuo fratello ï¿½ intrappolato lï¿½, ï¿½ l'unica persona che ti rimane e non vuoi perderlo.\n" +
             "Trovi un'entrata secondaria, per farti coraggio decidi di rileggere la lettera che di aiuto che Takumi ti ha mandato:\n\n" +
             "\"Fratello,\n" +
             "Spero che questa lettera ti raggiunga in tempo.\n" +
-            "Sono ferito. C'è qualcosa qui… qualcosa che non dovrebbe esistere.\n" +
+            "Sono ferito. C'ï¿½ qualcosa quiï¿½ qualcosa che non dovrebbe esistere.\n" +
             "Si aggira tra queste stanze come se fosse casa sua.\n" +
             "Non provare ad affrontarlo. Non puoi.\n" +
-            "Porta con te la Panacea. È l’unica cosa che può salvarmi.\n" +
+            "Porta con te la Panacea. ï¿½ lï¿½unica cosa che puï¿½ salvarmi.\n" +
             "Trovami. salvami. Fai in fretta.\n" +
             "Marlo.\"");
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GameManager"/> class with the specified game configurations,
+    /// player, entities, game map, and initial settings
+    /// </summary>
+    /// <param name="gameConfigs">The configuration settings for the game</param>
+    /// <param name="player">The player participating in the game</param>
+    /// <param name="entities">A list of entities present in the game</param>
+    /// <param name="gameMap">The map of rooms that defines the game environment</param>
+    /// <param name="actionsCount">The initial count of actions performed in the game</param>
+    /// <param name="isFirstPlayerMarloEncounter">Indicates whether the first player has encountered Marlo</param>
+    public GameManager(Configs gameConfigs, Player player, List<Entity> entities, Map<Room> gameMap, long actionsCount = 0, bool isFirstPlayerMarloEncounter = true)
+    {
+        GameConfigs = gameConfigs;
+        Player = player;
+        Entities = entities;
+        GameMap = gameMap;
+        ActionsCount = actionsCount;
+        this.isFirstPlayerMarloEncounter = isFirstPlayerMarloEncounter;
+
+        PopulateCommands();
     }
 
     #endregion
@@ -406,19 +428,6 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
                 Player.FollowingEntities.Add((Entity)marloInRoom);
             }
         }
-
-        // Update following entities
-        Player.FollowingEntities.ForEach(entity =>
-        {
-            if (entity.CurrentRoom.Equals(Player.CurrentRoom))
-            {
-                return;
-            }
-
-            entity.Move(Player.CurrentRoom);
-
-            GameLogger.Log($"{entity.Name} followed the player moving to {Player.CurrentRoom}");
-        });
 
         // Check for enemy contact - first find enemies in the current room
         List<IEnemy<Room>> enemiesInCurrentRoom = [.. Entities.OfType<IEnemy<Room>>().Where(ent => ent.CurrentRoom.Equals(Player.CurrentRoom))];

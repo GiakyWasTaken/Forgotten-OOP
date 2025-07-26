@@ -75,7 +75,6 @@ public class SettingsMenu : IMenu, IConfigurable, ILoggable, IConsolable
             GameConsole.WriteLine("4: Cambia Numero Oggetti");
             GameConsole.WriteLine("5: Cambia Numero Chiavi");
             GameConsole.WriteLine("6: Salva e torna al menu");
-            GameConsole.WriteLine("_____________________");
 
             bool tryParse = TryParse(GameConsole.ReadLine(), out int choice);
 

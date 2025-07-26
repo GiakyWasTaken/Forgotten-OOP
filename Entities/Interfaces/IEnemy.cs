@@ -14,7 +14,7 @@ public interface IEnemy<TRoom> : IEntity<TRoom> where TRoom : IRoom<TRoom>
     /// <summary>
     /// Gets or sets the number of player actions before the enemy can act
     /// </summary>
-    public int ActionDelay { get; set; }
+    public int ActionDelay { get; }
 
     /// <summary>
     /// Gets or sets the previous room that the enemy was in

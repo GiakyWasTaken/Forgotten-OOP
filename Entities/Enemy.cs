@@ -15,7 +15,7 @@ public class Enemy(string name, Room startingRoom, Map<Room> gameMap, int action
     #region Properties
 
     /// <inheritdoc />
-    public int ActionDelay { get; set; } = actionDelay;
+    public int ActionDelay { get; } = actionDelay;
 
     /// <inheritdoc />
     public Room PreviousRoom { get; protected set; } = startingRoom;

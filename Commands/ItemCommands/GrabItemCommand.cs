@@ -89,7 +89,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     {
         tryExecutionMessage = string.Empty;
 
-        List<IGrabbable> grabbableItems = game.Player.CurrentRoom.ItemsOnGround.OfType<IGrabbable>().ToList();
+        List<IGrabbable> grabbableItems = [.. game.Player.CurrentRoom.ItemsOnGround.OfType<IGrabbable>()];
 
         if (game.Player.CurrentRoom.ItemsOnGround.Count == 0)
         {
