@@ -1,4 +1,4 @@
-﻿namespace Forgotten_OOP.Menu;
+namespace Forgotten_OOP.Menu;
 
 #region Using Directives
 
@@ -21,6 +21,11 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
     /// Represents the game configurations
     /// </summary>
     private Configs configs;
+
+    /// <summary>
+    /// Represents the game manager instance that handles the game logic
+    /// </summary>
+    private GameManager? game;
 
     #endregion
 
@@ -51,7 +56,18 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
             GameConsole.WriteLine("Please select an option: ");
             GameConsole.WriteLine("1. Play");
             GameConsole.WriteLine("2. Settings");
-            GameConsole.WriteLine("3. Exit");
+
+            if (game != null)
+            {
+                GameConsole.WriteLine("3. Save");
+            }
+
+            //if (File.Exists(saveFilePath))
+            //{
+            //    GameConsole.WriteLine("4. Load");
+            //}
+
+            GameConsole.WriteLine("5. Exit");
 
             string choice = GameConsole.ReadLine();
 
@@ -60,13 +76,7 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
                 case "1":
                     // Play the game
                     configs = settingsMenu.Configs;
-                    GameConsole.WriteLine("Ti trovi poco fuori il villaggio di Kuroka, hai trovato una grotta con un ingresso ad un dungeon di classe di classe S, uno tra i più pericolosi in assoluto. Per questo motivo, l'entrata principale è stata sbarrata da tante travi di legno che sembravano essere state fissate in fretta e furia. Nessuno di inesperto dovrebbe addentrarsi qui dentro, soprattutto tu, un cercatore di livello decisamente più basso rispetto a quello richiesto. Ma non puoi tirarti indietro, tuo fratello è intrappolato lì, è l'unica perona che ti rimane e non vuoi perderlo. Trovi un'entrata secondaria, per farti coraggio decidi di rileggere la lettera che di aiuto che Takumi ti ha mandato:\n" + "\"Fratello\r\n" +
-                        "        Spero che questa lettera ti raggiunga in tempo.\r\n        " +
-                        "Sono ferito. C'è qualcosa qui… qualcosa che non dovrebbe esistere.\r\n        " +
-                        "Si aggira tra queste stanze come se fosse casa sua.\r\n        " +
-                        "Non provare ad affrontarlo. Non puoi.\r\n        " +
-                        "Porta con te la Panacea. È l’unica cosa che può salvarmi.\r\n        " +
-                        "Trovami. salvami. Fai in fretta.\r\nTakumi.");
+
                     Play();
 
                     break;
@@ -75,6 +85,26 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
                     settingsMenu.Show();
 
                     break;
+
+                case "3":
+                    // Save the game state
+                    Save();
+
+                    break;
+
+                case "4":
+                    // Load the game state if a save file exists
+                    //if (File.Exists(saveFilePath))
+                    //{
+                    //    Load();
+                    //}
+                    //else
+                    //{
+                    //    GameConsole.WriteLine("No saved game found.");
+                    //}
+
+                    break;
+
                 default:
                     // Exit the game
                     Exit();
@@ -87,11 +117,20 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
     /// <inheritdoc />
     public void Play()
     {
-        GameManager game = new(configs);
-
-        GameLogger.Log("Game Started");
+        GameLogger.Log("Starting Game...");
+        game ??= new GameManager(configs);
 
         game.StartGameLoop();
+    }
+
+    /// <inheritdoc />
+    public void Save()
+    {
+    }
+
+    /// <inheritdoc />
+    public void Load()
+    {
     }
 
     /// <inheritdoc />

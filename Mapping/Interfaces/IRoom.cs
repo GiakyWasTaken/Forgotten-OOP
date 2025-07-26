@@ -13,6 +13,11 @@ using Forgotten_OOP.Items.Interfaces;
 public interface IRoom<TSelf> : IEquatable<TSelf> where TSelf : IRoom<TSelf>, IEquatable<TSelf>
 {
     /// <summary>
+    /// Represents the unique identifier for an entity
+    /// </summary>
+    public long Id { get; }
+
+    /// <summary>
     /// Gets or sets the collection of items currently on the ground
     /// </summary>
     public Stack<IItem> ItemsOnGround { get; }

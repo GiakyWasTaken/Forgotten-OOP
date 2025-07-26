@@ -1,13 +1,11 @@
-﻿namespace Forgotten_OOP.Commands.ItemCommands;
+namespace Forgotten_OOP.Commands.ItemCommands;
 
 #region Using Directives
 
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
-using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Logging.Interfaces;
-using Forgotten_OOP.Mapping;
 
 #endregion
 

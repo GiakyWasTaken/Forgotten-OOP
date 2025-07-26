@@ -32,6 +32,9 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
 
     /// <inheritdoc />
+    public bool IsGameRunning { get; private set; }
+
+    /// <inheritdoc />
     public Configs GameConfigs { get; }
 
     /// <inheritdoc />
@@ -67,6 +70,20 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         SpawnItems(GameMap);
 
         Entities = SpawnEntities(GameMap);
+
+        GameConsole.WriteLine("Ti trovi poco fuori il villaggio di Kuroka, hai trovato una grotta con un ingresso ad un dungeon di classe di classe S, uno tra i più pericolosi in assoluto.\n" +
+            "Per questo motivo, l'entrata principale è stata sbarrata da tante travi di legno che sembravano essere state fissate in fretta e furia.\n" +
+            "Nessuno di inesperto dovrebbe addentrarsi qui dentro, soprattutto tu, un cercatore di livello decisamente più basso rispetto a quello richiesto.\n" +
+            "Ma non puoi tirarti indietro, tuo fratello è intrappolato lì, è l'unica persona che ti rimane e non vuoi perderlo.\n" +
+            "Trovi un'entrata secondaria, per farti coraggio decidi di rileggere la lettera che di aiuto che Takumi ti ha mandato:\n\n" +
+            "\"Fratello,\n" +
+            "Spero che questa lettera ti raggiunga in tempo.\n" +
+            "Sono ferito. C'è qualcosa qui… qualcosa che non dovrebbe esistere.\n" +
+            "Si aggira tra queste stanze come se fosse casa sua.\n" +
+            "Non provare ad affrontarlo. Non puoi.\n" +
+            "Porta con te la Panacea. È l’unica cosa che può salvarmi.\n" +
+            "Trovami. salvami. Fai in fretta.\n" +
+            "Takumi.\"");
     }
 
     #endregion
@@ -78,6 +95,8 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     {
         bool? win;
 
+        IsGameRunning = true;
+
         do
         {
             ICommand cmd = GameConsole.ReadCommand();
@@ -88,11 +107,14 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
             win = CheckWinLoseCon();
 
-        } while (win == null);
+        } while (IsGameRunning);
 
-        GameConsole.WriteLine(win == true
-            ? "Congratulations! You have completed the game"
-            : "Game Over! Better luck next time");
+        if (win != null)
+        {
+            GameConsole.WriteLine(win == true
+                ? "Congratulations! You have completed the game"
+                : "Game Over! Better luck next time");
+        }
     }
 
     /// <inheritdoc />
@@ -100,25 +122,14 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     {
         ActionsCount++;
         GameLogger.Log($"Action count incremented: {ActionsCount}");
-
-    }
-
-    /// <inheritdoc />
-    public void SaveGame()
-    {
-        throw new NotImplementedException("Save game logic is not implemented yet.");
-    }
-
-    /// <inheritdoc />
-    public void LoadGame()
-    {
-        throw new NotImplementedException("Load game logic is not implemented yet.");
     }
 
     /// <inheritdoc />
     public void EndGame()
     {
-        throw new NotImplementedException("End game logic is not implemented yet.");
+        IsGameRunning = false;
+        GameLogger.Log("Game ended by user request.");
+        GameConsole.WriteLine("Game ended. Thank you for playing!");
     }
 
     #endregion
@@ -196,10 +207,9 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     private void PopulateCommands()
     {
         // Find all command classes that derive from BaseCommand
-        List<Type> commandTypes = Assembly.GetExecutingAssembly()
+        List<Type> commandTypes = [.. Assembly.GetExecutingAssembly()
             .GetTypes()
-            .Where(t => t is { IsClass: true, IsAbstract: false } && typeof(ICommand).IsAssignableFrom(t))
-            .ToList();
+            .Where(t => t is { IsClass: true, IsAbstract: false } && typeof(ICommand).IsAssignableFrom(t))];
 
         List<ICommand> commands = [];
 

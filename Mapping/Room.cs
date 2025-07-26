@@ -16,11 +16,6 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
     #region Private Fields
 
     /// <summary>
-    /// Represents the unique identifier for an entity
-    /// </summary>
-    private readonly long id = id;
-
-    /// <summary>
     /// Reference to the game map for spatial queries
     /// </summary>
     private readonly Map<Room>? gameMap = gameMap;
@@ -28,6 +23,9 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
     #endregion
 
     #region Properties
+
+    /// <inheritdoc />
+    public long Id { get; } = id;
 
     /// <inheritdoc />
     public Stack<IItem> ItemsOnGround { get; } = new();
@@ -97,7 +95,7 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
             return true;
         }
 
-        return id == other.id && GetCoordinates()?.Equals(other.GetCoordinates()) == true;
+        return Id == other.Id && GetCoordinates()?.Equals(other.GetCoordinates()) == true;
     }
 
     /// <inheritdoc />
@@ -114,7 +112,7 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
     /// <inheritdoc />
     public override int GetHashCode()
     {
-        return HashCode.Combine(id, GetCoordinates());
+        return HashCode.Combine(Id, GetCoordinates());
     }
 
     /// <inheritdoc />

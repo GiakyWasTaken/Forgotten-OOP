@@ -1,4 +1,4 @@
-﻿namespace Forgotten_OOP.Commands.ItemCommands;
+namespace Forgotten_OOP.Commands.ItemCommands;
 
 #region Using Directives
 
@@ -60,15 +60,14 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        IItem itemInBag;
-        if (game.Player.Backpack.Count > 0)
+        if (game.Player.Backpack.Count == 0)
         {
-           itemInBag = game.Player.Backpack.Peek();
-           return itemInBag is IDroppable<Room>;
+            return false;
         }
 
-        return false;
+        IItem itemInBag = game.Player.Backpack.Peek();
 
+        return itemInBag is IDroppable<Room>;
     }
 
     #endregion

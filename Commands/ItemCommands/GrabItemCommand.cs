@@ -1,4 +1,4 @@
-﻿namespace Forgotten_OOP.Commands.ItemCommands;
+namespace Forgotten_OOP.Commands.ItemCommands;
 
 #region Using Directives
 
@@ -70,14 +70,14 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        IItem itemOnFloor;
-        if(game.Player.Backpack.Count > 0)
+        if (game.Player.CurrentRoom.ItemsOnGround.Count == 0)
         {
-            itemOnFloor = game.Player.CurrentRoom.ItemsOnGround.Peek();
-            return itemOnFloor is not IStorable<Room> storableItem || game.Player.GetCurrentWeight() + storableItem.Weight <= 10; 
+            return false;
         }
-        return false;
-        
+
+        IItem itemOnFloor = game.Player.CurrentRoom.ItemsOnGround.Peek();
+
+        return itemOnFloor is not IStorable<Room> storableItem || game.Player.GetCurrentWeight() + storableItem.Weight <= 10;
     }
 
     #endregion

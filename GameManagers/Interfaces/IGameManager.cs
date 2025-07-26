@@ -17,6 +17,11 @@ public interface IGameManager<out TPlayer, TEntity, out TMap, TRoom>
     where TRoom : IRoom<TRoom>
 {
     /// <summary>
+    /// Gets a value indicating whether the game is currently running
+    /// </summary>
+    public bool IsGameRunning { get; }
+
+    /// <summary>
     /// The configuration settings for the game
     /// </summary>
     public Configs GameConfigs { get; }
@@ -50,16 +55,6 @@ public interface IGameManager<out TPlayer, TEntity, out TMap, TRoom>
     /// Increments the count of actions performed in the game
     /// </summary>
     public void IncrementActionsCount();
-
-    /// <summary>
-    /// Saves the current game state
-    /// </summary>
-    public void SaveGame();
-
-    /// <summary>
-    /// Loads a saved game state
-    /// </summary>
-    public void LoadGame();
 
     /// <summary>
     /// Ends the game and returns to the main menu
