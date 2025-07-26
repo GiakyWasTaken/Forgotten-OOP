@@ -13,14 +13,14 @@ using Forgotten_OOP.Mapping;
 /// <summary>
 /// Represents Marlo, a special entity in the Forgotten OOP game that can teleport back to his initial room
 /// </summary>
-public class Marlo(Room startingRoom, Map<Room> gameMap) : Entity("Marlo", startingRoom, gameMap), IMarlo<Room>, IConsolable, ILoggable
+public class Marlo : Entity, IMarlo<Room>, IConsolable, ILoggable
 {
     #region Private Fields
 
     /// <summary>
     /// Represents the initial room where Marlo starts
     /// </summary>
-    private readonly Room initialRoom = startingRoom;
+    private readonly Room initialRoom;
 
     #endregion
 
@@ -31,6 +31,22 @@ public class Marlo(Room startingRoom, Map<Room> gameMap) : Entity("Marlo", start
 
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
+
+    #endregion
+
+    #region Constructor
+
+    /// <summary>
+    /// Represents Marlo, a special entity in the Forgotten OOP game that can teleport back to his initial room
+    /// </summary>
+    public Marlo(Room startingRoom, Map<Room> gameMap) : base("Marlo", startingRoom, gameMap)
+    {
+        startingRoom.IsClosed = true;
+
+        initialRoom = startingRoom;
+
+        gameMap.Rooms = [startingRoom];
+    }
 
     #endregion
 

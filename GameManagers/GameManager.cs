@@ -253,6 +253,8 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         map.Rooms = pinkRooms;
 
         GameLogger.Log($"Spawned {GameConfigs.NumKeys} keys in the map.");
+
+        // Todo: spawn other items
     }
 
     /// <summary>
@@ -268,9 +270,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         entities.Add(new Enemy("Minotaur", spawningRooms[Random.Shared.Next(spawningRooms.Count)], map, GameConfigs.EnemyDelay));
 
         // Spawn good npc in the map in the last pink room
-        List<Room> pinkRooms = [.. map.Rooms.Where(room => room is { IsPinkRoom: true })];
-
-        entities.Add(new Entity("Marlo", pinkRooms[^1], map));
+        entities.Add(new Marlo(map.Rooms.Last(room => room is { IsPinkRoom: true }), map));
 
         return entities;
     }

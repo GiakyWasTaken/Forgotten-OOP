@@ -35,8 +35,12 @@ public interface IRoom<TSelf> : IEquatable<TSelf> where TSelf : IRoom<TSelf>, IE
     /// <summary>
     /// Gets a value indicating whether the current room is designated as a pink room
     /// </summary>
-    // Todo: define what a pink room or create a derived interface or class for pink rooms
     public bool IsPinkRoom { get; }
+
+    /// <summary>
+    /// Indicates whether the room is closed
+    /// </summary>
+    public bool IsClosed { get; }
 
     /// <summary>
     /// Gets the coordinates of this room within the map

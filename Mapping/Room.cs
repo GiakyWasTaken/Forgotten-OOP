@@ -11,7 +11,7 @@ using Forgotten_OOP.Mapping.Interfaces;
 /// <summary>
 /// Represents a room in the Forgotten OOP game
 /// </summary>
-public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool isEnemySpawningRoom = true, bool isPinkRoom = false) : IRoom<Room>
+public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool isEnemySpawningRoom = true, bool isPinkRoom = false, bool isInitiallyClosed = false) : IRoom<Room>
 {
     #region Private Fields
 
@@ -37,7 +37,10 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
     public bool IsEnemySpawningRoom { get; set; } = isEnemySpawningRoom && !isPinkRoom;
 
     /// <inheritdoc />
-    public bool IsPinkRoom { get; set; } = isPinkRoom;
+    public bool IsPinkRoom { get; } = isPinkRoom;
+
+    /// <inheritdoc />
+    public bool IsClosed { get; set; } = isInitiallyClosed;
 
     #endregion
 

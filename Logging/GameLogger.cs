@@ -2,6 +2,9 @@
 
 #region Using Directives
 
+using System.Diagnostics;
+using System.Reflection;
+
 using Forgotten_OOP.Logging.Interfaces;
 
 #endregion
@@ -74,7 +77,13 @@ public class GameLogger : ILogger
 
         DateTime now = DateTime.Now;
 
-        File.AppendAllText(fileName, "[" + now + "]: " + message + "\n");
+        // Include the name of the calling function
+        MethodBase? callingMethod = new StackTrace().GetFrame(1)?.GetMethod();
+
+        string callingMethodName = callingMethod?.Name ?? "Unknown Method";
+        string callingClassName = callingMethod?.DeclaringType?.Name ?? "Unknown Class";
+
+        File.AppendAllText(fileName, $"[{now}] {callingMethodName} @ {callingClassName}: {message}\n");
     }
 
     #endregion
