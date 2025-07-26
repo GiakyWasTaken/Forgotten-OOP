@@ -74,7 +74,8 @@ public class Repellent() : Item("Scaccia-Presenze", "Se usato, Lui si allontaner
     {
         player.Backpack.Push(this);
         GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
-        GameConsole.WriteLine($"Hai raccolto: {Name}"); ;
+        GameConsole.WriteLine($"Hai raccolto: {Name}");
+        GameConsole.WriteLine(this.Description);
     }
 
     #endregion

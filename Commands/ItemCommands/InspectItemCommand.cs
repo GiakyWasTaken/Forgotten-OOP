@@ -57,7 +57,7 @@ public class InspectItemCommand(GameManager game) : BaseCommand, IConsolable, IL
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        return game.Player.Backpack.Peek().Description != null;
+        return game.Player.Backpack.TryPeek(out var result); // TODO Ritorna vero anche se falso apparentemente
     }
 
     #endregion

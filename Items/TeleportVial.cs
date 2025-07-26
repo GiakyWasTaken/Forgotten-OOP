@@ -79,6 +79,7 @@ public class TeleportVial()
         player.Backpack.Push(this);
         GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
         GameConsole.WriteLine($"Hai raccolto: {Name}");
+        GameConsole.WriteLine(this.Description);
     }
 
     #endregion

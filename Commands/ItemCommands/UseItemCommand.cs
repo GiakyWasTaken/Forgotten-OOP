@@ -57,7 +57,7 @@ public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILogga
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        game.Player.Backpack.TryPeek(out IStorable<Room>? item);
+        game.Player.Backpack.TryPeek(out IStorable<Room>? item); //TODO Use TryPeek
 
         return item != null;
     }

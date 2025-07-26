@@ -2,6 +2,13 @@
 
 #region Using Directives
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
+
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
@@ -11,10 +18,7 @@ using Forgotten_OOP.Mapping;
 
 #endregion
 
-/// <summary>
-/// Represents a command to grab an item from the within the game
-/// </summary>
-public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
+public class BackPackCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
     #region Private Fields
 
@@ -29,10 +33,10 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     #region Properties
 
     /// <inheritdoc />
-    public override string Name => "Grab";
+    public override string Name => "Backpack";
 
     /// <inheritdoc />
-    public override string Description => "Grab an item on the floor";
+    public override string Description => "Returns the items in your backpack ";
 
     #endregion
 
@@ -43,21 +47,20 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     {
         if (!GetAvailability())
         {
+            GameConsole.WriteLine("Non ho oggetti nello zaino"); //TODO Find a better line
             return;
         }
 
-        IItem itemToGrab = game.Player.CurrentRoom.ItemsOnGround.Peek();
+        bool current = false;
+        foreach (IStorable<Room> item in game.Player.Backpack)
+        {
+            GameConsole.WriteLine(item.Name);
+            if (!current) {
+                GameConsole.WriteLine("^^^ oggetto in cima");
+                current = true;
+            }
+        }
 
-        if (itemToGrab is IGrabbable grabbable)
-        {
-            game.Player.CurrentRoom.ItemsOnGround.Pop();
-            grabbable.Grab(game.Player);
-            game.IncrementActionsCount();
-        }
-        else
-        {
-            GameConsole.WriteLine("Non posso raccoglierlo");
-        }
     }
 
     #endregion
@@ -67,9 +70,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        IItem itemOnFloor = game.Player.CurrentRoom.ItemsOnGround.Peek(); // TODO Use TryPeek
-
-        return itemOnFloor is not IStorable<Room> storableItem || game.Player.GetCurrentWeight() + storableItem.Weight <= 10; // TODO Se cancello Not esplode tutto
+        return game.Player.Backpack.TryPeek(out var result); // TODO Ritorna vero anche se falso apparentemente
     }
 
     #endregion

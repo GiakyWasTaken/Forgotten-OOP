@@ -60,6 +60,13 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
                 case "1":
                     // Play the game
                     configs = settingsMenu.Configs;
+                    GameConsole.WriteLine("Ti trovi poco fuori il villaggio di Kuroka, hai trovato una grotta con un ingresso ad un dungeon di classe di classe S, uno tra i più pericolosi in assoluto. Per questo motivo, l'entrata principale è stata sbarrata da tante travi di legno che sembravano essere state fissate in fretta e furia. Nessuno di inesperto dovrebbe addentrarsi qui dentro, soprattutto tu, un cercatore di livello decisamente più basso rispetto a quello richiesto. Ma non puoi tirarti indietro, tuo fratello è intrappolato lì, è l'unica perona che ti rimane e non vuoi perderlo. Trovi un'entrata secondaria, per farti coraggio decidi di rileggere la lettera che di aiuto che Takumi ti ha mandato:\n" + "\"Fratello\r\n" +
+                        "        Spero che questa lettera ti raggiunga in tempo.\r\n        " +
+                        "Sono ferito. C'è qualcosa qui… qualcosa che non dovrebbe esistere.\r\n        " +
+                        "Si aggira tra queste stanze come se fosse casa sua.\r\n        " +
+                        "Non provare ad affrontarlo. Non puoi.\r\n        " +
+                        "Porta con te la Panacea. È l’unica cosa che può salvarmi.\r\n        " +
+                        "Trovami. salvami. Fai in fretta.\r\nTakumi.");
                     Play();
 
                     break;
@@ -71,7 +78,6 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
                 default:
                     // Exit the game
                     Exit();
-
                     return;
             }
 

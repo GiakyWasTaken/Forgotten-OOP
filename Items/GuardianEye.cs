@@ -71,7 +71,8 @@ public class GuardianEye() : Item("Occhio del Guardiano",
     {
         player.Backpack.Push(this);
         GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
-        GameConsole.WriteLine($"Hai raccolto: {Name}"); ;
+        GameConsole.WriteLine($"Hai raccolto: {Name}");
+        GameConsole.WriteLine(this.Description);
     }
 
     #endregion

@@ -58,7 +58,7 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        IItem itemInBag = game.Player.Backpack.Peek();
+        IItem itemInBag = game.Player.Backpack.Peek(); //TODO Use TryPeek
 
         return itemInBag is IDroppable<Room>;
     }
