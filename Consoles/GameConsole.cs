@@ -29,7 +29,7 @@ public class GameConsole : IConsole, ILoggable
     #region Public Methods
 
     /// <inheritdoc />
-    public void WriteLine(string message)
+    public void WriteLine(string message = "")
     {
         Write(message.TrimEnd() + "\n");
     }
@@ -43,44 +43,46 @@ public class GameConsole : IConsole, ILoggable
     }
 
     /// <inheritdoc />
-    public string ReadLine()
+    public string ReadLine(string prompt = "")
     {
+        if (!string.IsNullOrEmpty(prompt))
+        {
+            GameLogger.Log(prompt);
+            Console.Write(prompt);
+        }
+
         return Console.ReadLine() ?? string.Empty;
     }
 
     /// <inheritdoc />
-    public string ReadLine(string prompt)
-    {
-        GameLogger.Log(prompt);
-        Console.Write(prompt);
-
-        return ReadLine();
-    }
-
-    /// <inheritdoc />
-    public ICommand ReadCommand()
+    public ICommand ReadCommand(string prompt = "")
     {
         ICommand? command;
 
         do
         {
+            if (!string.IsNullOrEmpty(prompt))
+            {
+                GameLogger.Log(prompt);
+                Console.Write(prompt);
+            }
+
             string input = ReadLine();
 
             command = Commands.FirstOrDefault(cmd => input.StartsWith(cmd.Name, StringComparison.InvariantCultureIgnoreCase));
 
             // Todo: implement a re prompt mechanism if command is null
+            if (command == null)
+            {
+                WriteLine("Non so cosa significa...");
+            }
+            else if (!command.IsAvailable)
+            {
+                command.Execute();
+            }
         } while (command is not { IsAvailable: true });
 
         return command;
-    }
-
-    /// <inheritdoc />
-    public ICommand ReadCommand(string prompt)
-    {
-        GameLogger.Log(prompt);
-        Console.Write(prompt);
-
-        return ReadCommand();
     }
 
     /// <inheritdoc />

@@ -39,9 +39,9 @@ public class InspectItemCommand(GameManager game) : BaseCommand, IConsolable, IL
     /// <inheritdoc />
     public override void Execute()
     {
-        if (!GetAvailability())
+        if (!GetAvailability(out string tryExecutionMessage))
         {
-            GameConsole.WriteLine("Non riesco a capire cosa sia...");
+            GameConsole.WriteLine(tryExecutionMessage);
             GameLogger.Log("Player tried to Inspect an item, but it wasn't possible");
             return;
         }
@@ -55,9 +55,16 @@ public class InspectItemCommand(GameManager game) : BaseCommand, IConsolable, IL
     #region Protected Methods
 
     /// <inheritdoc />
-    protected override bool GetAvailability()
+    protected override bool GetAvailability(out string tryExecutionMessage)
     {
-        return game.Player.Backpack.Count > 0;
+        tryExecutionMessage = string.Empty;
+        if (game.Player.Backpack.Count > 0)
+        {
+            return true;
+        }
+
+        tryExecutionMessage = "Non ho niente nello zaino";
+        return false;
     }
 
     #endregion

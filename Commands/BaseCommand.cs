@@ -31,7 +31,7 @@ public abstract class BaseCommand : ICommand
     /// <inheritdoc />
     public virtual bool IsAvailable
     {
-        get => ForceIsAvailable ?? GetAvailability();
+        get => ForceIsAvailable ?? GetAvailability(out string _);
         set => ForceIsAvailable = value;
     }
 
@@ -56,7 +56,12 @@ public abstract class BaseCommand : ICommand
     /// Determines the availability of the command based on game state or conditions
     /// </summary>
     /// <returns>True if the command is available, otherwise false</returns>
-    protected virtual bool GetAvailability() => false;
+    protected virtual bool GetAvailability(out string tryExecutionMessage)
+    {
+        tryExecutionMessage = "Non posso farlo...";
+
+        return false;
+    }
 
     #endregion
 }

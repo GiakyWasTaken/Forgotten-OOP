@@ -1,4 +1,4 @@
-﻿namespace Forgotten_OOP.Commands.ItemCommands;
+﻿namespace Forgotten_OOP.Commands;
 
 #region Using Directives
 
@@ -41,11 +41,10 @@ public class BackPackCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     public override void Execute()
     {
-        if (!GetAvailability())
+        if (game.Player.Backpack.Count == 0)
         {
-            GameConsole.WriteLine("Il mio zaino è vuoto");
-            GameLogger.Log("Player tried to view backpack, but it was Empty");
-
+            GameConsole.WriteLine("Ho controllato il mio zaino... ma è vuoto");
+            GameLogger.Log("Player viewed backpack");
             return;
         }
 
@@ -70,9 +69,10 @@ public class BackPackCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     #region Protected Methods
 
     /// <inheritdoc />
-    protected override bool GetAvailability()
+    protected override bool GetAvailability(out string tryExecutionMessage)
     {
-        return game.Player.Backpack.Count > 0;
+        tryExecutionMessage = string.Empty;
+        return true;
     }
 
     #endregion

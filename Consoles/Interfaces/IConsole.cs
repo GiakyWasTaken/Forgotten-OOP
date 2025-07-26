@@ -22,7 +22,7 @@ public interface IConsole
     /// Writes a message to the console with a newline at the end
     /// </summary>
     /// <param name="message">A string to display in the console</param>
-    public void WriteLine(string message);
+    public void WriteLine(string message = "");
 
     /// <summary>
     /// Writes a message to the console
@@ -31,30 +31,18 @@ public interface IConsole
     public void Write(string message);
 
     /// <summary>
-    /// Reads a line from the console
-    /// </summary>
-    /// <returns>The input string from the console</returns>
-    public string ReadLine();
-
-    /// <summary>
     /// Reads a line from the console with a prompt
     /// </summary>
     /// <param name="prompt">A string to display before reading input</param>
     /// <returns>The input string from the console</returns>
-    public string ReadLine(string prompt);
-
-    /// <summary>
-    /// Reads and returns the next command from the input stream
-    /// </summary>
-    /// <returns>A <see cref="ICommand"/> object representing the next command</returns>
-    public ICommand ReadCommand();
+    public string ReadLine(string prompt = "");
 
     /// <summary>
     /// Reads and returns the next command from the input stream
     /// </summary>
     /// <param name="prompt">A string to display before reading the command</param>
     /// <returns>A <see cref="ICommand"/> object representing the next command</returns>
-    public ICommand ReadCommand(string prompt);
+    public ICommand ReadCommand(string prompt = "");
 
     /// <summary>
     /// Clears the console output

@@ -66,10 +66,11 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         GameMap = InitializeMap();
 
         Player = new Player("Hero", GameMap.StartingRoom, GameMap, 3);
+        Entities = [Player];
 
         SpawnItems(GameMap);
 
-        Entities = SpawnEntities(GameMap);
+        Entities.AddRange(SpawnEntities(GameMap));
 
         GameConsole.WriteLine("Ti trovi poco fuori il villaggio di Kuroka, hai trovato una grotta con un ingresso ad un dungeon di classe di classe S, uno tra i più pericolosi in assoluto.\n" +
             "Per questo motivo, l'entrata principale è stata sbarrata da tante travi di legno che sembravano essere state fissate in fretta e furia.\n" +
@@ -99,7 +100,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
         do
         {
-            ICommand cmd = GameConsole.ReadCommand();
+            ICommand cmd = GameConsole.ReadCommand("Cosa fare? ");
 
             cmd.Execute();
 

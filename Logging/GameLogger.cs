@@ -83,7 +83,7 @@ public class GameLogger : ILogger
         string callingMethodName = callingMethod?.Name ?? "Unknown Method";
         string callingClassName = callingMethod?.DeclaringType?.Name ?? "Unknown Class";
 
-        File.AppendAllText(fileName, $"[{now}] {callingMethodName} @ {callingClassName}: {message}\n");
+        File.AppendAllText(fileName, $"[{now}] {callingMethodName} @ {callingClassName}: {message.Trim()}\n");
     }
 
     #endregion

@@ -39,11 +39,10 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     public override void Execute()
     {
-        if (!GetAvailability())
+        if (!GetAvailability(out string tryExecutionMessage))
         {
-            // Todo: review this message
-            GameConsole.WriteLine("Non posso perdere questo oggetto...");
-            GameLogger.Log("Player tried to drop an item, but it wasn't droppable possible.");
+            GameConsole.WriteLine(tryExecutionMessage);
+            GameLogger.Log("Player tried to drop an item, but his backpack was empty.");
             return;
         }
 
@@ -58,9 +57,16 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     #region Protected Methods
 
     /// <inheritdoc />
-    protected override bool GetAvailability()
+    protected override bool GetAvailability(out string tryExecutionMessage)
     {
-        return game.Player.Backpack.Count > 0;
+        tryExecutionMessage = string.Empty;
+        if (game.Player.Backpack.Count > 0)
+        {
+            return true;
+        }
+
+        tryExecutionMessage = "Il mio zaino è vuoto";
+        return false;
     }
 
     #endregion

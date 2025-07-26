@@ -41,10 +41,10 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     public override void Execute()
     {
-        if (!GetAvailability())
+        if (!GetAvailability(out string tryExecutionMessage))
         {
-            GameConsole.WriteLine("Non posso raccoglierlo");
-            GameLogger.Log("Player tried to grab an item, but it wasn't grabbable");
+            GameConsole.WriteLine(tryExecutionMessage);
+            GameLogger.Log("Player tried to grab an item, but it wasn't possible");
             return;
         }
 
@@ -58,7 +58,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
         }
         else
         {
-            GameConsole.WriteLine("Non posso raccoglierlo");
+            GameConsole.WriteLine(tryExecutionMessage);
             GameLogger.Log("Player tried to grab an item, but it wasn't grabbable");
         }
     }
@@ -68,16 +68,24 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     #region Protected Methods
 
     /// <inheritdoc />
-    protected override bool GetAvailability()
+    protected override bool GetAvailability(out string tryExecutionMessage)
     {
+        tryExecutionMessage = string.Empty;
         if (game.Player.CurrentRoom.ItemsOnGround.Count == 0)
         {
+            tryExecutionMessage = "Non c'è nulla da raccogliere";
             return false;
         }
 
         IItem itemOnFloor = game.Player.CurrentRoom.ItemsOnGround.Peek();
 
-        return itemOnFloor is not IStorable<Room> storableItem || game.Player.GetCurrentWeight() + storableItem.Weight <= 10;
+        if (itemOnFloor is not IStorable<Room> storableItem || game.Player.GetCurrentWeight() + storableItem.Weight <= 10)
+        {
+            return true;
+        }
+
+        tryExecutionMessage = "Non posso raccogliere questo oggetto, il mio zaino diventerà troppo pesante";
+        return false;
     }
 
     #endregion

@@ -178,7 +178,7 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
     /// <inheritdoc />
     public TRoom GetRandomRoom(Func<TRoom, bool> predicate)
     {
-        List<TRoom> filteredRooms = Rooms.Where(predicate).ToList();
+        List<TRoom> filteredRooms = [.. Rooms.Where(predicate)];
 
         if (filteredRooms.Count == 0)
         {
@@ -209,7 +209,7 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
     public void PrintMap(List<IEntity<TRoom>>? entities = null, bool showPlayer = true, bool showEnemy = false, bool showKey = false, bool showMarlo = false, bool showStartingRoom = false, bool showRooms = false)
     {
         var mapBuilder = new StringBuilder();
-        mapBuilder.AppendLine("Map Layout");
+        mapBuilder.AppendLine("Map Layout"); // Todo: change line
 
         for (int y = 0; y < mapDimension; y++)
         {
@@ -255,7 +255,6 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
         mapBuilder.AppendLine("+");
 
         // Output the entire map at once
-        GameConsole.Clear();
         GameConsole.WriteLine(mapBuilder.ToString());
     }
 

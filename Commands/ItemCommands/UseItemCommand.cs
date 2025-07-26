@@ -5,9 +5,7 @@
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
-using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Logging.Interfaces;
-using Forgotten_OOP.Mapping;
 
 #endregion
 
@@ -41,9 +39,9 @@ public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILogga
     /// <inheritdoc />
     public override void Execute()
     {
-        if (!GetAvailability())
+        if (!GetAvailability(out string tryExecutionMessage))
         {
-            GameConsole.WriteLine("Non posso usarlo");
+            GameConsole.WriteLine(tryExecutionMessage);
             GameLogger.Log("Player tried to use an item, but it wasn't possible");
             return;
         }
@@ -57,9 +55,16 @@ public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILogga
     #region Protected Methods
 
     /// <inheritdoc />
-    protected override bool GetAvailability()
+    protected override bool GetAvailability(out string tryExecutionMessage)
     {
-        return game.Player.Backpack.Count > 0;
+        tryExecutionMessage = string.Empty;
+        if (game.Player.Backpack.Count > 0)
+        {
+            return true;
+        }
+
+        tryExecutionMessage = "Non ho niente nello zaino";
+        return false;
     }
 
     #endregion
