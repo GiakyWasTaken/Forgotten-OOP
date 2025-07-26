@@ -17,6 +17,6 @@ public interface IDroppable<in TRoom> : IItem where TRoom : IRoom<TRoom>
     /// <param name="room">The room where the item will be dropped</param>
     public void Drop(TRoom room)
     {
-        room.ItemsOnGround.Push(this);
+        room.ItemsOnGround.Add(this);
     }
 }

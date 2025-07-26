@@ -20,7 +20,7 @@ public interface IRoom<TSelf> : IEquatable<TSelf> where TSelf : IRoom<TSelf>, IE
     /// <summary>
     /// Gets or sets the collection of items currently on the ground
     /// </summary>
-    public Stack<IItem> ItemsOnGround { get; }
+    public List<IItem> ItemsOnGround { get; }
 
     /// <summary>
     /// Gets a value indicating whether the current room is the starting room

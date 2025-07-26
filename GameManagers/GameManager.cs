@@ -300,7 +300,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
         for (int i = 0; i < GameConfigs.NumKeys; i++)
         {
-            pinkRooms[i].ItemsOnGround.Push(new Key());
+            pinkRooms[i].ItemsOnGround.Add(new Key());
         }
 
         map.Rooms = pinkRooms;
@@ -309,14 +309,14 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
         // Spawn teleportation altar in the last pink room
         Room lastPinkRoom = map.Rooms.Last(room => room is { IsPinkRoom: true });
-        lastPinkRoom.ItemsOnGround.Push(new TeleportAltar());
+        lastPinkRoom.ItemsOnGround.Add(new TeleportAltar());
 
         GameLogger.Log("Spawned Teleport Altar in the last pink room.");
 
         List<Room> itemRooms = [.. map.Rooms.Where(room => room is { IsPinkRoom: false, IsStartingRoom: false })];
 
         // Spawn torch in the map
-        itemRooms[Random.Shared.Next(itemRooms.Count)].ItemsOnGround.Push(new Torch());
+        itemRooms[Random.Shared.Next(itemRooms.Count)].ItemsOnGround.Add(new Torch());
 
         // Get the assembly containing the types
         Assembly assembly = Assembly.GetExecutingAssembly();
@@ -344,7 +344,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
             for (int i = 0; i < count; i++)
             {
                 Room targetRoom = itemRooms[Random.Shared.Next(itemRooms.Count)];
-                targetRoom.ItemsOnGround.Push((Item)Activator.CreateInstance(itemType)!);
+                targetRoom.ItemsOnGround.Add((Item)Activator.CreateInstance(itemType)!);
             }
         }
     }

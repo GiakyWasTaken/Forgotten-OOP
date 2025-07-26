@@ -28,7 +28,7 @@ public class Room(long id, Map<Room> gameMap, bool isStartingRoom = false, bool 
     public long Id { get; } = id;
 
     /// <inheritdoc />
-    public Stack<IItem> ItemsOnGround { get; } = new();
+    public List<IItem> ItemsOnGround { get; } = [];
 
     /// <inheritdoc />
     public bool IsStartingRoom { get; } = isStartingRoom;

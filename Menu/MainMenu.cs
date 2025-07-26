@@ -20,7 +20,7 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
     /// <summary>
     /// Represents the game configurations
     /// </summary>
-    private Configs configs;
+    private Configs configs = new();
 
     /// <summary>
     /// Represents the game manager instance that handles the game logic

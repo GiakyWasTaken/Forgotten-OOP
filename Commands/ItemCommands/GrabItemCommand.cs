@@ -48,19 +48,36 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
             return;
         }
 
-        IItem itemToGrab = game.Player.CurrentRoom.ItemsOnGround.Peek();
+        List<IItem> itemsToGrab = game.Player.CurrentRoom.ItemsOnGround.ToList();
 
-        if (itemToGrab is IGrabbable grabbable)
+        if (itemsToGrab.Count == 1)
         {
-            game.Player.CurrentRoom.ItemsOnGround.Pop();
-            grabbable.Grab(game.Player);
-            game.IncrementActionsCount();
+            AttemptToGrabItem(itemsToGrab[0]);
+            return;
         }
-        else
+
+        GameConsole.WriteLine("In questa stanza ci sono questi oggetti:");
+
+        for (int i = 0; i < itemsToGrab.Count; i++)
         {
-            GameConsole.WriteLine(tryExecutionMessage);
-            GameLogger.Log("Player tried to grab an item, but it wasn't grabbable");
+            GameConsole.WriteLine($"{i + 1}. {itemsToGrab[i].Name} - {itemsToGrab[i].Description}");
         }
+
+        int selectedIndex;
+        while (true)
+        {
+            string input = GameConsole.ReadLine("Quale di questi oggetti prendo? ");
+
+            if (int.TryParse(input, out selectedIndex) && selectedIndex > 0 && selectedIndex <= itemsToGrab.Count)
+            {
+                break;
+            }
+
+            GameConsole.WriteLine("Non ho capito, per favore inserisci un oggetto valido");
+        }
+
+        IItem selectedItem = itemsToGrab[selectedIndex - 1];
+        AttemptToGrabItem(selectedItem);
     }
 
     #endregion
@@ -71,21 +88,61 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     protected override bool GetAvailability(out string tryExecutionMessage)
     {
         tryExecutionMessage = string.Empty;
+
+        List<IStorable<Room>> storableItems = game.Player.CurrentRoom.ItemsOnGround.OfType<IStorable<Room>>().ToList();
+
         if (game.Player.CurrentRoom.ItemsOnGround.Count == 0)
         {
             tryExecutionMessage = "Non c'è nulla da raccogliere";
             return false;
         }
 
-        IItem itemOnFloor = game.Player.CurrentRoom.ItemsOnGround.Peek();
-
-        if (itemOnFloor is not IStorable<Room> storableItem || game.Player.GetCurrentWeight() + storableItem.Weight <= 10)
+        if (storableItems.Count == 0)
         {
-            return true;
+            tryExecutionMessage = "Non posso raccogliere nessun oggetto qua";
+            return false;
         }
 
-        tryExecutionMessage = "Non posso raccogliere questo oggetto, il mio zaino diventerà troppo pesante";
-        return false;
+        if (!storableItems.Any(item => item.Weight + game.Player.GetCurrentWeight() <= 10))
+        {
+            tryExecutionMessage = "Non posso raccogliere nessun oggetto, il mio zaino sarà troppo pesante";
+            return false;
+        }
+
+        return true;
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    /// <summary>
+    /// Attempts to grab the specified item if it is grabbable
+    /// </summary>
+    /// <param name="itemToGrab">The item to attempt to grab. Must implement <see cref="IStorable{Room}"/> to be successfully grabbed</param>
+    private void AttemptToGrabItem(IItem itemToGrab)
+    {
+        if (itemToGrab is IStorable<Room> grabbable)
+        {
+            if (grabbable.Weight + game.Player.GetCurrentWeight() > 10)
+            {
+                GameConsole.WriteLine("Non posso raccogliere questo oggetto, il mio zaino sarà troppo pesante");
+                GameLogger.Log("Player tried to grab an item, but it was too heavy to fit in the backpack");
+                return;
+            }
+
+            game.Player.CurrentRoom.ItemsOnGround.Remove(itemToGrab);
+            grabbable.Grab(game.Player);
+            game.IncrementActionsCount();
+
+            GameConsole.WriteLine($"Ho preso {itemToGrab.Name} e l'ho messo dentro lo zaino");
+            GameLogger.Log($"Player grabbed the {itemToGrab.Name}");
+        }
+        else
+        {
+            GameConsole.WriteLine("Non posso raccogliere nessun oggetto qua");
+            GameLogger.Log("Player tried to grab an item, but it wasn't grabbable.");
+        }
     }
 
     #endregion
