@@ -44,10 +44,12 @@ public class InspectItemCommand(GameManager game) : BaseCommand, IConsolable, IL
         if (!GetAvailability())
         {
             GameConsole.WriteLine("Non riesco a capire cosa sia...");
+            GameLogger.Log("Player tried to Inspect an item, but it wasn't possible");
             return;
         }
 
         GameConsole.WriteLine(game.Player.Backpack.Peek().Description);
+        GameLogger.Log("Player Inspected an Item");
     }
 
     #endregion
@@ -57,7 +59,7 @@ public class InspectItemCommand(GameManager game) : BaseCommand, IConsolable, IL
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        return game.Player.Backpack.TryPeek(out var result); // TODO Ritorna vero anche se falso apparentemente
+        return game.Player.Backpack.Count > 0;
     }
 
     #endregion

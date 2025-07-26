@@ -43,11 +43,13 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     {
         if (!GetAvailability())
         {
-            GameConsole.WriteLine("Non posso perdere questo oggetto..."); 
+            GameConsole.WriteLine("Non posso perdere questo oggetto...");
+            GameLogger.Log("Player tried to drop an item, but it wasn't droppable possible.");
             return;
         }
 
         game.Player.Backpack.Pop().Drop(game.Player.CurrentRoom);
+        GameLogger.Log("Player dropped and item");
         game.IncrementActionsCount();
     }
 
@@ -58,9 +60,15 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        IItem itemInBag = game.Player.Backpack.Peek(); //TODO Use TryPeek
+        IItem itemInBag;
+        if (game.Player.Backpack.Count > 0)
+        {
+           itemInBag = game.Player.Backpack.Peek();
+           return itemInBag is IDroppable<Room>;
+        }
 
-        return itemInBag is IDroppable<Room>;
+        return false;
+
     }
 
     #endregion

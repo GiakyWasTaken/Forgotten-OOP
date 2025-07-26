@@ -48,9 +48,9 @@ public class BackPackCommand(GameManager game) : BaseCommand, IConsolable, ILogg
         if (!GetAvailability())
         {
             GameConsole.WriteLine("Il mio zaino è vuoto");
+            GameLogger.Log("Player tried to view backpack, but it was Empty");
             return;
         }
-
         bool current = false;
         foreach (IStorable<Room> item in game.Player.Backpack)
         {
@@ -60,7 +60,7 @@ public class BackPackCommand(GameManager game) : BaseCommand, IConsolable, ILogg
                 current = true;
             }
         }
-
+        GameLogger.Log("Player viewed backpack");
     }
 
     #endregion
@@ -70,7 +70,7 @@ public class BackPackCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        return game.Player.Backpack.TryPeek(out var result); // TODO Ritorna vero anche se falso apparentemente
+        return game.Player.Backpack.Count > 0;
     }
 
     #endregion

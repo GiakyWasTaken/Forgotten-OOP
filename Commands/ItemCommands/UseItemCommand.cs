@@ -43,6 +43,8 @@ public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILogga
     {
         if (!GetAvailability())
         {
+            GameConsole.WriteLine("Non posso usarlo");
+            GameLogger.Log("Player tried to use an item, but it wasn't possible");
             return;
         }
 
@@ -57,9 +59,7 @@ public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILogga
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        game.Player.Backpack.TryPeek(out IStorable<Room>? item); //TODO Use TryPeek
-
-        return item != null;
+        return game.Player.Backpack.Count > 0;
     }
 
     #endregion

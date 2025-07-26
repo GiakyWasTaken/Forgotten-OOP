@@ -43,6 +43,8 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     {
         if (!GetAvailability())
         {
+            GameConsole.WriteLine("Non posso raccoglierlo");
+            GameLogger.Log("Player tried to grab an item, but it wasn't grabbable");
             return;
         }
 
@@ -57,6 +59,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
         else
         {
             GameConsole.WriteLine("Non posso raccoglierlo");
+            GameLogger.Log("Player tried to grab an item, but it wasn't grabbable");
         }
     }
 
@@ -67,9 +70,14 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        IItem itemOnFloor = game.Player.CurrentRoom.ItemsOnGround.Peek(); // TODO Use TryPeek
-
-        return itemOnFloor is not IStorable<Room> storableItem || game.Player.GetCurrentWeight() + storableItem.Weight <= 10; // TODO Se cancello Not esplode tutto
+        IItem itemOnFloor;
+        if(game.Player.Backpack.Count > 0)
+        {
+            itemOnFloor = game.Player.CurrentRoom.ItemsOnGround.Peek();
+            return itemOnFloor is not IStorable<Room> storableItem || game.Player.GetCurrentWeight() + storableItem.Weight <= 10; 
+        }
+        return false;
+        
     }
 
     #endregion
