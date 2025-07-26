@@ -48,19 +48,19 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
             return;
         }
 
-        List<IItem> itemsToGrab = game.Player.CurrentRoom.ItemsOnGround.ToList();
+        List<IItem> grabbableItems = game.Player.CurrentRoom.ItemsOnGround.ToList();
 
-        if (itemsToGrab.Count == 1)
+        if (grabbableItems.Count == 1)
         {
-            AttemptToGrabItem(itemsToGrab[0]);
+            AttemptToGrabItem(grabbableItems[0]);
             return;
         }
 
         GameConsole.WriteLine("In questa stanza ci sono questi oggetti:");
 
-        for (int i = 0; i < itemsToGrab.Count; i++)
+        for (int i = 0; i < grabbableItems.Count; i++)
         {
-            GameConsole.WriteLine($"{i + 1}. {itemsToGrab[i].Name} - {itemsToGrab[i].Description}");
+            GameConsole.WriteLine($"{i + 1}. {grabbableItems[i].Name} - {grabbableItems[i].Description}");
         }
 
         int selectedIndex;
@@ -68,7 +68,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
         {
             string input = GameConsole.ReadLine("Quale di questi oggetti prendo? ");
 
-            if (int.TryParse(input, out selectedIndex) && selectedIndex > 0 && selectedIndex <= itemsToGrab.Count)
+            if (int.TryParse(input, out selectedIndex) && selectedIndex > 0 && selectedIndex <= grabbableItems.Count)
             {
                 break;
             }
@@ -76,7 +76,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
             GameConsole.WriteLine("Non ho capito, per favore inserisci un oggetto valido");
         }
 
-        IItem selectedItem = itemsToGrab[selectedIndex - 1];
+        IItem selectedItem = grabbableItems[selectedIndex - 1];
         AttemptToGrabItem(selectedItem);
     }
 
