@@ -50,11 +50,12 @@ public class GuardianEye() : Item("Occhio del Guardiano",
 
             Dictionary<Direction, Room> adj = enemy.CurrentRoom.GetAdjacentRooms();
 
+            // Todo: recheck this logic
             for (int i = 0; i < adj.Count; i++)
             {
                 var dir = (Direction)i;
 
-                if (Equals(adj[dir]?.GetCoordinates(), game.Player.CurrentRoom.GetCoordinates()))
+                if (Equals(adj[dir].GetCoordinates(), game.Player.CurrentRoom.GetCoordinates()))
                 {
                     GameConsole.WriteLine("Il Guardiano vede ciò che gli altri non possono: L’Ushigami si trova nella stanza a " + (Direction)(5 - i));
                 }
@@ -70,9 +71,11 @@ public class GuardianEye() : Item("Occhio del Guardiano",
     public void Grab(Player player)
     {
         player.Backpack.Push(this);
+
         GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
+
         GameConsole.WriteLine($"Hai raccolto: {Name}");
-        GameConsole.WriteLine(this.Description);
+        GameConsole.WriteLine(Description);
     }
 
     #endregion

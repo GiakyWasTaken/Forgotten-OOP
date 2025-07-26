@@ -162,17 +162,30 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
     /// <inheritdoc />
     public TRoom GetRandomRoom()
     {
-        Random random = new();
-        int x = random.Next(mapDimension);
-        int y = random.Next(mapDimension);
+        // Todo: check what use this method and if the overload with predicate is better
+        int x = Random.Shared.Next(mapDimension);
+        int y = Random.Shared.Next(mapDimension);
 
         while (Layout[x, y] == null)
         {
-            x = random.Next(mapDimension);
-            y = random.Next(mapDimension);
+            x = Random.Shared.Next(mapDimension);
+            y = Random.Shared.Next(mapDimension);
         }
 
         return Layout[x, y]!;
+    }
+
+    /// <inheritdoc />
+    public TRoom GetRandomRoom(Func<TRoom, bool> predicate)
+    {
+        List<TRoom> filteredRooms = Rooms.Where(predicate).ToList();
+
+        if (filteredRooms.Count == 0)
+        {
+            throw new InvalidOperationException("No room satisfies the given condition.");
+        }
+
+        return filteredRooms[Random.Shared.Next(filteredRooms.Count)];
     }
 
     /// <inheritdoc />
@@ -193,7 +206,7 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
     }
 
     /// <inheritdoc />
-    public void PrintMap(List<IEntity<TRoom>>? entities = null)
+    public void PrintMap(List<IEntity<TRoom>>? entities = null, bool showPlayer = true, bool showEnemy = false, bool showKey = false, bool showMarlo = false, bool showStartingRoom = false, bool showRooms = false)
     {
         var mapBuilder = new StringBuilder();
         mapBuilder.AppendLine("Map Layout");
@@ -219,14 +232,12 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
                 string roomChar = room switch
                 {
                     null => "   ",
-                    _ when room.ItemsOnGround.Any(item => item is IKeyItem) => " K ",
-                    _ when entities?.Any(entity => entity is IEnemy<TRoom> && entity.CurrentRoom.Equals(room)) == true => " M ",
-                    _ when entities?.Any(entity => entity is IPlayer<TRoom> && entity.CurrentRoom.Equals(room)) == true => " Y ",
-                    _ when entities?.Any(entity => entity.CurrentRoom.Equals(room)) == true => " N ",
-                    _ when room.IsStartingRoom => " S ",
-                    _ when room.IsEnemySpawningRoom => " E ",
-                    _ when room.IsPinkRoom => " P ",
-                    _ => $" {room.ItemsOnGround.Count} "
+                    _ when showKey && room.ItemsOnGround.Any(item => item is IKeyItem) => "[K]",
+                    _ when showEnemy && entities?.Any(entity => entity is IEnemy<TRoom> && entity.CurrentRoom.Equals(room)) == true => "[M]",
+                    _ when showPlayer && entities?.Any(entity => entity is IPlayer<TRoom> && entity.CurrentRoom.Equals(room)) == true => "[P]",
+                    _ when showMarlo && entities?.Any(entity => entity is IMarlo<TRoom> && entity.CurrentRoom.Equals(room)) == true => "[N]",
+                    _ when showStartingRoom && room.IsStartingRoom => "[S]",
+                    _ => showRooms ? "[ ]" : "   "
                 };
 
                 mapBuilder.Append(roomChar);

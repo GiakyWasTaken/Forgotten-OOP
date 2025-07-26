@@ -5,9 +5,7 @@ namespace Forgotten_OOP.Commands.ItemCommands;
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
-using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Logging.Interfaces;
-using Forgotten_OOP.Mapping;
 
 #endregion
 
@@ -43,12 +41,14 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     {
         if (!GetAvailability())
         {
+            // Todo: review this message
             GameConsole.WriteLine("Non posso perdere questo oggetto...");
             GameLogger.Log("Player tried to drop an item, but it wasn't droppable possible.");
             return;
         }
 
         game.Player.Backpack.Pop().Drop(game.Player.CurrentRoom);
+
         GameLogger.Log("Player dropped and item");
         game.IncrementActionsCount();
     }
@@ -60,14 +60,7 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     protected override bool GetAvailability()
     {
-        if (game.Player.Backpack.Count == 0)
-        {
-            return false;
-        }
-
-        IItem itemInBag = game.Player.Backpack.Peek();
-
-        return itemInBag is IDroppable<Room>;
+        return game.Player.Backpack.Count > 0;
     }
 
     #endregion

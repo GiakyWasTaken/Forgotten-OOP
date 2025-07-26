@@ -14,5 +14,5 @@ public interface IPrintableMap<TRoom> where TRoom : IRoom<TRoom>
     /// <summary>
     /// Prints the map to the console
     /// </summary>
-    public void PrintMap(List<IEntity<TRoom>>? entities);
+    public void PrintMap(List<IEntity<TRoom>>? entities, bool showPlayer, bool showEnemy, bool showKey, bool showMarlo, bool showStartingRoom, bool showRooms);
 }

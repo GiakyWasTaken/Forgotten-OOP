@@ -31,9 +31,15 @@ public class GameConsole : IConsole, ILoggable
     /// <inheritdoc />
     public void WriteLine(string message)
     {
+        Write(message.TrimEnd() + "\n");
+    }
+
+    /// <inheritdoc />
+    public void Write(string message)
+    {
         // Todo: Implement a cool feature like colored text or slow typing effect
         GameLogger.Log(message);
-        Console.WriteLine(message);
+        Console.Write(message);
     }
 
     /// <inheritdoc />

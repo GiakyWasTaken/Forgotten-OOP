@@ -43,8 +43,10 @@ public class Bandage() : Item("Bende", "Una benda curativa, permettono di recupe
         if (game.Player.Lives < 3)
         {
             game.Player.LifeChange(1, game);
+
             GameLogger.Log("Player used bandages");
             game.IncrementActionsCount();
+
             GameConsole.WriteLine("La ferita si chiude... mi sento molto meglio");
         }
         else
@@ -56,11 +58,12 @@ public class Bandage() : Item("Bende", "Una benda curativa, permettono di recupe
     /// <inheritdoc />
     public void Grab(Player player)
     {
-        // Todo: remove game from grab
         player.Backpack.Push(this);
+
         GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
-        GameConsole.WriteLine($"Hai raccolto: {Name}"); ;
-        GameConsole.WriteLine(this.Description);
+
+        GameConsole.WriteLine($"Hai raccolto: {Name}");
+        GameConsole.WriteLine(Description);
     }
 
     #endregion

@@ -60,6 +60,14 @@ public interface IMap<TRoom> where TRoom : IRoom<TRoom>
     public TRoom GetRandomRoom();
 
     /// <summary>
+    /// Retrieves a random room that satisfies a given condition specified by a predicate.
+    /// </summary>
+    /// <param name="predicate">A function that defines the condition the room must satisfy.</param>
+    /// <returns>A randomly selected room of type <typeparamref name="TRoom"/> that satisfies the condition</returns>
+    /// <exception cref="InvalidOperationException">Thrown if no room satisfies the given condition.</exception>
+    public TRoom GetRandomRoom(Func<TRoom, bool> predicate);
+
+    /// <summary>
     /// Retrieves the coordinates of the specified room
     /// </summary>
     /// <param name="room">The room for which to obtain coordinates Cannot be null</param>

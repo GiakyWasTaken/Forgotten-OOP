@@ -37,6 +37,7 @@ public class Key() : Item("Chiave", "Puoi aprirci stanze chiuse"), IKeyItem, ICo
 
         GameLogger.Log($"{Name} è stato aggiunto agli oggetti chiave");
         GameConsole.WriteLine($"Hai raccolto: {Name}");
+        GameConsole.WriteLine(Description);
     }
 
     #endregion

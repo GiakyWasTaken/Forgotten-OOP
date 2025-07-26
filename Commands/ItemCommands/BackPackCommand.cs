@@ -2,13 +2,6 @@
 
 #region Using Directives
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
@@ -18,6 +11,9 @@ using Forgotten_OOP.Mapping;
 
 #endregion
 
+/// <summary>
+/// Represents a command that displays the items in the player's backpack
+/// </summary>
 public class BackPackCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
     #region Private Fields
@@ -49,17 +45,23 @@ public class BackPackCommand(GameManager game) : BaseCommand, IConsolable, ILogg
         {
             GameConsole.WriteLine("Il mio zaino è vuoto");
             GameLogger.Log("Player tried to view backpack, but it was Empty");
+
             return;
         }
+
         bool current = false;
+
         foreach (IStorable<Room> item in game.Player.Backpack)
         {
-            GameConsole.WriteLine(item.Name);
-            if (!current) {
-                GameConsole.WriteLine("^^^ oggetto in cima");
+            GameConsole.Write(item.Name);
+
+            if (!current)
+            {
+                GameConsole.WriteLine("<== oggetto in cima");
                 current = true;
             }
         }
+
         GameLogger.Log("Player viewed backpack");
     }
 

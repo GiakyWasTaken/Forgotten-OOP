@@ -19,10 +19,16 @@ public interface IConsole
     public List<ICommand> Commands { get; set; }
 
     /// <summary>
-    /// Writes a message to the console
+    /// Writes a message to the console with a newline at the end
     /// </summary>
     /// <param name="message">A string to display in the console</param>
     public void WriteLine(string message);
+
+    /// <summary>
+    /// Writes a message to the console
+    /// </summary>
+    /// <param name="message">A string to display in the console</param>
+    public void Write(string message);
 
     /// <summary>
     /// Reads a line from the console
