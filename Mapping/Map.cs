@@ -162,7 +162,6 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
     /// <inheritdoc />
     public TRoom GetRandomRoom()
     {
-        // Todo: check what use this method and if the overload with predicate is better
         int x = Random.Shared.Next(mapDimension);
         int y = Random.Shared.Next(mapDimension);
 
@@ -232,10 +231,10 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
                 string roomChar = room switch
                 {
                     null => "   ",
-                    _ when showKey && room.ItemsOnGround.Any(item => item is IKeyItem) => "[K]",
-                    _ when showEnemy && entities?.Any(entity => entity is IEnemy<TRoom> && entity.CurrentRoom.Equals(room)) == true => "[M]",
-                    _ when showPlayer && entities?.Any(entity => entity is IPlayer<TRoom> && entity.CurrentRoom.Equals(room)) == true => "[P]",
-                    _ when showMarlo && entities?.Any(entity => entity is IMarlo<TRoom> && entity.CurrentRoom.Equals(room)) == true => "[N]",
+                    _ when showKey && room.ItemsOnGround.OfType<IKeyItem>().Any() => "[K]",
+                    _ when showEnemy && entities?.OfType<IEnemy<TRoom>>().Any(enemy => enemy.CurrentRoom.Equals(room)) == true => "[M]",
+                    _ when showPlayer && entities?.OfType<IPlayer<TRoom>>().Any(player => player.CurrentRoom.Equals(room)) == true => "[P]",
+                    _ when showMarlo && entities?.OfType<IMarlo<TRoom>>().Any(marlo => marlo.CurrentRoom.Equals(room)) == true => "[N]",
                     _ when showStartingRoom && room.IsStartingRoom => "[S]",
                     _ => showRooms ? "[ ]" : "   "
                 };
@@ -255,7 +254,7 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
         mapBuilder.AppendLine("+");
 
         // Output the entire map at once
-        GameConsole.WriteLine(mapBuilder.ToString());
+        GameConsole.WriteLine(mapBuilder.ToString(), skipWriteAnimation: true);
     }
 
     #endregion

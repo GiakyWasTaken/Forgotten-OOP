@@ -22,27 +22,31 @@ public interface IConsole
     /// Writes a message to the console with a newline at the end
     /// </summary>
     /// <param name="message">A string to display in the console</param>
-    public void WriteLine(string message = "");
+    /// <param name="skipWriteAnimation">A boolean indicating whether to skip the write animation</param>
+    public void WriteLine(string message = "", bool skipWriteAnimation = false);
 
     /// <summary>
     /// Writes a message to the console
     /// </summary>
     /// <param name="message">A string to display in the console</param>
-    public void Write(string message);
+    /// <param name="skipWriteAnimation">A boolean indicating whether to skip the write animation</param>
+    public void Write(string message, bool skipWriteAnimation = false);
 
     /// <summary>
     /// Reads a line from the console with a prompt
     /// </summary>
     /// <param name="prompt">A string to display before reading input</param>
+    /// <param name="skipWriteAnimation">A boolean indicating whether to skip the write animation</param>
     /// <returns>The input string from the console</returns>
-    public string ReadLine(string prompt = "");
+    public string ReadLine(string prompt = "", bool skipWriteAnimation = false);
 
     /// <summary>
     /// Reads and returns the next command from the input stream
     /// </summary>
     /// <param name="prompt">A string to display before reading the command</param>
+    /// <param name="skipWriteAnimation">A boolean indicating whether to skip the write animation</param>
     /// <returns>A <see cref="ICommand"/> object representing the next command</returns>
-    public ICommand ReadCommand(string prompt = "");
+    public ICommand ReadCommand(string prompt = "", bool skipWriteAnimation = false);
 
     /// <summary>
     /// Clears the console output

@@ -14,6 +14,7 @@ using Forgotten_OOP.Enums;
 using Forgotten_OOP.GameManagers.Interfaces;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Items;
+using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Logging.Interfaces;
 using Forgotten_OOP.Mapping;
 
@@ -137,7 +138,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         GameLogger.Log($"Action count incremented: {ActionsCount}");
 
         // Move enemies in the game world based on their action delay
-        Entities.Where(entity => entity is IEnemy<Room> enemy && ActionsCount % enemy.ActionDelay == 0)
+        Entities.OfType<IEnemy<Room>>().Where(enemy => enemy.ActionDelay % ActionsCount == 0)
             .ToList()
             .ForEach(enemy =>
             {
@@ -306,7 +307,46 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
         GameLogger.Log($"Spawned {GameConfigs.NumKeys} keys in the map.");
 
-        // Todo: spawn other items
+        // Spawn teleportation altar in the last pink room
+        Room lastPinkRoom = map.Rooms.Last(room => room is { IsPinkRoom: true });
+        lastPinkRoom.ItemsOnGround.Push(new TeleportAltar());
+
+        GameLogger.Log("Spawned Teleport Altar in the last pink room.");
+
+        List<Room> itemRooms = [.. map.Rooms.Where(room => room is { IsPinkRoom: false, IsStartingRoom: false })];
+
+        // Spawn torch in the map
+        itemRooms[Random.Shared.Next(itemRooms.Count)].ItemsOnGround.Push(new Torch());
+
+        // Get the assembly containing the types
+        Assembly assembly = Assembly.GetExecutingAssembly();
+
+        // Find all types that extend the base class "Item" but do not implement "IKeyItem"
+        List<Type> nonKeyItems = [.. assembly.GetTypes().Where(type => type is { IsClass: true, IsAbstract: false } && type.IsSubclassOf(typeof(Item)) && !typeof(IKeyItem).IsAssignableFrom(type))];
+
+        // Map item types to their respective counts from GameConfigs by matching property names with class names
+        Dictionary<Type, int> itemCounts = [];
+
+        foreach (var itemType in nonKeyItems)
+        {
+            // Search for a property in GameConfigs with a name matching the item type name
+            var property = typeof(Configs).GetProperty($"Num{itemType.Name}");
+            if (property != null && property.PropertyType == typeof(int))
+            {
+                // Add the item type and its count from GameConfigs to the dictionary
+                itemCounts[itemType] = (int)property.GetValue(GameConfigs)!;
+            }
+        }
+
+        // Spawn items in the map
+        foreach (var (itemType, count) in itemCounts)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                Room targetRoom = itemRooms[Random.Shared.Next(itemRooms.Count)];
+                targetRoom.ItemsOnGround.Push((Item)Activator.CreateInstance(itemType)!);
+            }
+        }
     }
 
     /// <summary>
@@ -336,18 +376,9 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         if (Player.FollowingEntities.Count == 0 && Player.CurrentRoom.IsPinkRoom)
         {
             // Find Marlo in the current room if present
-            Entity? marloInRoom = null;
-            foreach (var entity in Entities)
-            {
-                if (entity is not IMarlo<Room> || !entity.CurrentRoom.Equals(Player.CurrentRoom))
-                {
-                    continue;
-                }
+            IMarlo<Room>? marloInRoom = Entities.OfType<IMarlo<Room>>().FirstOrDefault(entity => entity.CurrentRoom.Equals(Player.CurrentRoom));
 
-                marloInRoom = entity;
-                break;
-            }
-
+            // Only search for Marlo if we're in a pink room with no followers
             if (marloInRoom != null)
             {
                 if (isFirstPlayerMarloEncounter)
@@ -361,7 +392,12 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
                     GameConsole.WriteLine("A ri bella per marlo");
                 }
 
-                Player.FollowingEntities.Add(marloInRoom);
+                // Close the room after Marlo encounter
+                // Todo: meglio che si chiuda sempre e che sei forzato ad usarlo sempre l'altare o no?
+                // in caso spostalo sopra
+                Player.CurrentRoom.IsClosed = true;
+
+                Player.FollowingEntities.Add((Entity)marloInRoom);
             }
         }
 
@@ -378,12 +414,24 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
             GameLogger.Log($"{entity.Name} followed the player moving to {Player.CurrentRoom}");
         });
 
-        // Check for enemy contact
-        if (Entities.Any(ent => ent is IEnemy<Room> && ent.CurrentRoom.Equals(Player.CurrentRoom)))
+        // Check for enemy contact - first find enemies in the current room
+        List<IEnemy<Room>> enemiesInCurrentRoom = Entities.OfType<IEnemy<Room>>().Where(ent => ent.CurrentRoom.Equals(Player.CurrentRoom)).ToList();
+
+        if (enemiesInCurrentRoom.Count > 0)
         {
             GameConsole.WriteLine("Semo stati sgamati, scappa"); // Todo: check line
 
-            Player.FollowingEntities.ForEach(entity =>
+            Player.Lives--;
+
+            // Store IEnemy<Room> entities in a HashSet for faster lookup
+            var enemyRooms = new HashSet<Room>(
+                Entities.OfType<IEnemy<Room>>().Select(e => e.CurrentRoom));
+
+            Func<Room, bool> teleportPredicate = room =>
+                room is { IsPinkRoom: false, IsStartingRoom: false } &&
+                !enemyRooms.Contains(room);
+
+            foreach (var entity in Player.FollowingEntities)
             {
                 if (entity is IMarlo<Room> marlo)
                 {
@@ -391,14 +439,32 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
                 }
                 else
                 {
-                    entity.Teleport(GameMap.GetRandomRoom(room =>
-                        room is { IsPinkRoom: false, IsStartingRoom: false }
-                        && !Entities.Any(enemy =>
-                            enemy is IEnemy<Room>
-                            && entity.CurrentRoom.Equals(room))));
+                    entity.Teleport(GameMap.GetRandomRoom(teleportPredicate));
                 }
+            }
 
-            });
+            Player.Teleport(GameMap.GetRandomRoom(teleportPredicate));
+
+            switch (Player.Lives)
+            {
+                case 1:
+                    GameConsole.WriteLine("Mi manca una vita");
+                    break;
+                case 2:
+                    GameConsole.WriteLine("Mi mancano due vite");
+                    break;
+            }
+        }
+        else
+        {
+            // Get adjacent rooms once
+            var adjacentRooms = Player.CurrentRoom.GetAdjacentRooms().Values;
+
+            if (Entities.OfType<IEnemy<Room>>()
+                .Any(enemy => adjacentRooms.Contains(enemy.CurrentRoom)))
+            {
+                GameConsole.WriteLine("Sento il respiro di un nemico nelle stanze adiacenti, fai attenzione!");
+            }
         }
     }
 
@@ -410,7 +476,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     private bool? CheckWinLoseCon()
     {
         // Check if the player has won or lost the game
-        if (Player.CurrentRoom.IsStartingRoom && Player.FollowingEntities.Any(entity => entity is IMarlo<Room>))
+        if (Player.CurrentRoom.IsStartingRoom && Player.FollowingEntities.OfType<IMarlo<Room>>().Any())
         {
             IsGameRunning = false;
             return true;

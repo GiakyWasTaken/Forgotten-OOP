@@ -56,10 +56,12 @@ public class BackPackCommand(GameManager game) : BaseCommand, IConsolable, ILogg
 
             if (!current)
             {
-                GameConsole.WriteLine("<== oggetto in cima");
+                GameConsole.WriteLine(" <== oggetto in cima");
                 current = true;
             }
         }
+
+        GameConsole.WriteLine();
 
         GameLogger.Log("Player viewed backpack");
     }

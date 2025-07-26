@@ -7,6 +7,7 @@ using Forgotten_OOP.Enums;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Items;
+using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Logging.Interfaces;
 using Forgotten_OOP.Mapping;
 
@@ -44,16 +45,16 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
             return;
         }
 
-        game.GameMap.TryGetRoomInDirection(game.Player.CurrentRoom, direction, out Room? room);
-
-        if (room is null)
+        if (!game.GameMap.TryGetRoomInDirection(game.Player.CurrentRoom, direction, out Room? room) || room is null)
         {
             return;
         }
 
         if (room.IsClosed)
         {
-            if (game.Player.KeyItems.FirstOrDefault(item => item is Key) is not Key key)
+            var key = game.Player.KeyItems.OfType<Key>().FirstOrDefault();
+
+            if (key is null)
             {
                 return;
             }
@@ -66,6 +67,19 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
         }
 
         game.Player.Move(direction);
+
+        switch (game.Player.CurrentRoom.ItemsOnGround.OfType<IGrabbable>().Count())
+        {
+            case 0:
+                GameConsole.WriteLine("Non c'è nulla in questa stanza");
+                break;
+            case 1:
+                GameConsole.WriteLine("Vedo qualcosa per terra nella penombra, forse dovrei raccoglierlo");
+                break;
+            default:
+                GameConsole.WriteLine("Ci sono degli oggetti per terra, forse dovrei raccoglierli");
+                break;
+        }
 
         game.IncrementActionsCount();
 
@@ -80,15 +94,22 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
     protected override bool GetAvailability(out string tryExecutionMessage)
     {
         tryExecutionMessage = string.Empty;
-        game.GameMap.TryGetRoomInDirection(game.Player.CurrentRoom, direction, out Room? room);
 
-        if (room is null)
+        if (!game.GameMap.TryGetRoomInDirection(game.Player.CurrentRoom, direction, out Room? room) || room is null)
         {
             tryExecutionMessage = "Non posso andare in quella direzione";
             return false;
         }
 
-        if (room.IsClosed && !game.Player.KeyItems.Any(item => item is Key))
+        // Specific line for when the player encounters marlo and is forced to use the altar
+        if (game.Player.CurrentRoom.IsClosed)
+        {
+            tryExecutionMessage = "La porta è bloccata dall'esterno, non posso uscire così.\n" +
+                "Dai Marlo, usiamo l'altare che sta nell'angolo";
+            return false;
+        }
+
+        if (room.IsClosed && !game.Player.KeyItems.OfType<Key>().Any())
         {
             tryExecutionMessage = "La porta è chiusa e adesso non riesco ad aprirla, però sento qualcuno parlare attraverso"; // Todo: check line
             return false;

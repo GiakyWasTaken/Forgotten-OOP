@@ -94,7 +94,7 @@ public class SettingsMenu : IMenu, IConfigurable, ILoggable, IConsolable
                     ShowItemMenu();
                     break;
                 case 5:
-                    ChangeConfigValue("Vuoi cambiare il numero di chiavi generate nelle stanze? Default = 10,", configs.NumKeys, value => configs.NumKeys = value);
+                    ChangeConfigValue("Vuoi cambiare il numero di chiavi generate nelle stanze? Default = 1,", configs.NumKeys, value => configs.NumKeys = value);
                     break;
                 case 6:
                     WriteConfigs(Configs);
@@ -117,37 +117,45 @@ public class SettingsMenu : IMenu, IConfigurable, ILoggable, IConsolable
         // Find all types that extend the base class "Item" but do not implement "IKeyItem"
         List<Type> nonKeyItems = [.. assembly.GetTypes().Where(type => type is { IsClass: true, IsAbstract: false } && type.IsSubclassOf(typeof(Item)) && !typeof(IKeyItem).IsAssignableFrom(type))];
 
+        Configs defaultConfigs = new Configs();
+
         while (true)
         {
             GameConsole.WriteLine("Di che cosa vuoi cambiare il numero?");
 
-            for (int i = 1; i <= nonKeyItems.Count; i++)
+            for (int i = 0; i < nonKeyItems.Count; i++)
             {
-                GameConsole.WriteLine($"{i}: {nonKeyItems[i].Name}");
+                GameConsole.WriteLine($"{i + 1}: {nonKeyItems[i].Name}");
             }
-            GameConsole.WriteLine(nonKeyItems.Count + ": Torna indietro");
+            GameConsole.WriteLine($"{nonKeyItems.Count + 1}: Torna indietro");
 
-            bool tryParse = TryParse(GameConsole.ReadLine(), out int choice);
-
-            switch (tryParse ? choice : -1)
+            if (!TryParse(GameConsole.ReadLine(), out int choice))
             {
-                case 1:
-                    ChangeConfigValue("Vuoi cambiare il numero di bende? Default = 3,", configs.NumBandage, value => configs.NumBandage = value);
-                    break;
-                case 2:
-                    ChangeConfigValue("Vuoi cambiare il numero di occhi del guardiano? Default = 1,", configs.NumGuardianEye, value => configs.NumGuardianEye = value);
-                    break;
-                case 3:
-                    ChangeConfigValue("Vuoi cambiare il numero di repellenti? Default = 2,", configs.NumRepellent, value => configs.NumRepellent = value);
-                    break;
-                case 4:
-                    ChangeConfigValue("Vuoi cambiare il numero di fiale del teletrasporto? Default = 2,", configs.NumTeleportVial, value => configs.NumTeleportVial = value);
-                    break;
-                case 5:
-                    return;
-                default:
-                    GameConsole.WriteLine("Scelta non riconosciuta, riprova");
-                    break;
+                GameConsole.WriteLine("Scelta non riconosciuta, riprova");
+                continue;
+            }
+
+            if (choice >= 1 && choice <= nonKeyItems.Count)
+            {
+                var selectedItemType = nonKeyItems[choice - 1];
+                var property = typeof(Configs).GetProperty($"Num{selectedItemType.Name}");
+
+                if (property != null)
+                {
+                    ChangeConfigValue(
+                        $"Vuoi cambiare il numero di {selectedItemType.Name}? Default = {(int)(property.GetValue(defaultConfigs) ?? 0)},",
+                        (int)(property.GetValue(configs) ?? 0),
+                        value => property.SetValue(configs, value)
+                    );
+                }
+            }
+            else if (choice == nonKeyItems.Count + 1)
+            {
+                return;
+            }
+            else
+            {
+                GameConsole.WriteLine("Scelta non riconosciuta, riprova");
             }
         }
     }
@@ -166,7 +174,7 @@ public class SettingsMenu : IMenu, IConfigurable, ILoggable, IConsolable
             {
                 string json = File.ReadAllText(configPath);
 
-                loaded = JsonSerializer.Deserialize<Configs>(json, jsonSerializerOptions);
+                loaded = JsonSerializer.Deserialize<Configs>(json, jsonSerializerOptions) ?? new Configs();
             }
             else
             {

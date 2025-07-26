@@ -43,7 +43,7 @@ public class MapCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
     /// <inheritdoc />
     public override void Execute()
     {
-        bool showKeyAndMarlo = game.Player.KeyItems.Any(k => k is Key);
+        bool showKeyAndMarlo = game.Player.KeyItems.OfType<Key>().Any();
 
         game.GameMap.PrintMap([.. game.Entities], showPlayer: true, showKey: showKeyAndMarlo, showMarlo: showKeyAndMarlo);
     }

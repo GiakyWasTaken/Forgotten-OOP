@@ -4,7 +4,7 @@
 /// The configuration settings for the Forgotten OOP game
 /// </summary>
 [Serializable]
-public struct Configs
+public class Configs
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Configs"/> class

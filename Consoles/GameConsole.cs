@@ -21,12 +21,12 @@ public class GameConsole : IConsole, ILoggable
     /// <summary>
     /// Represents the default delay, in milliseconds, between character outputs
     /// </summary>
-    private const int CharDelay = 10;
+    private const int CharDelay = 5;
 
     /// <summary>
     /// Represents the multiplier for the delay when a new line character is encountered
     /// </summary>
-    private const int NewLineMultiplier = 100;
+    private const int NewLineMultiplier = 10;
 
     #endregion
 
@@ -43,15 +43,21 @@ public class GameConsole : IConsole, ILoggable
     #region Public Methods
 
     /// <inheritdoc />
-    public void WriteLine(string message = "")
+    public void WriteLine(string message = "", bool skipWriteAnimation = false)
     {
-        Write(message.Trim() + "\n");
+        Write(message.TrimEnd() + "\n", skipWriteAnimation);
     }
 
     /// <inheritdoc />
-    public void Write(string message)
+    public void Write(string message, bool skipWriteAnimation = false)
     {
         GameLogger.Log(message);
+
+        if (skipWriteAnimation)
+        {
+            Console.Write(message);
+            return;
+        }
 
         // Animate text character by character
         for (int i = 0; i < message.Length; i++)
@@ -81,18 +87,18 @@ public class GameConsole : IConsole, ILoggable
     }
 
     /// <inheritdoc />
-    public string ReadLine(string prompt = "")
+    public string ReadLine(string prompt = "", bool skipWriteAnimation = false)
     {
         if (!string.IsNullOrEmpty(prompt))
         {
-            Write(prompt);
+            Write(prompt, skipWriteAnimation);
         }
 
         return Console.ReadLine() ?? string.Empty;
     }
 
     /// <inheritdoc />
-    public ICommand ReadCommand(string prompt = "")
+    public ICommand ReadCommand(string prompt = "", bool skipWriteAnimation = false)
     {
         ICommand? command;
 
@@ -100,7 +106,7 @@ public class GameConsole : IConsole, ILoggable
         {
             if (!string.IsNullOrEmpty(prompt))
             {
-                Write(prompt);
+                Write(prompt, skipWriteAnimation);
             }
 
             string input = ReadLine();
@@ -109,7 +115,7 @@ public class GameConsole : IConsole, ILoggable
 
             if (command == null)
             {
-                WriteLine("Non so cosa significa...");
+                WriteLine("Non so cosa significa...", skipWriteAnimation);
             }
             else if (!command.IsAvailable)
             {
@@ -133,7 +139,7 @@ public class GameConsole : IConsole, ILoggable
 
         foreach (ICommand command in Commands)
         {
-            WriteLine($"{command}");
+            WriteLine($"{command}", true);
         }
     }
 
