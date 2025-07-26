@@ -76,7 +76,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
         GameMap = InitializeMap();
 
-        Player = new Player("Hero", GameMap.StartingRoom, GameMap, 3);
+        Player = new Player("Shiro", GameMap.StartingRoom, GameMap, 3);
         Entities = [Player];
 
         SpawnItems(GameMap);
@@ -95,7 +95,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
             "Non provare ad affrontarlo. Non puoi.\n" +
             "Porta con te la Panacea. È l’unica cosa che può salvarmi.\n" +
             "Trovami. salvami. Fai in fretta.\n" +
-            "Takumi.\"");
+            "Marlo.\"");
     }
 
     #endregion
@@ -156,6 +156,12 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
                 if (availableRooms.Count > 0)
                 {
+                    // If possible, remove the previous room from the available rooms
+                    if (availableRooms.Count > 1)
+                    {
+                        availableRooms.Remove(enemy.PreviousRoom);
+                    }
+
                     Room nextRoom = availableRooms[Random.Shared.Next(availableRooms.Count)];
 
                     enemy.Move(nextRoom);
@@ -415,7 +421,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         });
 
         // Check for enemy contact - first find enemies in the current room
-        List<IEnemy<Room>> enemiesInCurrentRoom = Entities.OfType<IEnemy<Room>>().Where(ent => ent.CurrentRoom.Equals(Player.CurrentRoom)).ToList();
+        List<IEnemy<Room>> enemiesInCurrentRoom = [.. Entities.OfType<IEnemy<Room>>().Where(ent => ent.CurrentRoom.Equals(Player.CurrentRoom))];
 
         if (enemiesInCurrentRoom.Count > 0)
         {
@@ -427,7 +433,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
             var enemyRooms = new HashSet<Room>(
                 Entities.OfType<IEnemy<Room>>().Select(e => e.CurrentRoom));
 
-            Func<Room, bool> teleportPredicate = room =>
+            bool TeleportPredicate(Room room) =>
                 room is { IsPinkRoom: false, IsStartingRoom: false } &&
                 !enemyRooms.Contains(room);
 
@@ -439,11 +445,11 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
                 }
                 else
                 {
-                    entity.Teleport(GameMap.GetRandomRoom(teleportPredicate));
+                    entity.Teleport(GameMap.GetRandomRoom(TeleportPredicate));
                 }
             }
 
-            Player.Teleport(GameMap.GetRandomRoom(teleportPredicate));
+            Player.Teleport(GameMap.GetRandomRoom(TeleportPredicate));
 
             switch (Player.Lives)
             {

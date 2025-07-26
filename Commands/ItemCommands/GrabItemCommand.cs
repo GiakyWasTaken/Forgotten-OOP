@@ -48,7 +48,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
             return;
         }
 
-        List<IItem> grabbableItems = game.Player.CurrentRoom.ItemsOnGround.ToList();
+        List<IItem> grabbableItems = [.. game.Player.CurrentRoom.ItemsOnGround];
 
         if (grabbableItems.Count == 1)
         {
@@ -60,7 +60,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
 
         for (int i = 0; i < grabbableItems.Count; i++)
         {
-            GameConsole.WriteLine($"{i + 1}. {grabbableItems[i].Name} - {grabbableItems[i].Description}");
+            GameConsole.WriteLine($"{i + 1}. {grabbableItems[i].Name}");
         }
 
         int selectedIndex;
@@ -89,7 +89,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     {
         tryExecutionMessage = string.Empty;
 
-        List<IStorable<Room>> storableItems = game.Player.CurrentRoom.ItemsOnGround.OfType<IStorable<Room>>().ToList();
+        List<IGrabbable> grabbableItems = game.Player.CurrentRoom.ItemsOnGround.OfType<IGrabbable>().ToList();
 
         if (game.Player.CurrentRoom.ItemsOnGround.Count == 0)
         {
@@ -97,13 +97,13 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
             return false;
         }
 
-        if (storableItems.Count == 0)
+        if (grabbableItems.Count == 0)
         {
             tryExecutionMessage = "Non posso raccogliere nessun oggetto qua";
             return false;
         }
 
-        if (!storableItems.Any(item => item.Weight + game.Player.GetCurrentWeight() <= 10))
+        if (!grabbableItems.Any(item => item is not IStorable<Room> storable || storable.Weight + game.Player.GetCurrentWeight() <= 10))
         {
             tryExecutionMessage = "Non posso raccogliere nessun oggetto, il mio zaino sarà troppo pesante";
             return false;

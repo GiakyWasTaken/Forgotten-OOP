@@ -18,7 +18,7 @@ using Forgotten_OOP.Mapping;
 /// Represents a powerful tool that reveals the location of an enemy in an adjacent room
 /// </summary>
 public class GuardianEye() : Item("Occhio del Guardiano",
-    "Un occhio del guardiano, quando Lui si avvicina, l’Occhio indica con precisione in quale stanza adiacente si nasconde. E' uno strumento molto potente, usalo con saggezza"), IStorable<Room>, IConsolable, ILoggable
+    "Un occhio del guardiano, quando Lui si avvicina, l’Occhio indica con precisione in quale stanza adiacente si nasconde. È uno strumento molto potente, usalo con saggezza"), IStorable<Room>, IConsolable, ILoggable
 {
     #region Private Fields
 
