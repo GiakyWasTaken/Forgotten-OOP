@@ -47,7 +47,7 @@ public class BackPackCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     {
         if (!GetAvailability())
         {
-            GameConsole.WriteLine("Non ho oggetti nello zaino"); //TODO Find a better line
+            GameConsole.WriteLine("Il mio zaino è vuoto");
             return;
         }
 

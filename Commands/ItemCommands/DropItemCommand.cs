@@ -43,7 +43,7 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     {
         if (!GetAvailability())
         {
-            GameConsole.WriteLine("Non posso dropparlo"); //TODO Find a better line
+            GameConsole.WriteLine("Non posso perdere questo oggetto..."); 
             return;
         }
 

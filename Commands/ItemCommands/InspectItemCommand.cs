@@ -43,7 +43,7 @@ public class InspectItemCommand(GameManager game) : BaseCommand, IConsolable, IL
     {
         if (!GetAvailability())
         {
-            GameConsole.WriteLine("Non posso Ispezionarlo"); //TODO Find a better line
+            GameConsole.WriteLine("Non riesco a capire cosa sia...");
             return;
         }
 
