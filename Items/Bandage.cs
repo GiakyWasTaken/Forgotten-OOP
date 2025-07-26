@@ -1,4 +1,4 @@
-﻿namespace Forgotten_OOP.Items;
+namespace Forgotten_OOP.Items;
 
 #region Using Directives
 
@@ -42,16 +42,15 @@ public class Bandage() : Item("Bende", "Una benda curativa, permettono di recupe
     {
         if (game.Player.Lives < 3)
         {
-            game.Player.LifeChange(1, game);
+            game.Player.Lives++;
 
             GameLogger.Log("Player used bandages");
-            game.IncrementActionsCount();
 
             GameConsole.WriteLine("La ferita si chiude... mi sento molto meglio");
         }
         else
         {
-            GameConsole.WriteLine("Non sono ferito, non c'è ne è bisogno");
+            GameConsole.WriteLine("Non sono ferito, non c'è n'era bisogno");
         }
     }
 

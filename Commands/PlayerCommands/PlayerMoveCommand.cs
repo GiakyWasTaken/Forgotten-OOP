@@ -44,8 +44,31 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
             return;
         }
 
+        game.GameMap.TryGetRoomInDirection(game.Player.CurrentRoom, direction, out Room? room);
+
+        if (room is null)
+        {
+            return;
+        }
+
+        if (room.IsClosed)
+        {
+            if (game.Player.KeyItems.FirstOrDefault(item => item is Key) is not Key key)
+            {
+                return;
+            }
+
+            game.Player.KeyItems.Remove(key);
+
+            GameLogger.Log($"Player used a key to open the door of the room {room}");
+
+            GameConsole.WriteLine("La porta è chiusa, ma sono riuscito ad aprirla con la chiave che ho trovato");
+        }
+
         game.Player.Move(direction);
+
         game.IncrementActionsCount();
+
         GameLogger.Log("Player moved in direction " + Name.ToLowerInvariant());
     }
 

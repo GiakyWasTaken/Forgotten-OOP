@@ -4,6 +4,7 @@
 
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.Entities;
+using Forgotten_OOP.Entities.Interfaces;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Items.Interfaces;
@@ -42,31 +43,26 @@ public class Repellent() : Item("Scaccia-Presenze", "Se usato, Lui si allontaner
     {
         game.Entities.ForEach(entity =>
         {
-            if (entity is not Enemy enemy)
+            if (entity is not IEnemy<Room> enemy)
             {
                 return;
             }
 
-            bool check = true;
+            Room teleportTo = game.GameMap.GetRandomRoom(room =>
+                !(
+                    room.IsPinkRoom
+                    || room.IsStartingRoom
+                    || room.Equals(game.Player.CurrentRoom)
+                ));
 
-            while (check)
-            {
-                Room teleportTo = game.GameMap.GetRandomRoom();
-
-                if (!teleportTo.IsPinkRoom && !teleportTo.Equals(game.Player.CurrentRoom))
-                {
-                    enemy.Teleport(teleportTo);
-                    check = false;
-                }
-            }
+            enemy.Teleport(teleportTo);
 
             GameLogger.Log("Player used Repellent");
             GameLogger.Log($"{enemy.Name} moved to room {enemy.CurrentRoom}");
 
-            game.IncrementActionsCount();
-
-            GameConsole.WriteLine("La miscela si disperde. Lo senti allontanarsi");
         });
+
+        GameConsole.WriteLine("La miscela si disperde. Lo senti allontanarsi");
     }
 
     /// <inheritdoc />
@@ -75,7 +71,7 @@ public class Repellent() : Item("Scaccia-Presenze", "Se usato, Lui si allontaner
         player.Backpack.Push(this);
         GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
         GameConsole.WriteLine($"Hai raccolto: {Name}");
-        GameConsole.WriteLine(this.Description);
+        GameConsole.WriteLine(Description);
     }
 
     #endregion

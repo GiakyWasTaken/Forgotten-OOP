@@ -4,6 +4,7 @@
 
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.Entities;
+using Forgotten_OOP.Entities.Interfaces;
 using Forgotten_OOP.Enums;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
@@ -43,7 +44,7 @@ public class GuardianEye() : Item("Occhio del Guardiano",
     {
         game.Entities.ForEach(entity =>
         {
-            if (entity is not Enemy enemy)
+            if (entity is not IEnemy<Room> enemy)
             {
                 return;
             }
@@ -63,8 +64,6 @@ public class GuardianEye() : Item("Occhio del Guardiano",
         });
 
         GameLogger.Log("Player used Guardian's Eye");
-
-        game.IncrementActionsCount();
     }
 
     /// <inheritdoc />

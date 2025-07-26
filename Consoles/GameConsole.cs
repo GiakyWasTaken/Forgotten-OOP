@@ -71,7 +71,6 @@ public class GameConsole : IConsole, ILoggable
 
             command = Commands.FirstOrDefault(cmd => input.StartsWith(cmd.Name, StringComparison.InvariantCultureIgnoreCase));
 
-            // Todo: implement a re prompt mechanism if command is null
             if (command == null)
             {
                 WriteLine("Non so cosa significa...");

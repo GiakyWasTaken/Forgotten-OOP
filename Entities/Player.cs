@@ -4,7 +4,6 @@
 
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.Entities.Interfaces;
-using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Logging.Interfaces;
@@ -71,40 +70,6 @@ public class Player(string name, Room startingRoom, Map<Room> gameMap, int lives
     public float GetCurrentWeight()
     {
         return Backpack.Sum(item => item.Weight);
-    }
-
-    // Todo: remove
-    public void LifeChange(int change, GameManager game)
-    {
-        Lives += change;
-        GameLogger.Log("player lives changed by " + change);
-        if (Lives == 0)
-        {
-            //TODO: Gameover message
-        }
-
-        if (change < 0)
-        {
-            game.Entities.ForEach(entity =>
-            {
-                if (entity is Enemy enemy)
-                {
-                    Room teleportTo;
-                    bool check = true;
-                    while (check)
-                    {
-                        teleportTo = game.GameMap.GetRandomRoom();
-                        if (!teleportTo.IsPinkRoom && !teleportTo.Equals(CurrentRoom) && !teleportTo.Equals(enemy.CurrentRoom))
-                        {
-                            Teleport(teleportTo);
-                            check = false;
-                            GameLogger.Log("Teleported player to " + CurrentRoom + " after taking damage");
-                        }
-                    }
-                }
-            });
-
-        }
     }
 
     #endregion

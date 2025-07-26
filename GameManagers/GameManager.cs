@@ -9,6 +9,7 @@ using System.Reflection;
 using Forgotten_OOP.Commands.Interfaces;
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.Entities;
+using Forgotten_OOP.Entities.Interfaces;
 using Forgotten_OOP.Enums;
 using Forgotten_OOP.GameManagers.Interfaces;
 using Forgotten_OOP.Helpers;
@@ -23,6 +24,15 @@ using Forgotten_OOP.Mapping;
 /// </summary>
 public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConsolable, ILoggable
 {
+    #region Private Fields
+
+    /// <summary>
+    /// Indicates whether the player and Marlo are encountering each other for the first time
+    /// </summary>
+    private bool isFirstPlayerMarloEncounter = true;
+
+    #endregion
+
     #region Properties
 
     /// <inheritdoc />
@@ -94,11 +104,14 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     /// <inheritdoc />
     public void StartGameLoop()
     {
-        bool? win;
-
         IsGameRunning = true;
 
-        do
+        // Win means the player has completed the game
+        // false means the player has lost
+        // null means the game is still running or paused
+        bool? win = CheckWinLoseCon();
+
+        while (IsGameRunning)
         {
             ICommand cmd = GameConsole.ReadCommand("Cosa fare? ");
 
@@ -107,8 +120,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
             ProcessEntities();
 
             win = CheckWinLoseCon();
-
-        } while (IsGameRunning);
+        }
 
         if (win != null)
         {
@@ -123,6 +135,45 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     {
         ActionsCount++;
         GameLogger.Log($"Action count incremented: {ActionsCount}");
+
+        // Move enemies in the game world based on their action delay
+        Entities.Where(entity => entity is IEnemy<Room> enemy && ActionsCount % enemy.ActionDelay == 0)
+            .ToList()
+            .ForEach(enemy =>
+            {
+                Dictionary<Direction, Room> adjRooms = enemy.CurrentRoom.GetAdjacentRooms();
+
+                List<Room> availableRooms = [];
+
+                foreach (Direction direction in adjRooms.Keys)
+                {
+                    if (adjRooms[direction] is { IsPinkRoom: false, IsStartingRoom: false } room)
+                    {
+                        availableRooms.Add(room);
+                    }
+                }
+
+                if (availableRooms.Count > 0)
+                {
+                    Room nextRoom = availableRooms[Random.Shared.Next(availableRooms.Count)];
+
+                    enemy.Move(nextRoom);
+
+                    GameLogger.Log($"{enemy.Name} moved to room {nextRoom.GetCoordinates()}");
+                }
+                else
+                {
+                    GameLogger.Log($"{enemy.Name} could not move, no available rooms found.");
+                }
+            });
+    }
+
+    /// <inheritdoc />
+    public void PauseGame()
+    {
+        IsGameRunning = false;
+        GameLogger.Log("Game paused by user request");
+        GameConsole.WriteLine("Game paused, if you want save the progress in the main menu before exiting");
     }
 
     /// <inheritdoc />
@@ -281,37 +332,74 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     /// </summary>
     private void ProcessEntities()
     {
+        // Check Marlo encounter
+        if (Player.FollowingEntities.Count == 0 && Player.CurrentRoom.IsPinkRoom)
+        {
+            // Find Marlo in the current room if present
+            Entity? marloInRoom = null;
+            foreach (var entity in Entities)
+            {
+                if (entity is not IMarlo<Room> || !entity.CurrentRoom.Equals(Player.CurrentRoom))
+                {
+                    continue;
+                }
+
+                marloInRoom = entity;
+                break;
+            }
+
+            if (marloInRoom != null)
+            {
+                if (isFirstPlayerMarloEncounter)
+                {
+                    // Todo: add line
+                    GameConsole.WriteLine("Bella pe marlo");
+                    isFirstPlayerMarloEncounter = false;
+                }
+                else
+                {
+                    GameConsole.WriteLine("A ri bella per marlo");
+                }
+
+                Player.FollowingEntities.Add(marloInRoom);
+            }
+        }
+
+        // Update following entities
         Player.FollowingEntities.ForEach(entity =>
         {
+            if (entity.CurrentRoom.Equals(Player.CurrentRoom))
+            {
+                return;
+            }
+
             entity.Move(Player.CurrentRoom);
+
+            GameLogger.Log($"{entity.Name} followed the player moving to {Player.CurrentRoom}");
         });
 
-        // Move enemies in the game world based on their action delay
-        Entities.Where(entity => entity is Enemy enemy && ActionsCount % enemy.ActionDelay == 0)
-            .ToList()
-            .ForEach(enemy =>
+        // Check for enemy contact
+        if (Entities.Any(ent => ent is IEnemy<Room> && ent.CurrentRoom.Equals(Player.CurrentRoom)))
+        {
+            GameConsole.WriteLine("Semo stati sgamati, scappa"); // Todo: check line
+
+            Player.FollowingEntities.ForEach(entity =>
             {
-                Dictionary<Direction, Room> adjRooms = enemy.CurrentRoom.GetAdjacentRooms();
-
-                List<Room> availableRooms = [];
-
-                foreach (Direction direction in adjRooms.Keys)
+                if (entity is IMarlo<Room> marlo)
                 {
-                    if (adjRooms[direction] is { IsPinkRoom: false } room)
-                    {
-                        availableRooms.Add(room);
-                    }
+                    marlo.ReturnToInitialRoom();
+                }
+                else
+                {
+                    entity.Teleport(GameMap.GetRandomRoom(room =>
+                        room is { IsPinkRoom: false, IsStartingRoom: false }
+                        && !Entities.Any(enemy =>
+                            enemy is IEnemy<Room>
+                            && entity.CurrentRoom.Equals(room))));
                 }
 
-                if (availableRooms.Count > 0)
-                {
-                    Room nextRoom = availableRooms[Random.Shared.Next(availableRooms.Count)];
-
-                    enemy.Move(nextRoom);
-
-                    GameLogger.Log($"{enemy.Name} moved to room {nextRoom.GetCoordinates()}");
-                }
             });
+        }
     }
 
     /// <summary>
@@ -322,13 +410,15 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     private bool? CheckWinLoseCon()
     {
         // Check if the player has won or lost the game
-        if (Player.CurrentRoom.IsStartingRoom && Player.FollowingEntities.Any(entity => entity.Name == "Marlo"))
+        if (Player.CurrentRoom.IsStartingRoom && Player.FollowingEntities.Any(entity => entity is IMarlo<Room>))
         {
+            IsGameRunning = false;
             return true;
         }
 
         if (Player.Lives <= 0)
         {
+            IsGameRunning = false;
             return false;
         }
 

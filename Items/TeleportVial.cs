@@ -4,6 +4,7 @@
 
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.Entities;
+using Forgotten_OOP.Entities.Interfaces;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.Helpers;
 using Forgotten_OOP.Items.Interfaces;
@@ -42,33 +43,23 @@ public class TeleportVial()
     /// <inheritdoc />
     public override void Use(GameManager game)
     {
-        game.Entities.ForEach(entity =>
-        {
-            if (entity is not Enemy enemy)
-            {
-                return;
-            }
-
-            bool check = true;
-
-            while (check)
-            {
-                Room teleportTo = game.GameMap.GetRandomRoom();
-
-                if (!teleportTo.IsPinkRoom && !teleportTo.Equals(game.Player.CurrentRoom) && !teleportTo.Equals(enemy.CurrentRoom))
-                {
-                    game.Player.Teleport(teleportTo);
-                    check = false;
-                }
-            }
-        });
-
-        game.Player.Teleport(game.GameMap.GetRandomRoom());
+        game.Player.Teleport(game.GameMap.GetRandomRoom(room =>
+            !(
+                room.IsPinkRoom
+                || room.IsStartingRoom
+                || room.Equals(game.Player.CurrentRoom)
+                || game.Entities.Any(entity => entity is IEnemy<Room> && entity.CurrentRoom.Equals(room))
+            )));
 
         GameLogger.Log("Player used Teleport Vial");
         GameLogger.Log("Player teleported to room " + game.Player.CurrentRoom);
 
-        game.IncrementActionsCount();
+        game.Player.FollowingEntities.ForEach(entity =>
+        {
+            entity.Teleport(game.Player.CurrentRoom);
+
+            GameLogger.Log($"{entity.Name} teleported to room {game.Player.CurrentRoom}");
+        });
 
         GameConsole.WriteLine("Chiudi gli occhi per un secondo, senti un soffio di vento. Quando li riapri, ti trovi in una stanza diversa");
     }
@@ -79,7 +70,7 @@ public class TeleportVial()
         player.Backpack.Push(this);
         GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
         GameConsole.WriteLine($"Hai raccolto: {Name}");
-        GameConsole.WriteLine(this.Description);
+        GameConsole.WriteLine(Description);
     }
 
     #endregion

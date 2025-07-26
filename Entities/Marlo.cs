@@ -34,7 +34,7 @@ public class Marlo : Entity, IMarlo<Room>, IConsolable, ILoggable
 
     #endregion
 
-    #region Constructor
+    #region Constructors
 
     /// <summary>
     /// Represents Marlo, a special entity in the Forgotten OOP game that can teleport back to his initial room
