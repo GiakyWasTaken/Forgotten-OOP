@@ -3,21 +3,26 @@
 #region Using Directives
 
 using System;
+using System.Reflection;
 using System.Text.Json;
 
 using Forgotten_OOP.Consoles.Interfaces;
 using Forgotten_OOP.GameManagers;
 using Forgotten_OOP.GameManagers.Interfaces;
 using Forgotten_OOP.Helpers;
+using Forgotten_OOP.Items;
+using Forgotten_OOP.Items.Interfaces;
 using Forgotten_OOP.Logging.Interfaces;
 using Forgotten_OOP.Menu.Interfaces;
+
+using static System.Int32;
 
 #endregion
 
 /// <summary>
 /// Provides a menu interface for configuring game settings, such as enemy delay, map dimensions, and item counts
 /// </summary>
-public class SettingsMenu : ISettingsMenu, IConfigurable, ILoggable, IConsolable
+public class SettingsMenu : IMenu, IConfigurable, ILoggable, IConsolable
 {
     #region Private Fields
 
@@ -72,26 +77,26 @@ public class SettingsMenu : ISettingsMenu, IConfigurable, ILoggable, IConsolable
             GameConsole.WriteLine("6: Salva e torna al menu");
             GameConsole.WriteLine("_____________________");
 
-            string choice = GameConsole.ReadLine();
+            bool tryParse = TryParse(GameConsole.ReadLine(), out int choice);
 
-            switch (choice)
+            switch (tryParse ? choice : -1)
             {
-                case "1":
-                    ChangeEnemyDelay();
+                case 1:
+                    ChangeConfigValue("Vuoi cambiare l'Enemy Delay? Default = 3,", configs.EnemyDelay, value => configs.EnemyDelay = value);
                     break;
-                case "2":
-                    ChangeMapDimension();
+                case 2:
+                    ChangeConfigValue("Vuoi cambiare la dimensione della mappa? Default = 7,", configs.MapDimension, value => configs.MapDimension = value);
                     break;
-                case "3":
-                    ChangeMaxWeight();
+                case 3:
+                    ChangeConfigValue("Vuoi cambiare il peso massimo trasportabile? Default = 10.0,", configs.MaxWeight, value => configs.MaxWeight = value);
                     break;
-                case "4":
-                    ChangeNumItems();
+                case 4:
+                    ShowItemMenu();
                     break;
-                case "5":
-                    ChangeNumKeys();
+                case 5:
+                    ChangeConfigValue("Vuoi cambiare il numero di chiavi generate nelle stanze? Default = 10,", configs.NumKeys, value => configs.NumKeys = value);
                     break;
-                case "6":
+                case 6:
                     WriteConfigs(Configs);
                     return;
                 default:
@@ -101,68 +106,49 @@ public class SettingsMenu : ISettingsMenu, IConfigurable, ILoggable, IConsolable
         }
     }
 
-    /// <inheritdoc />
-    public void ChangeEnemyDelay()
+    /// <summary>
+    /// Displays a menu for changing game configuration settings related to numbers of different types of items
+    /// </summary>
+    public void ShowItemMenu()
     {
-        GameConsole.WriteLine("Vuoi cambiare l'Enemy Delay? Default = 3, Attuale = " + configs.EnemyDelay);
+        // Get the assembly containing the types
+        Assembly assembly = Assembly.GetExecutingAssembly();
 
-        string input = GameConsole.ReadLine();
+        // Find all types that extend the base class "Item" but do not implement "IKeyItem"
+        List<Type> nonKeyItems = [.. assembly.GetTypes().Where(type => type is { IsClass: true, IsAbstract: false } && type.IsSubclassOf(typeof(Item)) && !typeof(IKeyItem).IsAssignableFrom(type))];
 
-        if (int.TryParse(input, out int num))
+        while (true)
         {
-            configs.EnemyDelay = num;
-        }
-    }
+            GameConsole.WriteLine("Di che cosa vuoi cambiare il numero?");
 
-    /// <inheritdoc />
-    public void ChangeMapDimension()
-    {
-        GameConsole.WriteLine("Vuoi cambiare la dimensione della mappa? Default = 7, Attuale = " + configs.MapDimension);
+            for (int i = 1; i <= nonKeyItems.Count; i++)
+            {
+                GameConsole.WriteLine($"{i}: {nonKeyItems[i].Name}");
+            }
+            GameConsole.WriteLine(nonKeyItems.Count + ": Torna indietro");
 
-        string input = GameConsole.ReadLine();
+            bool tryParse = TryParse(GameConsole.ReadLine(), out int choice);
 
-        if (int.TryParse(input, out int num))
-        {
-            configs.MapDimension = num;
-        }
-    }
-
-    /// <inheritdoc />
-    public void ChangeMaxWeight()
-    {
-        GameConsole.WriteLine("Vuoi cambiare il peso massimo trasportabile? Default = 10.0, Attuale = " + configs.MaxWeight);
-
-        string input = GameConsole.ReadLine();
-
-        if (float.TryParse(input, out float num))
-        {
-            configs.MaxWeight = num;
-        }
-    }
-
-    /// <inheritdoc />
-    public void ChangeNumItems()
-    {
-        GameConsole.WriteLine("Vuoi cambiare il numero di Item generati nelle stanze? Default = 10, Attuale = " + configs.NumItems);
-
-        string input = GameConsole.ReadLine();
-
-        if (int.TryParse(input, out int num))
-        {
-            configs.NumItems = num;
-        }
-    }
-
-    /// <inheritdoc />
-    public void ChangeNumKeys()
-    {
-        GameConsole.WriteLine("Vuoi cambiare il numero di chiavi generate nelle stanze? Default = 10, Attuale = " + configs.NumKeys);
-
-        string input = GameConsole.ReadLine();
-
-        if (int.TryParse(input, out int num))
-        {
-            configs.NumKeys = num;
+            switch (tryParse ? choice : -1)
+            {
+                case 1:
+                    ChangeConfigValue("Vuoi cambiare il numero di bende? Default = 3,", configs.NumBandage, value => configs.NumBandage = value);
+                    break;
+                case 2:
+                    ChangeConfigValue("Vuoi cambiare il numero di occhi del guardiano? Default = 1,", configs.NumGuardianEye, value => configs.NumGuardianEye = value);
+                    break;
+                case 3:
+                    ChangeConfigValue("Vuoi cambiare il numero di repellenti? Default = 2,", configs.NumRepellent, value => configs.NumRepellent = value);
+                    break;
+                case 4:
+                    ChangeConfigValue("Vuoi cambiare il numero di fiale del teletrasporto? Default = 2,", configs.NumTeleportVial, value => configs.NumTeleportVial = value);
+                    break;
+                case 5:
+                    return;
+                default:
+                    GameConsole.WriteLine("Scelta non riconosciuta, riprova");
+                    break;
+            }
         }
     }
 
@@ -212,6 +198,37 @@ public class SettingsMenu : ISettingsMenu, IConfigurable, ILoggable, IConsolable
         catch (Exception ex)
         {
             GameLogger.Log($"Error writing configuration file: {ex.Message}");
+        }
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    /// <summary>
+    /// Generic method to change a configuration value
+    /// </summary>
+    /// <typeparam name="T">The type of the configuration value</typeparam>
+    /// <param name="prompt">The prompt message to display</param>
+    /// <param name="currentValue">The current value of the configuration</param>
+    /// <param name="setter">The action to set the new value</param>
+    private void ChangeConfigValue<T>(string prompt, T currentValue, Action<T> setter) where T : struct
+    {
+        GameConsole.WriteLine($"{prompt} Attuale = {currentValue}");
+
+        string input = GameConsole.ReadLine();
+
+        if (typeof(T) == typeof(int) && TryParse(input, out int intValue))
+        {
+            setter((T)(object)intValue);
+        }
+        else if (typeof(T) == typeof(float) && float.TryParse(input, out float floatValue))
+        {
+            setter((T)(object)floatValue);
+        }
+        else
+        {
+            GameConsole.WriteLine("Valore non valido, riprova.");
         }
     }
 

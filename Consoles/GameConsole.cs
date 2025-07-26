@@ -16,6 +16,20 @@ using Forgotten_OOP.Logging.Interfaces;
 /// </summary>
 public class GameConsole : IConsole, ILoggable
 {
+    #region Private Fields
+
+    /// <summary>
+    /// Represents the default delay, in milliseconds, between character outputs
+    /// </summary>
+    private const int CharDelay = 10;
+
+    /// <summary>
+    /// Represents the multiplier for the delay when a new line character is encountered
+    /// </summary>
+    private const int NewLineMultiplier = 100;
+
+    #endregion
+
     #region Properties
 
     /// <inheritdoc />
@@ -31,15 +45,39 @@ public class GameConsole : IConsole, ILoggable
     /// <inheritdoc />
     public void WriteLine(string message = "")
     {
-        Write(message.TrimEnd() + "\n");
+        Write(message.Trim() + "\n");
     }
 
     /// <inheritdoc />
     public void Write(string message)
     {
-        // Todo: Implement a cool feature like colored text or slow typing effect
         GameLogger.Log(message);
-        Console.Write(message);
+
+        // Animate text character by character
+        for (int i = 0; i < message.Length; i++)
+        {
+            Console.Write(message[i]);
+
+            // Check if a key has been pressed
+            if (Console.KeyAvailable)
+            {
+                // If key pressed, write the remaining text immediately
+                if (i < message.Length - 1)
+                {
+                    Console.Write(message[(i + 1)..]);
+                }
+                break;
+            }
+
+            if (message[i] == '\n')
+            {
+                Thread.Sleep(CharDelay * NewLineMultiplier);
+            }
+            else
+            {
+                Thread.Sleep(CharDelay);
+            }
+        }
     }
 
     /// <inheritdoc />
@@ -47,8 +85,7 @@ public class GameConsole : IConsole, ILoggable
     {
         if (!string.IsNullOrEmpty(prompt))
         {
-            GameLogger.Log(prompt);
-            Console.Write(prompt);
+            Write(prompt);
         }
 
         return Console.ReadLine() ?? string.Empty;
@@ -63,8 +100,7 @@ public class GameConsole : IConsole, ILoggable
         {
             if (!string.IsNullOrEmpty(prompt))
             {
-                GameLogger.Log(prompt);
-                Console.Write(prompt);
+                Write(prompt);
             }
 
             string input = ReadLine();

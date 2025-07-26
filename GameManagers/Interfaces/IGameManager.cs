@@ -57,6 +57,11 @@ public interface IGameManager<out TPlayer, TEntity, out TMap, TRoom>
     public void IncrementActionsCount();
 
     /// <summary>
+    /// Pauses the game and returns to the main menu
+    /// </summary>
+    public void PauseGame();
+
+    /// <summary>
     /// Ends the game and returns to the main menu
     /// </summary>
     public void EndGame();

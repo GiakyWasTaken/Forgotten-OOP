@@ -3,13 +3,8 @@
 /// <summary>
 /// The interface for the main menu of the game
 /// </summary>
-public interface IMainMenu
+public interface IMainMenu : IMenu
 {
-    /// <summary>
-    /// Shows the main menu of the game
-    /// </summary>
-    public void Show();
-
     /// <summary>
     /// Starts the game
     /// </summary>

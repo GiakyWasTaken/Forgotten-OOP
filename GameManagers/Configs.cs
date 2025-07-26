@@ -32,7 +32,22 @@ public struct Configs
     public int NumKeys { get; set; } = 1;
 
     /// <summary>
-    /// The number of spawnable items in the game
+    /// The number of spawnable bandage items in the game
     /// </summary>
-    public int NumItems { get; set; } = 10;
+    public int NumBandage { get; set; } = 3;
+
+    /// <summary>
+    /// The number of spawnable guardian eye items in the game
+    /// </summary>
+    public int NumGuardianEye { get; set; } = 1;
+
+    /// <summary>
+    /// The number of spawnable repellent items in the game
+    /// </summary>
+    public int NumRepellent { get; set; } = 2;
+
+    /// <summary>
+    /// The number of spawnable teleport vials in the game
+    /// </summary>
+    public int NumTeleportVial { get; set; } = 2;
 }
