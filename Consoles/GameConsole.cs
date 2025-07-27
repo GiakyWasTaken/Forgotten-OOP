@@ -142,6 +142,7 @@ public class GameConsole : IConsole, ILoggable
         {
             WriteLine($"{command}", true);
         }
+        WriteLine("\n");
     }
 
     #endregion

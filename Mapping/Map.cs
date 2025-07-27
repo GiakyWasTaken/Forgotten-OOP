@@ -208,7 +208,7 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
     public void PrintMap(List<IEntity<TRoom>>? entities = null, bool showPlayer = true, bool showEnemy = false, bool showKey = false, bool showMarlo = false, bool showStartingRoom = false, bool showRooms = false)
     {
         var mapBuilder = new StringBuilder();
-        mapBuilder.AppendLine("Map Layout"); // Todo: change line
+        mapBuilder.AppendLine("Layout della mappa - Tu sei [P]");
 
         for (int y = 0; y < mapDimension; y++)
         {
