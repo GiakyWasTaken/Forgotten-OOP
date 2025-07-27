@@ -14,17 +14,13 @@ using Forgotten_OOP.Logging.Interfaces;
 /// </summary>
 public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
 
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
-
-    #endregion
-
-    #region Properties
 
     /// <inheritdoc />
     public override string Name => "Drop";
@@ -47,6 +43,8 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
         }
 
         game.Player.Backpack.Pop().Drop(game.Player.CurrentRoom);
+        GameConsole.WriteLine("Lasci cadere " + Name);
+
         GameLogger.Log("Player dropped and item");
         game.IncrementActionsCount();
     }

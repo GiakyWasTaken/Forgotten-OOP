@@ -11,9 +11,12 @@ using Forgotten_OOP.Logging.Interfaces;
 
 #endregion
 
+/// <summary>
+/// Represents a torch item in the game that allows the player to see the key and Takumi on the map
+/// </summary>
 public class Torch() : Item("Torcia", "Puoi vedere dove sta la chiave e Takumi dalla mappa"), IKeyItem, IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();

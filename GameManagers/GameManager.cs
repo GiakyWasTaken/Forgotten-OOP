@@ -46,6 +46,9 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     public bool IsGameRunning { get; private set; }
 
     /// <inheritdoc />
+    public bool? IsGameWinOrLost { get; private set; }
+
+    /// <inheritdoc />
     public Configs GameConfigs { get; }
 
     /// <inheritdoc />
@@ -129,12 +132,10 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     {
         IsGameRunning = true;
 
-        // Win means the player has completed the game
-        // false means the player has lost
-        // null means the game is still running or paused
-        bool? win = CheckWinLoseCon();
+        CheckWinLoseCon();
 
-        Console.WriteLine("\nDigita Help per vedere tutti i comandi disponibili");
+        GameConsole.WriteLine("\nDigita Help per vedere tutti i comandi disponibili");
+
         while (IsGameRunning)
         {
             ICommand cmd = GameConsole.ReadCommand("Cosa vuoi fare?: ");
@@ -143,17 +144,15 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
             ProcessEntities();
 
-            win = CheckWinLoseCon();
+            CheckWinLoseCon();
         }
 
-        if (win != null)
+        if (IsGameWinOrLost != null)
         {
-            GameConsole.WriteLine(win == true
+            GameConsole.WriteLine(IsGameWinOrLost == true
                 ? "Congratulazioni! Hai vinto"
                 : "Game Over! Ritenta, sarai piu' fortunato");
         }
-
-        win = null;
     }
 
     /// <inheritdoc />
@@ -425,6 +424,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
                         "viventi, animali e umani.\r\nUna volta instaurato un patto, Ushigami lega il suo potere al suolo stesso, facendo rifiorire " +
                         "terre malate. Ma se il ciclo di offerte viene interrotto, la divinità si trasforma: da benefattore temuto a punizione incarnata.\r\n\n" +
                         "Andiamocene da qui.");
+
                     isFirstPlayerMarloEncounter = false;
                 }
                 else
@@ -433,8 +433,6 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
                 }
 
                 // Close the room after Marlo encounter
-                // Todo: meglio che si chiuda sempre e che sei forzato ad usarlo sempre l'altare o no?
-                // in caso spostalo sopra
                 Player.CurrentRoom.IsClosed = true;
 
                 Player.FollowingEntities.Add((Entity)marloInRoom);
@@ -447,7 +445,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         if (enemiesInCurrentRoom.Count > 0)
         {
             GameConsole.WriteLine("L'Ushigami mi ha trovato. Sono rimasto ferito ma sono riuscito a scappare via. Dovrei usare qualcosa per" +
-                "curare questo taglio, non posso farmi cogliere impreparato."); 
+                "curare questo taglio, non posso farmi cogliere impreparato.");
 
             Player.Lives--;
 
@@ -501,22 +499,20 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     /// </summary>
     /// <returns><see langword="true"/> if the player has won; <see langword="false"/> if the player has lost; otherwise, <see
     /// langword="null"/> if the game is still ongoing</returns>
-    private bool? CheckWinLoseCon()
+    private void CheckWinLoseCon()
     {
         // Check if the player has won or lost the game
         if (Player.CurrentRoom.IsStartingRoom && Player.FollowingEntities.OfType<IMarlo<Room>>().Any())
         {
             IsGameRunning = false;
-            return true;
+            IsGameWinOrLost = true;
         }
 
         if (Player.Lives <= 0)
         {
             IsGameRunning = false;
-            return false;
+            IsGameWinOrLost = false;
         }
-
-        return null;
     }
 
     #endregion

@@ -35,21 +35,12 @@ public class SettingsMenu : IMenu, IConfigurable, ILoggable, IConsolable
         WriteIndented = true
     };
 
-    /// <summary>
-    /// Represents the configuration settings for the application
-    /// </summary>
-    private Configs configs = new();
-
     #endregion
 
     #region Properties
 
     /// <inheritdoc />
-    public Configs Configs
-    {
-        get => configs;
-        set => configs = value;
-    }
+    public Configs Configs { get; set; } = new();
 
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
@@ -81,19 +72,19 @@ public class SettingsMenu : IMenu, IConfigurable, ILoggable, IConsolable
             switch (tryParse ? choice : -1)
             {
                 case 1:
-                    ChangeConfigValue("Vuoi cambiare l'Enemy Delay? Default = 3,", configs.EnemyDelay, value => configs.EnemyDelay = value);
+                    ChangeConfigValue("Vuoi cambiare l'Enemy Delay? Default = 3,", Configs.EnemyDelay, value => Configs.EnemyDelay = value);
                     break;
                 case 2:
-                    ChangeConfigValue("Vuoi cambiare la dimensione della mappa? Default = 7,", configs.MapDimension, value => configs.MapDimension = value);
+                    ChangeConfigValue("Vuoi cambiare la dimensione della mappa? Default = 7,", Configs.MapDimension, value => Configs.MapDimension = value);
                     break;
                 case 3:
-                    ChangeConfigValue("Vuoi cambiare il peso massimo trasportabile? Default = 10.0,", configs.MaxWeight, value => configs.MaxWeight = value);
+                    ChangeConfigValue("Vuoi cambiare il peso massimo trasportabile? Default = 10.0,", Configs.MaxWeight, value => Configs.MaxWeight = value);
                     break;
                 case 4:
                     ShowItemMenu();
                     break;
                 case 5:
-                    ChangeConfigValue("Vuoi cambiare il numero di chiavi generate nelle stanze? Default = 1,", configs.NumKeys, value => configs.NumKeys = value);
+                    ChangeConfigValue("Vuoi cambiare il numero di chiavi generate nelle stanze? Default = 1,", Configs.NumKeys, value => Configs.NumKeys = value);
                     break;
                 case 6:
                     WriteConfigs(Configs);
@@ -143,8 +134,8 @@ public class SettingsMenu : IMenu, IConfigurable, ILoggable, IConsolable
                 {
                     ChangeConfigValue(
                         $"Vuoi cambiare il numero di {selectedItemType.Name}? Default = {(int)(property.GetValue(defaultConfigs) ?? 0)},",
-                        (int)(property.GetValue(configs) ?? 0),
-                        value => property.SetValue(configs, value)
+                        (int)(property.GetValue(Configs) ?? 0),
+                        value => property.SetValue(Configs, value)
                     );
                 }
             }

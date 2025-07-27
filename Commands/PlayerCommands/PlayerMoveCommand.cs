@@ -84,8 +84,8 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
         }
 
         int foundTorch = -1, foundKey = -1;
-        
-        for(int i=0; i< game.Player.CurrentRoom.ItemsOnGround.Count; i++)
+
+        for (int i = 0; i < game.Player.CurrentRoom.ItemsOnGround.Count; i++)
         {
             IItem item = game.Player.CurrentRoom.ItemsOnGround[i];
 
@@ -107,7 +107,7 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
                 foundKey = i;
             }
         }
-        if(foundTorch > -1)
+        if (foundTorch > -1)
         {
             game.Player.CurrentRoom.ItemsOnGround.RemoveAt(foundTorch);
         }
@@ -115,9 +115,6 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
         {
             game.Player.CurrentRoom.ItemsOnGround.RemoveAt(foundKey);
         }
-
-
-
 
         game.IncrementActionsCount();
 
@@ -149,7 +146,7 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
 
         if (room.IsClosed && !game.Player.KeyItems.OfType<Key>().Any())
         {
-            tryExecutionMessage = "La porta è chiusa e adesso non riesco ad aprirla, però sento qualcuno parlare attraverso"; // Todo: check line
+            tryExecutionMessage = "La porta è chiusa e adesso non riesco ad aprirla, però sento qualcuno parlare attraverso";
             return false;
         }
 

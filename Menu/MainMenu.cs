@@ -82,59 +82,54 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
 
             if (game != null)
             {
-                GameConsole.WriteLine("4. Salva");
+                GameConsole.WriteLine("3. Salva");
+                GameConsole.WriteLine(File.Exists(saveFilePath) ? "4. Carica\n5. Esci" : "4. Esci");
+            }
+            else
+            {
+                GameConsole.WriteLine(File.Exists(saveFilePath) ? "3. Carica\n4. Esci" : "3. Esci");
             }
 
-            if (File.Exists(saveFilePath))
+            bool tryParse = int.TryParse(GameConsole.ReadLine(), out int choice);
+
+            switch (tryParse ? choice : -1)
             {
-                GameConsole.WriteLine("5. Carica");
-            }
-
-            GameConsole.WriteLine("3. Esci");
-
-            string choice = GameConsole.ReadLine();
-
-            switch (choice)
-            {
-                case "1":
+                case 1:
                     // Play the game
                     configs = settingsMenu.Configs;
 
                     Play();
 
                     break;
-                case "2":
+                case 2:
                     // Show settings menu
                     settingsMenu.Show();
 
                     break;
 
-                case "3":
-                    // Exit the game
-                    Exit();
-                    break;
-
-                case "4":
+                case 3 when game != null:
                     // Save the game state
                     Save();
+
+                    break;
+
+                case 3 when File.Exists(saveFilePath):
+                case 4 when game != null && File.Exists(saveFilePath):
                     // Load the game state if a save file exists
-                    
+                    Load();
 
                     break;
 
-                case "5":
-                    if (File.Exists(saveFilePath))
-                    {
-                        Load();
-                    }
-                    else
-                    {
-                        GameConsole.WriteLine("Nessun salvataggio trovato.");
-                    }
-                    break;
+                case 3:
+                case 4:
+                case 5:
+                    // Exit the game
+                    Exit();
+
+                    return;
 
                 default:
-                    Console.WriteLine("Comando non valido");
+                    GameConsole.WriteLine("Comando non valido");
                     break;
             }
 
@@ -145,7 +140,11 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
     public void Play()
     {
         GameLogger.Log("Avviando partita...");
-        game ??= new GameManager(configs);
+
+        if (game is not { IsGameWinOrLost: null })
+        {
+            game = new GameManager(configs);
+        }
 
         game.StartGameLoop();
     }

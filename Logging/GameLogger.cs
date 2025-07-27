@@ -14,7 +14,7 @@ using Forgotten_OOP.Logging.Interfaces;
 /// </summary>
 public class GameLogger : ILogger
 {
-    #region Attributes
+    #region Private Fields
 
     /// <summary>
     /// Represents the name of the file associated with this instance

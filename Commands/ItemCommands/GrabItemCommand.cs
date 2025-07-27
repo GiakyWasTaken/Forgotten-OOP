@@ -16,17 +16,13 @@ using Forgotten_OOP.Mapping;
 /// </summary>
 public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
 
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
-
-    #endregion
-
-    #region Properties
 
     /// <inheritdoc />
     public override string Name => "Grab";
@@ -58,33 +54,31 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
 
         GameConsole.WriteLine("In questa stanza ci sono questi oggetti:");
         GameConsole.WriteLine("0. Esci dal menu Grab");
+
         for (int i = 0; i < grabbableItems.Count; i++)
         {
             GameConsole.WriteLine($"{i + 1}. {grabbableItems[i].Name}");
         }
 
-        int selectedIndex;
-
         while (true)
-            {
-                string input = GameConsole.ReadLine("Quale di questi oggetti prendo? ");
-            if (int.TryParse(input, out selectedIndex) && selectedIndex > 0 && selectedIndex <= grabbableItems.Count)
+        {
+            string input = GameConsole.ReadLine("Quale di questi oggetti prendo? ");
+
+            if (int.TryParse(input, out int selectedIndex) && selectedIndex > 0 && selectedIndex <= grabbableItems.Count)
             {
                 IItem selectedItem = grabbableItems[selectedIndex - 1];
                 AttemptToGrabItem(selectedItem);
                 break;
             }
-            else if (selectedIndex == 0)
-            {
 
+            if (selectedIndex == 0)
+            {
                 GameConsole.WriteLine("Al momento non mi servono, li prendero' piu' tardi");
                 break;
-                //TODO: aggiungere una opzione per uscire dal menu grab
             }
-            else
-            {
-                GameConsole.WriteLine("Non ho capito, per favore inserisci un oggetto valido");
-            }
+
+            GameConsole.WriteLine("Non ho capito, per favore inserisci un oggetto valido");
+
         }
     }
 

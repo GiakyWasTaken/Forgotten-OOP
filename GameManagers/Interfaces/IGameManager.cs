@@ -22,6 +22,14 @@ public interface IGameManager<out TPlayer, TEntity, out TMap, TRoom>
     public bool IsGameRunning { get; }
 
     /// <summary>
+    /// Indicates the current state of the game in terms of victory or defeat.
+    /// - True: The player has successfully completed the game.
+    /// - False: The player has lost the game.
+    /// - Null: The game is still ongoing or paused.
+    /// </summary>
+    public bool? IsGameWinOrLost { get; }
+
+    /// <summary>
     /// The configuration settings for the game
     /// </summary>
     public Configs GameConfigs { get; }

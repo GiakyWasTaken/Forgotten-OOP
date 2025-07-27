@@ -19,17 +19,13 @@ using Forgotten_OOP.Mapping;
 public class Repellent() : Item("Scaccia-Presenze", "Se usato, l'Ushigami si allontanera' rapidamente"), IStorable<Room>,
     IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
 
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
-
-    #endregion
-
-    #region Properties
 
     /// <inheritdoc />
     public float Weight => 4.0f;

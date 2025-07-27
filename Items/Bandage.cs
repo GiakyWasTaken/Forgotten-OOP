@@ -18,17 +18,13 @@ using Forgotten_OOP.Mapping;
 public class Bandage() : Item("Bende", "Delle bende curative, permettono di recuperare una vita"), IStorable<Room>,
     IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
 
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
-
-    #endregion
-
-    #region Properties
 
     /// <inheritdoc />
     public float Weight => 2.0f;

@@ -5,7 +5,6 @@ namespace Forgotten_OOP.Mapping;
 using System.Text;
 
 using Forgotten_OOP.Consoles.Interfaces;
-using Forgotten_OOP.Entities;
 using Forgotten_OOP.Entities.Interfaces;
 using Forgotten_OOP.Enums;
 using Forgotten_OOP.Helpers;
@@ -209,7 +208,7 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
     public void PrintMap(List<IEntity<TRoom>>? entities = null, bool showPlayer = true, bool showEnemy = false, bool showKey = false, bool showMarlo = false, bool showStartingRoom = false, bool showRooms = false)
     {
         var mapBuilder = new StringBuilder();
-        mapBuilder.AppendLine("Map Layout"); // Todo: change line
+        mapBuilder.AppendLine("=== Mappa del Gioco ===");
 
         for (int y = 0; y < mapDimension; y++)
         {
