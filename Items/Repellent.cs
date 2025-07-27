@@ -61,7 +61,7 @@ public class Repellent() : Item("Scaccia-Presenze", "Se usato, l'Ushigami si all
             GameLogger.Log($"{enemy.Name} moved to room {enemy.CurrentRoom}");
 
         });
-
+        game.Player.Backpack.Pop();
         GameConsole.WriteLine("La miscela si disperde. Lo senti allontanarsi");
     }
 

@@ -61,6 +61,7 @@ public class TeleportVial()
             GameLogger.Log($"{entity.Name} teleported to room {game.Player.CurrentRoom}");
         });
 
+        game.Player.Backpack.Pop();
         GameConsole.WriteLine("Chiudi gli occhi per un secondo, senti un soffio di vento. Quando li riapri, ti trovi in una stanza diversa");
     }
 

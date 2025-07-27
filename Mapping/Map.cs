@@ -5,6 +5,7 @@ namespace Forgotten_OOP.Mapping;
 using System.Text;
 
 using Forgotten_OOP.Consoles.Interfaces;
+using Forgotten_OOP.Entities;
 using Forgotten_OOP.Entities.Interfaces;
 using Forgotten_OOP.Enums;
 using Forgotten_OOP.Helpers;

@@ -45,7 +45,7 @@ public class Bandage() : Item("Bende", "Delle bende curative, permettono di recu
             game.Player.Lives++;
 
             GameLogger.Log("Player used bandages");
-
+            game.Player.Backpack.Pop();
             GameConsole.WriteLine("La ferita si chiude... mi sento molto meglio");
         }
         else
