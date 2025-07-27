@@ -203,7 +203,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     {
         IsGameRunning = false;
         GameLogger.Log("Game paused by user request");
-        GameConsole.WriteLine("Game paused, if you want save the progress in the main menu before exiting");
+        GameConsole.WriteLine("Gioco in pausa. Se vuoi uscire, salva il gioco sul menu principale.");
     }
 
     /// <inheritdoc />
@@ -211,7 +211,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     {
         IsGameRunning = false;
         GameLogger.Log("Game ended by user request.");
-        GameConsole.WriteLine("Game ended. Thank you for playing!");
+        GameConsole.WriteLine("Partita terminata, grazie per aver giocato!");
     }
 
     #endregion
@@ -445,7 +445,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         if (enemiesInCurrentRoom.Count > 0)
         {
             GameConsole.WriteLine("L'Ushigami mi ha trovato. Sono rimasto ferito ma sono riuscito a scappare via. Dovrei usare qualcosa per" +
-                "curare questo taglio, non posso farmi cogliere impreparato e ."); 
+                "curare questo taglio, non posso farmi cogliere impreparato."); 
 
             Player.Lives--;
 

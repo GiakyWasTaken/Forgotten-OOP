@@ -50,7 +50,7 @@ public class Bandage() : Item("Bende", "Delle bende curative, permettono di recu
         }
         else
         {
-            GameConsole.WriteLine("Non sono ferito, non c'è n'era bisogno");
+            GameConsole.WriteLine("Non sono ferito, meglio usarla quando mi servira'");
         }
     }
 

@@ -71,7 +71,7 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
         switch (game.Player.CurrentRoom.ItemsOnGround.OfType<IGrabbable>().Count())
         {
             case 0:
-                GameConsole.WriteLine("Non c'è nulla in questa stanza");
+                GameConsole.WriteLine("Non c'è nulla qui");
                 break;
             case 1:
                 GameConsole.WriteLine("Vedo qualcosa per terra nella penombra, forse dovrei raccoglierlo");

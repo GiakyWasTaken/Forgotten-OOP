@@ -143,7 +143,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
             grabbable.Grab(game.Player);
             game.IncrementActionsCount();
 
-            GameConsole.WriteLine($"Ho preso {itemToGrab.Name} e l'ho messo dentro lo zaino");
+            GameConsole.WriteLine($"> Ho preso {itemToGrab.Name} e l'ho messo dentro lo zaino");
             GameLogger.Log($"Player grabbed the {itemToGrab.Name}");
         }
         else
