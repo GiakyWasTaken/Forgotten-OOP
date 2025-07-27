@@ -16,7 +16,7 @@ using Forgotten_OOP.Mapping;
 /// <summary>
 /// Represents a repellent item that can be used to cause enemies to move away
 /// </summary>
-public class Repellent() : Item("Scaccia-Presenze", "Se usato, l'Ushigami si allontanerà rapidamente"), IStorable<Room>,
+public class Repellent() : Item("Scaccia-Presenze", "Se usato, l'Ushigami si allontanera' rapidamente"), IStorable<Room>,
     IConsolable, ILoggable
 {
     #region Private Fields
