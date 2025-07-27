@@ -30,7 +30,7 @@ public class PauseCommand(GameManager game) : BaseCommand, IConsolable, ILoggabl
     public override string Name => "Pause";
 
     /// <inheritdoc />
-    public override string Description => "Pause the game and returns to the main menu";
+    public override string Description => "Mette in pausa la partita e ritorna al menu iniziale";
 
     /// <inheritdoc />
     public override bool IsAvailable => true;

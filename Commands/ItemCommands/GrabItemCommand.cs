@@ -32,7 +32,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     public override string Name => "Grab";
 
     /// <inheritdoc />
-    public override string Description => "Grab an item on the floor";
+    public override string Description => "Raccogli un oggetto dal pavimento";
 
     #endregion
 
@@ -74,6 +74,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
             }
 
             GameConsole.WriteLine("Non ho capito, per favore inserisci un oggetto valido");
+            //TODO: aggiungere una opzione per uscire dal menu grab
         }
 
         IItem selectedItem = grabbableItems[selectedIndex - 1];

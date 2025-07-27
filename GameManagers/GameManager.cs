@@ -83,19 +83,19 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
         Entities.AddRange(SpawnEntities(GameMap));
 
-        GameConsole.WriteLine("Ti trovi poco fuori il villaggio di Kuroka, hai trovato una grotta con un ingresso ad un dungeon di classe di classe S, uno tra i pi� pericolosi in assoluto.\n" +
-            "Per questo motivo, l'entrata principale � stata sbarrata da tante travi di legno che sembravano essere state fissate in fretta e furia.\n" +
-            "Nessuno di inesperto dovrebbe addentrarsi qui dentro, soprattutto tu, un cercatore di livello decisamente pi� basso rispetto a quello richiesto.\n" +
-            "Ma non puoi tirarti indietro, tuo fratello � intrappolato l�, � l'unica persona che ti rimane e non vuoi perderlo.\n" +
-            "Trovi un'entrata secondaria, per farti coraggio decidi di rileggere la lettera che di aiuto che Takumi ti ha mandato:\n\n" +
+        GameConsole.WriteLine("Ti trovi poco fuori il villaggio di Kuroka, hai trovato una grotta con un ingresso ad un dungeon di classe di classe S, uno tra i piu' pericolosi in assoluto.\n" +
+            "Per questo motivo, l'entrata principale e' stata sbarrata da tante travi di legno che sembravano essere state fissate in fretta e furia.\n" +
+            "Nessuno di inesperto dovrebbe addentrarsi qui dentro, soprattutto tu, un cercatore di livello decisamente piu' basso rispetto a quello richiesto.\n" +
+            "Ma non puoi tirarti indietro, tuo fratello e' intrappolato la', e' l'unica persona che ti rimane e non vuoi perderlo.\n" +
+            "Trovi un'entrata secondaria, per farti coraggio decidi di rileggere la lettera che di aiuto che Takumi ti ha mandato:\n\n\n" +
             "\"Fratello,\n" +
             "Spero che questa lettera ti raggiunga in tempo.\n" +
-            "Sono ferito. C'� qualcosa qui� qualcosa che non dovrebbe esistere.\n" +
+            "Sono ferito. C'e' qualcosa qui, qualcosa che non dovrebbe esistere.\n" +
             "Si aggira tra queste stanze come se fosse casa sua.\n" +
             "Non provare ad affrontarlo. Non puoi.\n" +
-            "Porta con te la Panacea. � l�unica cosa che pu� salvarmi.\n" +
-            "Trovami. salvami. Fai in fretta.\n" +
-            "Marlo.\"");
+            "Porta con te la Panacea. E' l'unica cosa che puo' salvarmi.\n" +
+            "Trovami. Salvami. Fai in fretta.\n" +
+            "Takumi.\"");
     }
 
     /// <summary>
@@ -134,9 +134,10 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         // null means the game is still running or paused
         bool? win = CheckWinLoseCon();
 
+        Console.WriteLine("\nDigita Help per vedere tutti i comandi disponibili");
         while (IsGameRunning)
         {
-            ICommand cmd = GameConsole.ReadCommand("Cosa fare? ");
+            ICommand cmd = GameConsole.ReadCommand("Cosa vuoi fare?");
 
             cmd.Execute();
 
@@ -148,8 +149,8 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         if (win != null)
         {
             GameConsole.WriteLine(win == true
-                ? "Congratulations! You have completed the game"
-                : "Game Over! Better luck next time");
+                ? "Congratulazioni! Hai vinto"
+                : "Game Over! Ritenta, sarai piu' fortunato");
         }
     }
 

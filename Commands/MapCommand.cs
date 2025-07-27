@@ -31,7 +31,7 @@ public class MapCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
     public override string Name => "Map";
 
     /// <inheritdoc />
-    public override string Description => "Show the map";
+    public override string Description => "Mostra la mappa. Tu sei [P]";
 
     /// <inheritdoc />
     public override bool IsAvailable => true;

@@ -29,7 +29,7 @@ public class HelpCommand : BaseCommand, IConsolable, ILoggable
     public override string Name => "Help";
 
     /// <inheritdoc />
-    public override string Description => "Show this helper";
+    public override string Description => "Mostra la lista di tutti i comandi disponibili";
 
     /// <inheritdoc />
     public override bool IsAvailable => true;

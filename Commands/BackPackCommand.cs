@@ -32,7 +32,7 @@ public class BackPackCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     public override string Name => "Backpack";
 
     /// <inheritdoc />
-    public override string Description => "Returns the items in your backpack ";
+    public override string Description => "Mostra gli oggetti nel tuo inventario";
 
     #endregion
 

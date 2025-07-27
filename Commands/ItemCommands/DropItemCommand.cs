@@ -30,7 +30,7 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     public override string Name => "Drop";
 
     /// <inheritdoc />
-    public override string Description => "Drop an item on the floor";
+    public override string Description => "Lascia a terra l'ultimo oggetto inserito nello zaino";
 
     #endregion
 

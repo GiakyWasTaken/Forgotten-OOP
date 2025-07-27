@@ -69,28 +69,28 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
     {
         GameLogger.InitializeLogger();
 
-        GameConsole.WriteLine("Welcome to Forgotten OOP!");
+        GameConsole.WriteLine("Benvenuto a Forgotten OOP!");
 
         SettingsMenu settingsMenu = new();
         configs = settingsMenu.ReadConfigs();
 
         do
         {
-            GameConsole.WriteLine("Please select an option: ");
-            GameConsole.WriteLine("1. Play");
-            GameConsole.WriteLine("2. Settings");
+            GameConsole.WriteLine("Seleziona una opzione: ");
+            GameConsole.WriteLine("1. Gioca");
+            GameConsole.WriteLine("2. Impostazioni");
 
             if (game != null)
             {
-                GameConsole.WriteLine("3. Save");
+                GameConsole.WriteLine("4. Salva");
             }
 
             if (File.Exists(saveFilePath))
             {
-                GameConsole.WriteLine("4. Load");
+                GameConsole.WriteLine("5. Carica");
             }
 
-            GameConsole.WriteLine("5. Exit");
+            GameConsole.WriteLine("3. Esci");
 
             string choice = GameConsole.ReadLine();
 
@@ -110,27 +110,31 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
                     break;
 
                 case "3":
-                    // Save the game state
-                    Save();
-
+                    // Exit the game
+                    Exit();
                     break;
 
                 case "4":
+                    // Save the game state
+                    Save();
                     // Load the game state if a save file exists
+                    
+
+                    break;
+
+                case "5":
                     if (File.Exists(saveFilePath))
                     {
                         Load();
                     }
                     else
                     {
-                        GameConsole.WriteLine("No saved game found.");
+                        GameConsole.WriteLine("Nessun salvataggio trovato.");
                     }
-
                     break;
 
                 default:
-                    // Exit the game
-                    Exit();
+                    Console.WriteLine("Comando non valido");
                     return;
             }
 
@@ -140,7 +144,7 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
     /// <inheritdoc />
     public void Play()
     {
-        GameLogger.Log("Starting Game...");
+        GameLogger.Log("Avviando partita...");
         game ??= new GameManager(configs);
 
         game.StartGameLoop();

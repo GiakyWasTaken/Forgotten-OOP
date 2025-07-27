@@ -135,7 +135,7 @@ public class GameConsole : IConsole, ILoggable
     /// <inheritdoc />
     public void PrintHelp()
     {
-        WriteLine("Available commands:");
+        WriteLine("\nComandi disponibili:");
 
         foreach (ICommand command in Commands)
         {
