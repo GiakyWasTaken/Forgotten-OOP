@@ -68,6 +68,8 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
 
         game.Player.Move(direction);
 
+        GameConsole.WriteLine("Mi sono spostato in un altra stanza");
+
         switch (game.Player.CurrentRoom.ItemsOnGround.OfType<IGrabbable>().Count())
         {
             case 0:

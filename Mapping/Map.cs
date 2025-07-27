@@ -235,7 +235,7 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
                     _ when showKey && room.ItemsOnGround.OfType<IKeyItem>().Any() => "[K]",
                     _ when showEnemy && entities?.OfType<IEnemy<TRoom>>().Any(enemy => enemy.CurrentRoom.Equals(room)) == true => "[M]",
                     _ when showPlayer && entities?.OfType<IPlayer<TRoom>>().Any(player => player.CurrentRoom.Equals(room)) == true => "[P]",
-                    _ when showMarlo && entities?.OfType<IMarlo<TRoom>>().Any(marlo => marlo.CurrentRoom.Equals(room)) == true => "[N]",
+                    _ when showMarlo && entities?.OfType<IMarlo<TRoom>>().Any(marlo => marlo.CurrentRoom.Equals(room)) == true => "[T]",
                     _ when showStartingRoom && room.IsStartingRoom => "[S]",
                     _ => showRooms ? "[ ]" : "   "
                 };
@@ -256,6 +256,10 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
 
         // Output the entire map at once
         GameConsole.WriteLine(mapBuilder.ToString(), skipWriteAnimation: true);
+        GameConsole.WriteLine("[P] e' il giocatore");
+        if (showKey) { GameConsole.WriteLine("[K] e' la chiave"); }
+        if (showMarlo) { GameConsole.WriteLine("[T] e' Takumi"); }
+
     }
 
     #endregion
