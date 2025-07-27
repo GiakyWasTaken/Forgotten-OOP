@@ -11,9 +11,12 @@ using Forgotten_OOP.Logging.Interfaces;
 
 #endregion
 
-public class Key() : Item("Chiave", "Puoi aprirci stanze chiuse"), IKeyItem, IConsolable, ILoggable
+/// <summary>
+/// Represents a key item that can be used to open locked rooms in the game
+/// </summary>
+public class Key() : Item("Chiave", "Puoi aprire stanze chiuse"), IKeyItem, IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();

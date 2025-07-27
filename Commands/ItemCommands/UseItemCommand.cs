@@ -15,7 +15,7 @@ using Forgotten_OOP.Logging.Interfaces;
 /// </summary>
 public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
@@ -23,15 +23,11 @@ public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILogga
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
 
-    #endregion
-
-    #region Properties
-
     /// <inheritdoc />
     public override string Name => "Use";
 
     /// <inheritdoc />
-    public override string Description => "Use an item from your inventory";
+    public override string Description => "Usa l'ultimo oggetto inserito nello zaino";
 
     #endregion
 

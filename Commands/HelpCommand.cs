@@ -13,7 +13,7 @@ using Forgotten_OOP.Logging.Interfaces;
 /// </summary>
 public class HelpCommand : BaseCommand, IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
@@ -21,15 +21,11 @@ public class HelpCommand : BaseCommand, IConsolable, ILoggable
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
 
-    #endregion
-
-    #region Properties
-
     /// <inheritdoc />
     public override string Name => "Help";
 
     /// <inheritdoc />
-    public override string Description => "Show this helper";
+    public override string Description => "Mostra la lista di tutti i comandi disponibili";
 
     /// <inheritdoc />
     public override bool IsAvailable => true;

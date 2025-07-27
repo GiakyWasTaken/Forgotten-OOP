@@ -16,7 +16,7 @@ using Forgotten_OOP.Mapping;
 /// </summary>
 public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
@@ -24,15 +24,11 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
 
-    #endregion
-
-    #region Properties
-
     /// <inheritdoc />
     public override string Name => "Grab";
 
     /// <inheritdoc />
-    public override string Description => "Grab an item on the floor";
+    public override string Description => "Raccogli un oggetto dal pavimento";
 
     #endregion
 
@@ -57,27 +53,33 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
         }
 
         GameConsole.WriteLine("In questa stanza ci sono questi oggetti:");
+        GameConsole.WriteLine("0. Esci dal menu Grab");
 
         for (int i = 0; i < grabbableItems.Count; i++)
         {
             GameConsole.WriteLine($"{i + 1}. {grabbableItems[i].Name}");
         }
 
-        int selectedIndex;
         while (true)
         {
             string input = GameConsole.ReadLine("Quale di questi oggetti prendo? ");
 
-            if (int.TryParse(input, out selectedIndex) && selectedIndex > 0 && selectedIndex <= grabbableItems.Count)
+            if (int.TryParse(input, out int selectedIndex) && selectedIndex > 0 && selectedIndex <= grabbableItems.Count)
             {
+                IItem selectedItem = grabbableItems[selectedIndex - 1];
+                AttemptToGrabItem(selectedItem);
+                break;
+            }
+
+            if (selectedIndex == 0)
+            {
+                GameConsole.WriteLine("Al momento non mi servono, li prendero' piu' tardi");
                 break;
             }
 
             GameConsole.WriteLine("Non ho capito, per favore inserisci un oggetto valido");
-        }
 
-        IItem selectedItem = grabbableItems[selectedIndex - 1];
-        AttemptToGrabItem(selectedItem);
+        }
     }
 
     #endregion

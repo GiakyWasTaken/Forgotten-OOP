@@ -18,19 +18,15 @@ using Forgotten_OOP.Mapping;
 /// Represents a powerful tool that reveals the location of an enemy in an adjacent room
 /// </summary>
 public class GuardianEye() : Item("Occhio del Guardiano",
-    "Un occhio del guardiano, quando Lui si avvicina, l’Occhio indica con precisione in quale stanza adiacente si nasconde. È uno strumento molto potente, usalo con saggezza"), IStorable<Room>, IConsolable, ILoggable
+    "Un occhio del guardiano, quando l'Ushigami si avvicina, l’Occhio indica con precisione in quale stanza adiacente si nasconde. E' uno strumento molto potente, usalo con saggezza"), IStorable<Room>, IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
 
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
-
-    #endregion
-
-    #region Properties
 
     /// <inheritdoc />
     public float Weight => 6.0f;
@@ -53,6 +49,7 @@ public class GuardianEye() : Item("Occhio del Guardiano",
 
             foreach (KeyValuePair<Direction, Room> pair in adj.Where(pair => pair.Value.Equals(game.Player.CurrentRoom)))
             {
+                game.Player.Backpack.Pop();
                 GameConsole.WriteLine("Il Guardiano vede ciò che gli altri non possono: l’Ushigami si trova nella stanza verso " + DirectionsHelper.DirectionToString(pair.Key));
                 return;
             }

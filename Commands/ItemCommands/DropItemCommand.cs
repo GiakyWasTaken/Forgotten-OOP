@@ -14,7 +14,7 @@ using Forgotten_OOP.Logging.Interfaces;
 /// </summary>
 public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
@@ -22,15 +22,11 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
 
-    #endregion
-
-    #region Properties
-
     /// <inheritdoc />
     public override string Name => "Drop";
 
     /// <inheritdoc />
-    public override string Description => "Drop an item on the floor";
+    public override string Description => "Lascia a terra l'ultimo oggetto inserito nello zaino";
 
     #endregion
 
@@ -47,6 +43,7 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
         }
 
         game.Player.Backpack.Pop().Drop(game.Player.CurrentRoom);
+        GameConsole.WriteLine("Lasci cadere " + Name);
 
         GameLogger.Log("Player dropped and item");
         game.IncrementActionsCount();

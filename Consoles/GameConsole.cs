@@ -116,6 +116,7 @@ public class GameConsole : IConsole, ILoggable
             if (command == null)
             {
                 WriteLine("Non so cosa significa...", skipWriteAnimation);
+                WriteLine("Digita help per visualizzare l'elenco dei comandi disponibili");
             }
             else if (!command.IsAvailable)
             {
@@ -135,7 +136,7 @@ public class GameConsole : IConsole, ILoggable
     /// <inheritdoc />
     public void PrintHelp()
     {
-        WriteLine("Available commands:");
+        WriteLine("\nComandi disponibili:");
 
         foreach (ICommand command in Commands)
         {

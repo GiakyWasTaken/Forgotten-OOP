@@ -69,69 +69,68 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
     {
         GameLogger.InitializeLogger();
 
-        GameConsole.WriteLine("Welcome to Forgotten OOP!");
+        GameConsole.WriteLine("Benvenuto a Forgotten OOP!");
 
         SettingsMenu settingsMenu = new();
         configs = settingsMenu.ReadConfigs();
 
         do
         {
-            GameConsole.WriteLine("Please select an option: ");
-            GameConsole.WriteLine("1. Play");
-            GameConsole.WriteLine("2. Settings");
+            GameConsole.WriteLine("Seleziona una opzione: ");
+            GameConsole.WriteLine("1. Gioca");
+            GameConsole.WriteLine("2. Impostazioni");
 
             if (game != null)
             {
-                GameConsole.WriteLine("3. Save");
+                GameConsole.WriteLine("3. Salva");
+                GameConsole.WriteLine(File.Exists(saveFilePath) ? "4. Carica\n5. Esci" : "4. Esci");
+            }
+            else
+            {
+                GameConsole.WriteLine(File.Exists(saveFilePath) ? "3. Carica\n4. Esci" : "3. Esci");
             }
 
-            if (File.Exists(saveFilePath))
+            bool tryParse = int.TryParse(GameConsole.ReadLine(), out int choice);
+
+            switch (tryParse ? choice : -1)
             {
-                GameConsole.WriteLine("4. Load");
-            }
-
-            GameConsole.WriteLine("5. Exit");
-
-            string choice = GameConsole.ReadLine();
-
-            switch (choice)
-            {
-                case "1":
+                case 1:
                     // Play the game
                     configs = settingsMenu.Configs;
 
                     Play();
 
                     break;
-                case "2":
+                case 2:
                     // Show settings menu
                     settingsMenu.Show();
 
                     break;
 
-                case "3":
+                case 3 when game != null:
                     // Save the game state
                     Save();
 
                     break;
 
-                case "4":
+                case 3 when File.Exists(saveFilePath):
+                case 4 when game != null && File.Exists(saveFilePath):
                     // Load the game state if a save file exists
-                    if (File.Exists(saveFilePath))
-                    {
-                        Load();
-                    }
-                    else
-                    {
-                        GameConsole.WriteLine("No saved game found.");
-                    }
+                    Load();
 
                     break;
 
-                default:
+                case 3:
+                case 4:
+                case 5:
                     // Exit the game
                     Exit();
+
                     return;
+
+                default:
+                    GameConsole.WriteLine("Comando non valido");
+                    break;
             }
 
         } while (true);
@@ -140,8 +139,12 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
     /// <inheritdoc />
     public void Play()
     {
-        GameLogger.Log("Starting Game...");
-        game ??= new GameManager(configs);
+        GameLogger.Log("Avviando partita...");
+
+        if (game is not { IsGameWinOrLost: null })
+        {
+            game = new GameManager(configs);
+        }
 
         game.StartGameLoop();
     }

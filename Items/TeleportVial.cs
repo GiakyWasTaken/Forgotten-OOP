@@ -19,19 +19,15 @@ using Forgotten_OOP.Mapping;
 /// </summary>
 public class TeleportVial()
     : Item("Fiala del Teletrasporto",
-        "Una pozione che trasporta istantaneamente chi la beve in una stanza casuale del dungeon. Se un compagno si trova con te, ti seguirà automaticamente"), IStorable<Room>, IConsolable, ILoggable
+        "Una pozione che trasporta istantaneamente chi la beve in una stanza casuale del dungeon. Se un compagno si trova con te, ti seguira' automaticamente"), IStorable<Room>, IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
 
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
-
-    #endregion
-
-    #region Properties
 
     /// <inheritdoc />
     public float Weight => 4.0f;
@@ -61,6 +57,7 @@ public class TeleportVial()
             GameLogger.Log($"{entity.Name} teleported to room {game.Player.CurrentRoom}");
         });
 
+        game.Player.Backpack.Pop();
         GameConsole.WriteLine("Chiudi gli occhi per un secondo, senti un soffio di vento. Quando li riapri, ti trovi in una stanza diversa");
     }
 

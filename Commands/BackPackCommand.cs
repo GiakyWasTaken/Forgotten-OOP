@@ -16,7 +16,7 @@ using Forgotten_OOP.Mapping;
 /// </summary>
 public class BackPackCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
@@ -24,15 +24,11 @@ public class BackPackCommand(GameManager game) : BaseCommand, IConsolable, ILogg
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
 
-    #endregion
-
-    #region Properties
-
     /// <inheritdoc />
     public override string Name => "Backpack";
 
     /// <inheritdoc />
-    public override string Description => "Returns the items in your backpack ";
+    public override string Description => "Mostra gli oggetti nel tuo inventario";
 
     #endregion
 

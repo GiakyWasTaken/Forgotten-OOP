@@ -14,7 +14,7 @@ using Forgotten_OOP.Logging.Interfaces;
 /// </summary>
 public class InspectItemCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
@@ -22,15 +22,11 @@ public class InspectItemCommand(GameManager game) : BaseCommand, IConsolable, IL
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
 
-    #endregion
-
-    #region Properties
-
     /// <inheritdoc />
     public override string Name => "Inspect";
 
     /// <inheritdoc />
-    public override string Description => "Insepct an item in your bag";
+    public override string Description => "Ispeziona l'ultimo oggetto inserito";
 
     #endregion
 

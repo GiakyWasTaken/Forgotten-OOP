@@ -14,7 +14,7 @@ using Forgotten_OOP.Logging.Interfaces;
 /// </summary>
 public class PauseCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
@@ -22,15 +22,11 @@ public class PauseCommand(GameManager game) : BaseCommand, IConsolable, ILoggabl
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
 
-    #endregion
-
-    #region Properties
-
     /// <inheritdoc />
     public override string Name => "Pause";
 
     /// <inheritdoc />
-    public override string Description => "Pause the game and returns to the main menu";
+    public override string Description => "Mette in pausa la partita e ritorna al menu iniziale";
 
     /// <inheritdoc />
     public override bool IsAvailable => true;

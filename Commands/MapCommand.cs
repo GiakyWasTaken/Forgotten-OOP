@@ -15,7 +15,7 @@ using Forgotten_OOP.Logging.Interfaces;
 /// </summary>
 public class MapCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
@@ -23,15 +23,11 @@ public class MapCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
 
-    #endregion
-
-    #region Properties
-
     /// <inheritdoc />
     public override string Name => "Map";
 
     /// <inheritdoc />
-    public override string Description => "Show the map";
+    public override string Description => "Mostra la mappa. Tu sei [P]";
 
     /// <inheritdoc />
     public override bool IsAvailable => true;
@@ -43,7 +39,7 @@ public class MapCommand(GameManager game) : BaseCommand, IConsolable, ILoggable
     /// <inheritdoc />
     public override void Execute()
     {
-        bool showKeyAndMarlo = game.Player.KeyItems.OfType<Key>().Any();
+        bool showKeyAndMarlo = game.Player.KeyItems.OfType<Torch>().Any();
 
         game.GameMap.PrintMap([.. game.Entities], showPlayer: true, showKey: showKeyAndMarlo, showMarlo: showKeyAndMarlo);
     }

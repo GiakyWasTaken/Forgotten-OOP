@@ -68,10 +68,12 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
 
         game.Player.Move(direction);
 
+        GameConsole.WriteLine("Mi sono spostato in un altra stanza");
+
         switch (game.Player.CurrentRoom.ItemsOnGround.OfType<IGrabbable>().Count())
         {
             case 0:
-                GameConsole.WriteLine("Non c'è nulla in questa stanza");
+                GameConsole.WriteLine("Non c'è nulla qui");
                 break;
             case 1:
                 GameConsole.WriteLine("Vedo qualcosa per terra nella penombra, forse dovrei raccoglierlo");
@@ -79,6 +81,39 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
             default:
                 GameConsole.WriteLine("Ci sono degli oggetti per terra, forse dovrei raccoglierli");
                 break;
+        }
+
+        int foundTorch = -1, foundKey = -1;
+
+        for (int i = 0; i < game.Player.CurrentRoom.ItemsOnGround.Count; i++)
+        {
+            IItem item = game.Player.CurrentRoom.ItemsOnGround[i];
+
+            if (item is Torch)
+            {
+                GameConsole.WriteLine("Osservando meglio la stanza c'e' una fioca luce proveniente dal centro di essa. E una torcia! con questa posso entrare nelle stanze più buie! Meglio ricontrollare la mappa");
+                GameConsole.WriteLine("Hai raccolto la Torcia");
+                game.Player.KeyItems.Add((IKeyItem)item);
+                GameLogger.Log("Player grabbed Torch");
+                foundTorch = i;
+
+            }
+            if (item is Key)
+            {
+                GameConsole.WriteLine("Questa stanza è più stretta delle altre, grazie alla torcia posso vedere tutto chiaramente. In fondo, appesa ad un muro, sembrerebbe esserci una chiave dorata. Non posso lasciarla li', mi tornera' sicuramente utile.");
+                GameConsole.WriteLine("Hai raccolto la Chiave");
+                game.Player.KeyItems.Add((IKeyItem)item);
+                GameLogger.Log("Player grabbed Key");
+                foundKey = i;
+            }
+        }
+        if (foundTorch > -1)
+        {
+            game.Player.CurrentRoom.ItemsOnGround.RemoveAt(foundTorch);
+        }
+        if (foundKey > -1)
+        {
+            game.Player.CurrentRoom.ItemsOnGround.RemoveAt(foundKey);
         }
 
         game.IncrementActionsCount();
@@ -111,7 +146,7 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
 
         if (room.IsClosed && !game.Player.KeyItems.OfType<Key>().Any())
         {
-            tryExecutionMessage = "La porta è chiusa e adesso non riesco ad aprirla, però sento qualcuno parlare attraverso"; // Todo: check line
+            tryExecutionMessage = "La porta è chiusa e adesso non riesco ad aprirla, però sento qualcuno parlare attraverso";
             return false;
         }
 

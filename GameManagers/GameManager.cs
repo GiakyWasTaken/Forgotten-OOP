@@ -46,6 +46,9 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     public bool IsGameRunning { get; private set; }
 
     /// <inheritdoc />
+    public bool? IsGameWinOrLost { get; private set; }
+
+    /// <inheritdoc />
     public Configs GameConfigs { get; }
 
     /// <inheritdoc />
@@ -83,19 +86,19 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
         Entities.AddRange(SpawnEntities(GameMap));
 
-        GameConsole.WriteLine("Ti trovi poco fuori il villaggio di Kuroka, hai trovato una grotta con un ingresso ad un dungeon di classe di classe S, uno tra i piï¿½ pericolosi in assoluto.\n" +
-            "Per questo motivo, l'entrata principale ï¿½ stata sbarrata da tante travi di legno che sembravano essere state fissate in fretta e furia.\n" +
-            "Nessuno di inesperto dovrebbe addentrarsi qui dentro, soprattutto tu, un cercatore di livello decisamente piï¿½ basso rispetto a quello richiesto.\n" +
-            "Ma non puoi tirarti indietro, tuo fratello ï¿½ intrappolato lï¿½, ï¿½ l'unica persona che ti rimane e non vuoi perderlo.\n" +
-            "Trovi un'entrata secondaria, per farti coraggio decidi di rileggere la lettera che di aiuto che Takumi ti ha mandato:\n\n" +
+        GameConsole.WriteLine("Ti trovi poco fuori il villaggio di Kuroka, hai trovato una grotta con un ingresso ad un dungeon di classe di classe S, uno tra i piu' pericolosi in assoluto.\n" +
+            "Per questo motivo, l'entrata principale e' stata sbarrata da tante travi di legno che sembravano essere state fissate in fretta e furia.\n" +
+            "Nessuno di inesperto dovrebbe addentrarsi qui dentro, soprattutto tu, un cercatore di livello decisamente piu' basso rispetto a quello richiesto.\n" +
+            "Ma non puoi tirarti indietro, tuo fratello e' intrappolato la', e' l'unica persona che ti rimane e non vuoi perderlo.\n" +
+            "Trovi un'entrata secondaria, per farti coraggio decidi di rileggere la lettera che di aiuto che Takumi ti ha mandato:\n\n\n" +
             "\"Fratello,\n" +
             "Spero che questa lettera ti raggiunga in tempo.\n" +
-            "Sono ferito. C'ï¿½ qualcosa quiï¿½ qualcosa che non dovrebbe esistere.\n" +
+            "Sono ferito. C'e' qualcosa qui, qualcosa che non dovrebbe esistere.\n" +
             "Si aggira tra queste stanze come se fosse casa sua.\n" +
             "Non provare ad affrontarlo. Non puoi.\n" +
-            "Porta con te la Panacea. ï¿½ lï¿½unica cosa che puï¿½ salvarmi.\n" +
-            "Trovami. salvami. Fai in fretta.\n" +
-            "Marlo.\"");
+            "Porta con te la Panacea. E' l'unica cosa che puo' salvarmi.\n" +
+            "Il Dungeon è molto buio, alcune stanze sono inaccessibili senza una torcia, cercala nel labirinto.\n" +
+            "Takumi.\"");
     }
 
     /// <summary>
@@ -129,27 +132,26 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     {
         IsGameRunning = true;
 
-        // Win means the player has completed the game
-        // false means the player has lost
-        // null means the game is still running or paused
-        bool? win = CheckWinLoseCon();
+        CheckWinLoseCon();
+
+        GameConsole.WriteLine("\nDigita Help per vedere tutti i comandi disponibili");
 
         while (IsGameRunning)
         {
-            ICommand cmd = GameConsole.ReadCommand("Cosa fare? ");
+            ICommand cmd = GameConsole.ReadCommand("Cosa vuoi fare?: ");
 
             cmd.Execute();
 
             ProcessEntities();
 
-            win = CheckWinLoseCon();
+            CheckWinLoseCon();
         }
 
-        if (win != null)
+        if (IsGameWinOrLost != null)
         {
-            GameConsole.WriteLine(win == true
-                ? "Congratulations! You have completed the game"
-                : "Game Over! Better luck next time");
+            GameConsole.WriteLine(IsGameWinOrLost == true
+                ? "Congratulazioni! Hai vinto"
+                : "Game Over! Ritenta, sarai piu' fortunato");
         }
     }
 
@@ -202,7 +204,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     {
         IsGameRunning = false;
         GameLogger.Log("Game paused by user request");
-        GameConsole.WriteLine("Game paused, if you want save the progress in the main menu before exiting");
+        GameConsole.WriteLine("Gioco in pausa. Se vuoi uscire, salva il gioco sul menu principale.");
     }
 
     /// <inheritdoc />
@@ -210,7 +212,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     {
         IsGameRunning = false;
         GameLogger.Log("Game ended by user request.");
-        GameConsole.WriteLine("Game ended. Thank you for playing!");
+        GameConsole.WriteLine("Partita terminata, grazie per aver giocato!");
     }
 
     #endregion
@@ -411,18 +413,26 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
             {
                 if (isFirstPlayerMarloEncounter)
                 {
-                    // Todo: add line
-                    GameConsole.WriteLine("Bella pe marlo");
+                    GameConsole.WriteLine("Hai trovato Takumi\n" +
+                        "Takumi, finalmente ti ho trovato. Tieni, ti ho portato la Panacea.\n" +
+                        "Takumi: Shiro… sono cosi' contento che tu stia bene. Mi dispiace averti messo in mezzo a tutto questo. " +
+                        "Ho trovato una nota in questa stanza, credo parli del mostro racchiuso in questo dungeon.\n\n" +
+                        "DIVINITA' e DEMONOLOGIA - Capitolo VII\r\n" +
+                        "Di tutte le entità spirituali catalogate in epoche remote, Ushigami rimane tra le più temute e meno comprese. " +
+                        "Non e' dio di culto né di speranza. E' una presenza arcana, primordiale, legata a cicli di morte e rinascita che trascendono " +
+                        "la moralita' umana.\r\nUshigami offre vita, ma pretende in cambio cio' che l’uomo chiama intoccabile: il sacrificio di esseri " +
+                        "viventi, animali e umani.\r\nUna volta instaurato un patto, Ushigami lega il suo potere al suolo stesso, facendo rifiorire " +
+                        "terre malate. Ma se il ciclo di offerte viene interrotto, la divinità si trasforma: da benefattore temuto a punizione incarnata.\r\n\n" +
+                        "Andiamocene da qui.");
+
                     isFirstPlayerMarloEncounter = false;
                 }
                 else
                 {
-                    GameConsole.WriteLine("A ri bella per marlo");
+                    GameConsole.WriteLine("Hai ritrovato Takumi\n Shiro:Sono felice di averti ritrovato, sbrighiamoci, l'aria e' sempre piu' pesante.");
                 }
 
                 // Close the room after Marlo encounter
-                // Todo: meglio che si chiuda sempre e che sei forzato ad usarlo sempre l'altare o no?
-                // in caso spostalo sopra
                 Player.CurrentRoom.IsClosed = true;
 
                 Player.FollowingEntities.Add((Entity)marloInRoom);
@@ -434,7 +444,8 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
         if (enemiesInCurrentRoom.Count > 0)
         {
-            GameConsole.WriteLine("Semo stati sgamati, scappa"); // Todo: check line
+            GameConsole.WriteLine("L'Ushigami mi ha trovato. Sono rimasto ferito ma sono riuscito a scappare via. Dovrei usare qualcosa per" +
+                "curare questo taglio, non posso farmi cogliere impreparato.");
 
             Player.Lives--;
 
@@ -478,7 +489,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
             if (Entities.OfType<IEnemy<Room>>()
                 .Any(enemy => adjacentRooms.Contains(enemy.CurrentRoom)))
             {
-                GameConsole.WriteLine("Sento il respiro di un nemico nelle stanze adiacenti, fai attenzione!");
+                GameConsole.WriteLine("E' molto vicino… Un altro passo nella direzione sbagliata e mi troverà, devo stare attento.");
             }
         }
     }
@@ -488,22 +499,20 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     /// </summary>
     /// <returns><see langword="true"/> if the player has won; <see langword="false"/> if the player has lost; otherwise, <see
     /// langword="null"/> if the game is still ongoing</returns>
-    private bool? CheckWinLoseCon()
+    private void CheckWinLoseCon()
     {
         // Check if the player has won or lost the game
         if (Player.CurrentRoom.IsStartingRoom && Player.FollowingEntities.OfType<IMarlo<Room>>().Any())
         {
             IsGameRunning = false;
-            return true;
+            IsGameWinOrLost = true;
         }
 
         if (Player.Lives <= 0)
         {
             IsGameRunning = false;
-            return false;
+            IsGameWinOrLost = false;
         }
-
-        return null;
     }
 
     #endregion

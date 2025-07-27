@@ -15,20 +15,16 @@ using Forgotten_OOP.Mapping;
 /// <summary>
 /// Represents a healing bandage item that can be stored, logged, and used within the game.
 /// </summary>
-public class Bandage() : Item("Bende", "Una benda curativa, permettono di recuperare una vita"), IStorable<Room>,
+public class Bandage() : Item("Bende", "Delle bende curative, permettono di recuperare una vita"), IStorable<Room>,
     IConsolable, ILoggable
 {
-    #region Private Fields
+    #region Properties
 
     /// <inheritdoc />
     public ILogger GameLogger => ServiceHelper.GetService<ILogger>();
 
     /// <inheritdoc />
     public IConsole GameConsole => ServiceHelper.GetService<IConsole>();
-
-    #endregion
-
-    #region Properties
 
     /// <inheritdoc />
     public float Weight => 2.0f;
@@ -45,12 +41,12 @@ public class Bandage() : Item("Bende", "Una benda curativa, permettono di recupe
             game.Player.Lives++;
 
             GameLogger.Log("Player used bandages");
-
+            game.Player.Backpack.Pop();
             GameConsole.WriteLine("La ferita si chiude... mi sento molto meglio");
         }
         else
         {
-            GameConsole.WriteLine("Non sono ferito, non c'è n'era bisogno");
+            GameConsole.WriteLine("Non sono ferito, meglio usarla quando mi servira'");
         }
     }
 
