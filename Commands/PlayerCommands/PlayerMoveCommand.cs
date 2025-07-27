@@ -68,6 +68,8 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
 
         game.Player.Move(direction);
 
+        GameConsole.WriteLine("Mi sono spostato in una nuova stanza");
+
         switch (game.Player.CurrentRoom.ItemsOnGround.OfType<IGrabbable>().Count())
         {
             case 0:
@@ -79,6 +81,25 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
             default:
                 GameConsole.WriteLine("Ci sono degli oggetti per terra, forse dovrei raccoglierli");
                 break;
+        }
+
+        foreach (IKeyItem item in game.Player.CurrentRoom.ItemsOnGround) { 
+            if(item.Name == "Torcia")
+            {
+                GameConsole.WriteLine("Osservando meglio la stanza c'e' una fioca luce proveniente dal centro di essa. E una torcia! con questa posso entrare nelle stanze più buie! Meglio ricontrollare la mappa");
+                GameConsole.WriteLine("Hai raccolto la Torcia");
+                game.Player.KeyItems.Add(item);
+                game.Player.CurrentRoom.ItemsOnGround.Remove(item);
+                GameLogger.Log("Player grabbed Torch");
+            }
+            if (item.Name == "Key")
+            {
+                GameConsole.WriteLine("Questa stanza è più stretta delle altre, grazie alla torcia posso vedere tutto chiaramente. In fondo, appesa ad un muro, sembrerebbe esserci una chiave dorata. Non posso lasciarla li', mi tornera' sicuramente utile.");
+                GameConsole.WriteLine("Hai raccolto la Chiave");
+                game.Player.KeyItems.Add(item);
+                game.Player.CurrentRoom.ItemsOnGround.Remove(item);
+                GameLogger.Log("Player grabbed Key");
+            }
         }
 
         game.IncrementActionsCount();

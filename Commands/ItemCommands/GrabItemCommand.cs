@@ -57,7 +57,7 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
         }
 
         GameConsole.WriteLine("In questa stanza ci sono questi oggetti:");
-        Console.WriteLine("0) esci dal menu Grab");
+        GameConsole.WriteLine("0) esci dal menu Grab");
         for (int i = 0; i < grabbableItems.Count; i++)
         {
             GameConsole.WriteLine($"{i + 1}. {grabbableItems[i].Name}");
