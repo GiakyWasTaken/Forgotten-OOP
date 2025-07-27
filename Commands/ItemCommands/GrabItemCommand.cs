@@ -57,28 +57,35 @@ public class GrabItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
         }
 
         GameConsole.WriteLine("In questa stanza ci sono questi oggetti:");
-
+        Console.WriteLine("0) esci dal menu Grab");
         for (int i = 0; i < grabbableItems.Count; i++)
         {
             GameConsole.WriteLine($"{i + 1}. {grabbableItems[i].Name}");
         }
 
         int selectedIndex;
-        while (true)
-        {
-            string input = GameConsole.ReadLine("Quale di questi oggetti prendo? ");
 
+        while (true)
+            {
+                string input = GameConsole.ReadLine("Quale di questi oggetti prendo? ");
             if (int.TryParse(input, out selectedIndex) && selectedIndex > 0 && selectedIndex <= grabbableItems.Count)
             {
+                IItem selectedItem = grabbableItems[selectedIndex - 1];
+                AttemptToGrabItem(selectedItem);
                 break;
             }
+            else if (selectedIndex == 0)
+            {
 
-            GameConsole.WriteLine("Non ho capito, per favore inserisci un oggetto valido");
-            //TODO: aggiungere una opzione per uscire dal menu grab
+                GameConsole.WriteLine("Al momento non mi servono, li prendero' piu' tardi");
+                break;
+                //TODO: aggiungere una opzione per uscire dal menu grab
+            }
+            else
+            {
+                GameConsole.WriteLine("Non ho capito, per favore inserisci un oggetto valido");
+            }
         }
-
-        IItem selectedItem = grabbableItems[selectedIndex - 1];
-        AttemptToGrabItem(selectedItem);
     }
 
     #endregion
