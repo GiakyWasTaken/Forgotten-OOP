@@ -15,7 +15,7 @@ using Forgotten_OOP.Mapping;
 /// <summary>
 /// Represents a healing bandage item that can be stored, logged, and used within the game.
 /// </summary>
-public class Bandage() : Item("Bende", "Una benda curativa, permettono di recuperare una vita"), IStorable<Room>,
+public class Bandage() : Item("Bende", "Delle bende curative, permettono di recuperare una vita"), IStorable<Room>,
     IConsolable, ILoggable
 {
     #region Private Fields

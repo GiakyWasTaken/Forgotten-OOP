@@ -17,7 +17,7 @@ using Forgotten_OOP.Mapping;
 /// </summary>
 public class TeleportAltar()
     : Item("Altare del Teletrasporto",
-        "Una altare che trasporta istantaneamente chi lo usa in una stanza casuale del dungeon. Se un compagno si trova con te, ti seguirà automaticamente"), IConsolable, ILoggable
+        "Un altare che trasporta istantaneamente chi lo usa in una stanza casuale del dungeon. Se un compagno si trova con te, ti seguirà automaticamente"), IConsolable, ILoggable
 {
     #region Properties
 

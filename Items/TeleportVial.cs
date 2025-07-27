@@ -19,7 +19,7 @@ using Forgotten_OOP.Mapping;
 /// </summary>
 public class TeleportVial()
     : Item("Fiala del Teletrasporto",
-        "Una pozione che trasporta istantaneamente chi la beve in una stanza casuale del dungeon. Se un compagno si trova con te, ti seguirà automaticamente"), IStorable<Room>, IConsolable, ILoggable
+        "Una pozione che trasporta istantaneamente chi la beve in una stanza casuale del dungeon. Se un compagno si trova con te, ti seguira' automaticamente"), IStorable<Room>, IConsolable, ILoggable
 {
     #region Private Fields
 

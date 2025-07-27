@@ -11,7 +11,7 @@ using Forgotten_OOP.Logging.Interfaces;
 
 #endregion
 
-public class Torch() : Item("Torcia", "Puoi vedere dove sta la chiave e Marlo dalla mappa"), IKeyItem, IConsolable, ILoggable
+public class Torch() : Item("Torcia", "Puoi vedere dove sta la chiave e Takumi dalla mappa"), IKeyItem, IConsolable, ILoggable
 {
     #region Private Fields
 
