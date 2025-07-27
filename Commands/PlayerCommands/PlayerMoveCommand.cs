@@ -68,12 +68,10 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
 
         game.Player.Move(direction);
 
-        GameConsole.WriteLine("Mi sono spostato in una nuova stanza");
-
         switch (game.Player.CurrentRoom.ItemsOnGround.OfType<IGrabbable>().Count())
         {
             case 0:
-                GameConsole.WriteLine("Non c'è nulla in questa stanza");
+                GameConsole.WriteLine("Non c'è nulla qui");
                 break;
             case 1:
                 GameConsole.WriteLine("Vedo qualcosa per terra nella penombra, forse dovrei raccoglierlo");
@@ -89,7 +87,7 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
         {
             IItem item = game.Player.CurrentRoom.ItemsOnGround[i];
 
-            if (item is Torch)
+            if (item.Name == "Torcia")
             {
                 GameConsole.WriteLine("Osservando meglio la stanza c'e' una fioca luce proveniente dal centro di essa. E una torcia! con questa posso entrare nelle stanze più buie! Meglio ricontrollare la mappa");
                 GameConsole.WriteLine("Hai raccolto la Torcia");
@@ -98,7 +96,7 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
                 foundTorch = i;
 
             }
-            if (item is Key)
+            if (item.Name == "Key")
             {
                 GameConsole.WriteLine("Questa stanza è più stretta delle altre, grazie alla torcia posso vedere tutto chiaramente. In fondo, appesa ad un muro, sembrerebbe esserci una chiave dorata. Non posso lasciarla li', mi tornera' sicuramente utile.");
                 GameConsole.WriteLine("Hai raccolto la Chiave");

@@ -137,7 +137,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         Console.WriteLine("\nDigita Help per vedere tutti i comandi disponibili");
         while (IsGameRunning)
         {
-            ICommand cmd = GameConsole.ReadCommand("Cosa vuoi fare?: ");
+            ICommand cmd = GameConsole.ReadCommand("Cosa vuoi fare?");
 
             cmd.Execute();
 
@@ -203,7 +203,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     {
         IsGameRunning = false;
         GameLogger.Log("Game paused by user request");
-        GameConsole.WriteLine("Game paused, if you want save the progress in the main menu before exiting");
+        GameConsole.WriteLine("Gioco in pausa. Se vuoi uscire, salva il gioco sul menu principale.");
     }
 
     /// <inheritdoc />
@@ -211,7 +211,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
     {
         IsGameRunning = false;
         GameLogger.Log("Game ended by user request.");
-        GameConsole.WriteLine("Game ended. Thank you for playing!");
+        GameConsole.WriteLine("Partita terminata, grazie per aver giocato!");
     }
 
     #endregion
@@ -412,13 +412,22 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
             {
                 if (isFirstPlayerMarloEncounter)
                 {
-                    // Todo: add line
-                    GameConsole.WriteLine("Bella pe marlo");
+                    GameConsole.WriteLine("Hai trovato Takumi\n" +
+                        "Takumi, finalmente ti ho trovato. Tieni, ti ho portato la Panacea.\n" +
+                        "Takumi: Shiro… sono cosi' contento che tu stia bene. Mi dispiace averti messo in mezzo a tutto questo. " +
+                        "Ho trovato una nota in questa stanza, credo parli del mostro racchiuso in questo dungeon.\n\n" +
+                        "DIVINITA' e DEMONOLOGIA - Capitolo VII\r\n" +
+                        "Di tutte le entità spirituali catalogate in epoche remote, Ushigami rimane tra le più temute e meno comprese. " +
+                        "Non e' dio di culto né di speranza. E' una presenza arcana, primordiale, legata a cicli di morte e rinascita che trascendono " +
+                        "la moralita' umana.\r\nUshigami offre vita, ma pretende in cambio cio' che l’uomo chiama intoccabile: il sacrificio di esseri " +
+                        "viventi, animali e umani.\r\nUna volta instaurato un patto, Ushigami lega il suo potere al suolo stesso, facendo rifiorire " +
+                        "terre malate. Ma se il ciclo di offerte viene interrotto, la divinità si trasforma: da benefattore temuto a punizione incarnata.\r\n\n" +
+                        "Andiamocene da qui.");
                     isFirstPlayerMarloEncounter = false;
                 }
                 else
                 {
-                    GameConsole.WriteLine("A ri bella per marlo");
+                    GameConsole.WriteLine("Hai ritrovato Takumi\n Shiro:Sono felice di averti ritrovato, sbrighiamoci, l'aria e' sempre piu' pesante.");
                 }
 
                 // Close the room after Marlo encounter
@@ -435,7 +444,8 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
 
         if (enemiesInCurrentRoom.Count > 0)
         {
-            GameConsole.WriteLine("Semo stati sgamati, scappa"); // Todo: check line
+            GameConsole.WriteLine("L'Ushigami mi ha trovato. Sono rimasto ferito ma sono riuscito a scappare via. Dovrei usare qualcosa per" +
+                "curare questo taglio, non posso farmi cogliere impreparato."); 
 
             Player.Lives--;
 
@@ -479,7 +489,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
             if (Entities.OfType<IEnemy<Room>>()
                 .Any(enemy => adjacentRooms.Contains(enemy.CurrentRoom)))
             {
-                GameConsole.WriteLine("Sento il respiro di un nemico nelle stanze adiacenti, fai attenzione!");
+                GameConsole.WriteLine("E' molto vicino… Un altro passo nella direzione sbagliata e mi troverà, devo stare attento.");
             }
         }
     }
