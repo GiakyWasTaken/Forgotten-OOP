@@ -135,7 +135,7 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
 
                 default:
                     Console.WriteLine("Comando non valido");
-                    return;
+                    break;
             }
 
         } while (true);

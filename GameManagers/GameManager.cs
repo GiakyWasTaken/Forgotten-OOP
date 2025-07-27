@@ -94,7 +94,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
             "Si aggira tra queste stanze come se fosse casa sua.\n" +
             "Non provare ad affrontarlo. Non puoi.\n" +
             "Porta con te la Panacea. E' l'unica cosa che puo' salvarmi.\n" +
-            "Trovami. Salvami. Fai in fretta.\n" +
+            "Il Dungeon è molto buio, alcune stanze sono inaccessibili senza una torcia, cercala nel labirinto.\n" +
             "Takumi.\"");
     }
 
