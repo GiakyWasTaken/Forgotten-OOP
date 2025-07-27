@@ -83,37 +83,29 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
                 break;
         }
 
-        int foundTorch = -1, foundKey = -1;
-
-        for (int i = 0; i < game.Player.CurrentRoom.ItemsOnGround.Count; i++)
+        if (game.Player.CurrentRoom.ItemsOnGround.OfType<IKeyItem>().FirstOrDefault() is { } item)
         {
-            IItem item = game.Player.CurrentRoom.ItemsOnGround[i];
-
-            if (item is Torch)
+            switch (item)
             {
-                GameConsole.WriteLine("Osservando meglio la stanza c'e' una fioca luce proveniente dal centro di essa. E una torcia! con questa posso entrare nelle stanze più buie! Meglio ricontrollare la mappa");
-                GameConsole.WriteLine("Hai raccolto la Torcia");
-                game.Player.KeyItems.Add((IKeyItem)item);
-                GameLogger.Log("Player grabbed Torch");
-                foundTorch = i;
+                case Torch:
+                    GameConsole.WriteLine("Osservando meglio la stanza c'e' una fioca luce proveniente dal centro di essa. E una torcia! " +
+                        "Con questa posso entrare nelle stanze più buie! Meglio ricontrollare la mappa");
 
+                    break;
+
+                case Key:
+                    GameConsole.WriteLine($"Questa stanza è più stretta delle altre{(game.Player.KeyItems.OfType<Torch>().Any() ? ",grazie alla torcia posso vedere tutto chiaramente" : string.Empty)}. " +
+                        "In fondo, appesa ad un muro, sembrerebbe esserci una chiave dorata. Non posso lasciarla li', mi tornera' sicuramente utile.");
+                    break;
             }
-            if (item is Key)
-            {
-                GameConsole.WriteLine("Questa stanza è più stretta delle altre, grazie alla torcia posso vedere tutto chiaramente. In fondo, appesa ad un muro, sembrerebbe esserci una chiave dorata. Non posso lasciarla li', mi tornera' sicuramente utile.");
-                GameConsole.WriteLine("Hai raccolto la Chiave");
-                game.Player.KeyItems.Add((IKeyItem)item);
-                GameLogger.Log("Player grabbed Key");
-                foundKey = i;
-            }
-        }
-        if (foundTorch > -1)
-        {
-            game.Player.CurrentRoom.ItemsOnGround.RemoveAt(foundTorch);
-        }
-        if (foundKey > -1)
-        {
-            game.Player.CurrentRoom.ItemsOnGround.RemoveAt(foundKey);
+
+            GameConsole.WriteLine($"Hai raccolto la {item.Name}");
+
+            game.Player.KeyItems.Add(item);
+
+            GameLogger.Log($"Player grabbed {item.Name}");
+
+            game.Player.CurrentRoom.ItemsOnGround.Remove(item);
         }
 
         game.IncrementActionsCount();
