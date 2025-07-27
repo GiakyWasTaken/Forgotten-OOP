@@ -89,7 +89,7 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
         {
             IItem item = game.Player.CurrentRoom.ItemsOnGround[i];
 
-            if (item.Name == "Torcia")
+            if (item is Torch)
             {
                 GameConsole.WriteLine("Osservando meglio la stanza c'e' una fioca luce proveniente dal centro di essa. E una torcia! con questa posso entrare nelle stanze più buie! Meglio ricontrollare la mappa");
                 GameConsole.WriteLine("Hai raccolto la Torcia");
@@ -98,7 +98,7 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
                 foundTorch = i;
 
             }
-            if (item.Name == "Key")
+            if (item is Key)
             {
                 GameConsole.WriteLine("Questa stanza è più stretta delle altre, grazie alla torcia posso vedere tutto chiaramente. In fondo, appesa ad un muro, sembrerebbe esserci una chiave dorata. Non posso lasciarla li', mi tornera' sicuramente utile.");
                 GameConsole.WriteLine("Hai raccolto la Chiave");
