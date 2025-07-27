@@ -83,24 +83,41 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
                 break;
         }
 
-        foreach (IKeyItem item in game.Player.CurrentRoom.ItemsOnGround) { 
-            if(item.Name == "Torcia")
+        int foundTorch = -1, foundKey = -1;
+        
+        for(int i=0; i< game.Player.CurrentRoom.ItemsOnGround.Count; i++)
+        {
+            IItem item = game.Player.CurrentRoom.ItemsOnGround[i];
+
+            if (item.Name == "Torcia")
             {
                 GameConsole.WriteLine("Osservando meglio la stanza c'e' una fioca luce proveniente dal centro di essa. E una torcia! con questa posso entrare nelle stanze più buie! Meglio ricontrollare la mappa");
                 GameConsole.WriteLine("Hai raccolto la Torcia");
-                game.Player.KeyItems.Add(item);
-                game.Player.CurrentRoom.ItemsOnGround.Remove(item);
+                game.Player.KeyItems.Add((IKeyItem)item);
                 GameLogger.Log("Player grabbed Torch");
+                foundTorch = i;
+
             }
             if (item.Name == "Key")
             {
                 GameConsole.WriteLine("Questa stanza è più stretta delle altre, grazie alla torcia posso vedere tutto chiaramente. In fondo, appesa ad un muro, sembrerebbe esserci una chiave dorata. Non posso lasciarla li', mi tornera' sicuramente utile.");
                 GameConsole.WriteLine("Hai raccolto la Chiave");
-                game.Player.KeyItems.Add(item);
-                game.Player.CurrentRoom.ItemsOnGround.Remove(item);
+                game.Player.KeyItems.Add((IKeyItem)item);
                 GameLogger.Log("Player grabbed Key");
+                foundKey = i;
             }
         }
+        if(foundTorch > -1)
+        {
+            game.Player.CurrentRoom.ItemsOnGround.RemoveAt(foundTorch);
+        }
+        if (foundKey > -1)
+        {
+            game.Player.CurrentRoom.ItemsOnGround.RemoveAt(foundKey);
+        }
+
+
+
 
         game.IncrementActionsCount();
 

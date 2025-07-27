@@ -137,7 +137,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         Console.WriteLine("\nDigita Help per vedere tutti i comandi disponibili");
         while (IsGameRunning)
         {
-            ICommand cmd = GameConsole.ReadCommand("Cosa vuoi fare?");
+            ICommand cmd = GameConsole.ReadCommand("Cosa vuoi fare?: ");
 
             cmd.Execute();
 
