@@ -47,7 +47,6 @@ public class DropItemCommand(GameManager game) : BaseCommand, IConsolable, ILogg
         }
 
         game.Player.Backpack.Pop().Drop(game.Player.CurrentRoom);
-
         GameLogger.Log("Player dropped and item");
         game.IncrementActionsCount();
     }

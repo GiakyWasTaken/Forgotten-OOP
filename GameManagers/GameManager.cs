@@ -152,6 +152,8 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
                 ? "Congratulazioni! Hai vinto"
                 : "Game Over! Ritenta, sarai piu' fortunato");
         }
+
+        win = null;
     }
 
     /// <inheritdoc />
