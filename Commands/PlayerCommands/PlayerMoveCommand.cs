@@ -132,7 +132,7 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
         if (game.Player.CurrentRoom.IsClosed)
         {
             tryExecutionMessage = "La porta è bloccata dall'esterno, non posso uscire così.\n" +
-                "Dai Marlo, usiamo l'altare che sta nell'angolo";
+                "Dai Takumi, usiamo l'altare che sta nell'angolo";
             return false;
         }
 
