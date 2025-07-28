@@ -162,7 +162,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
         GameLogger.Log($"Action count incremented: {ActionsCount}");
 
         // Move enemies in the game world based on their action delay
-        Entities.OfType<IEnemy<Room>>().Where(enemy => enemy.ActionDelay % ActionsCount == 0)
+        Entities.OfType<IEnemy<Room>>().Where(enemy => ActionsCount % enemy.ActionDelay == 0)
             .ToList()
             .ForEach(enemy =>
             {

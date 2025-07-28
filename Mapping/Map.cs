@@ -102,6 +102,11 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
 
         try
         {
+            if (x < 0 || x >= mapDimension || y < 0 || y >= mapDimension)
+            {
+                return false;
+            }
+
             TRoom? retRoom = Layout[x, y];
 
             if (retRoom == null)
