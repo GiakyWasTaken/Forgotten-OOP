@@ -228,13 +228,9 @@ public static class GameStateConverter
             );
 
             // Add items to the room
-            foreach (var itemTypeName in roomDto.ItemsOnGround)
+            foreach (var item in roomDto.ItemsOnGround.Select(CreateItemFromTypeName).OfType<Item>())
             {
-                var item = CreateItemFromTypeName(itemTypeName);
-                if (item != null)
-                {
-                    room.ItemsOnGround.Add(item);
-                }
+                room.ItemsOnGround.Add(item);
             }
 
             // Place the room in the layout
@@ -364,69 +360,6 @@ public static class GameStateConverter
         }
 
         return null;
-    }
-
-    /// <summary>
-    /// Creates an entity instance from a DTO
-    /// </summary>
-    /// <param name="entityDto">The entity DTO</param>
-    /// <param name="map">The game map for room references</param>
-    /// <param name="room">The room where the entity should be placed</param>
-    /// <returns>A new entity instance or null if creation fails</returns>
-    private static Entity? CreateEntityFromDto(EntityDto entityDto, Map<Room> map, Room room)
-    {
-        Entity? entity = null;
-
-        switch (entityDto.EntityType)
-        {
-            case nameof(Enemy):
-
-                if (entityDto.ActionDelay.HasValue)
-                {
-                    entity = new Enemy(entityDto.Name, room, map, entityDto.ActionDelay.Value);
-                }
-
-                break;
-
-            case nameof(Marlo):
-                entity = new Marlo(room, map);
-
-                // Set initial room if available
-                if (entityDto.InitialRoomId.HasValue)
-                {
-                    var initialRoom = map.Rooms.FirstOrDefault(r => r.Id == entityDto.InitialRoomId.Value);
-
-                    if (initialRoom != null)
-                    {
-                        var initialRoomField = typeof(Marlo).GetField("initialRoom", BindingFlags.NonPublic | BindingFlags.Instance);
-                        initialRoomField?.SetValue(entity, initialRoom);
-                    }
-                }
-
-                break;
-
-            default:
-                // Try to create a generic entity if type is unknown
-                entity = new Entity(entityDto.Name, room, map);
-                break;
-        }
-
-        // Set previous room if available
-        if (entity == null || !entityDto.PreviousRoomId.HasValue)
-        {
-            return entity;
-        }
-
-        var previousRoom = map.Rooms.FirstOrDefault(r => r.Id == entityDto.PreviousRoomId.Value);
-        if (previousRoom == null)
-        {
-            return entity;
-        }
-
-        var previousRoomField = typeof(Entity).GetField("previousRoom", BindingFlags.NonPublic | BindingFlags.Instance);
-        previousRoomField?.SetValue(entity, previousRoom);
-
-        return entity;
     }
 
     #endregion

@@ -26,7 +26,7 @@ public class MapDto<TRoomDto> where TRoomDto : RoomDto
     /// <summary>
     /// Gets or sets the ID of the starting room
     /// </summary>
-    public long StartingRoomId { get; set; } // Todo: maybe useless
+    public long StartingRoomId { get; set; }
 
     #endregion
 }
