@@ -38,7 +38,7 @@ public class Torch() : Item("Torcia", "Puoi vedere dove sta la chiave e Takumi d
     {
         player.KeyItems.Add(this);
 
-        GameLogger.Log($"{Name} è stato aggiunto agli oggetti chiave");
+        GameLogger.Log($"{Name} has been added to the player's keyItems");
         GameConsole.WriteLine($"Hai raccolto: {Name}");
         GameConsole.WriteLine(Description);
     }

@@ -423,7 +423,7 @@ public class GameManager : IGameManager<Player, Entity, Map<Room>, Room>, IConso
                         "la moralita' umana.\r\nUshigami offre vita, ma pretende in cambio cio' che l’uomo chiama intoccabile: il sacrificio di esseri " +
                         "viventi, animali e umani.\r\nUna volta instaurato un patto, Ushigami lega il suo potere al suolo stesso, facendo rifiorire " +
                         "terre malate. Ma se il ciclo di offerte viene interrotto, la divinità si trasforma: da benefattore temuto a punizione incarnata.\r\n\n" +
-                        "Andiamocene da qui.");
+                        "Andiamocene da qui, usiamo quell'altare che si trova nell'angolo.");
 
                     isFirstPlayerMarloEncounter = false;
                 }

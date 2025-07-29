@@ -139,7 +139,7 @@ public class MainMenu : IMainMenu, IConsolable, ILoggable
     /// <inheritdoc />
     public void Play()
     {
-        GameLogger.Log("Avviando partita...");
+        GameLogger.Log("Starting game...");
 
         if (game is not { IsGameWinOrLost: null })
         {

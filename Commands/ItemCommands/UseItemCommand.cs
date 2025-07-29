@@ -27,7 +27,7 @@ public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILogga
     public override string Name => "Use";
 
     /// <inheritdoc />
-    public override string Description => "Usa l'ultimo oggetto inserito nello zaino";
+    public override string Description => "Usa l'ultimo oggetto inserito nello zaino o un oggetto a terra";
 
     #endregion
 

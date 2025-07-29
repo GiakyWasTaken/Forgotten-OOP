@@ -26,7 +26,7 @@ public class InspectItemCommand(GameManager game) : BaseCommand, IConsolable, IL
     public override string Name => "Inspect";
 
     /// <inheritdoc />
-    public override string Description => "Ispeziona l'ultimo oggetto inserito";
+    public override string Description => "Ispeziona l'ultimo oggetto inserito nello zaino";
 
     #endregion
 
