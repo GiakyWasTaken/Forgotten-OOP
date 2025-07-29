@@ -59,11 +59,10 @@ public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILogga
         }
 
         int selectedIndex;
+
         while (true)
         {
-            string input = GameConsole.ReadLine("Quale di questi oggetti uso? ");
-
-            if (int.TryParse(input, out selectedIndex) && selectedIndex > 0 && selectedIndex <= usableItems.Count)
+            if (int.TryParse(GameConsole.ReadLine("Quale di questi oggetti uso? "), out selectedIndex) && selectedIndex > 0 && selectedIndex <= usableItems.Count)
             {
                 break;
             }
@@ -73,7 +72,6 @@ public class UseItemCommand(GameManager game) : BaseCommand, IConsolable, ILogga
 
         IItem selectedItem = usableItems[selectedIndex - 1];
         AttemptToUseItem(selectedItem);
-
     }
 
     #endregion

@@ -261,8 +261,16 @@ public class Map<TRoom>(int mapDimension) : IMap<TRoom>, IPrintableMap<TRoom>, I
         // Output the entire map at once
         GameConsole.WriteLine(mapBuilder.ToString(), skipWriteAnimation: true);
         GameConsole.WriteLine("[P] e' il giocatore");
-        if (showKey) { GameConsole.WriteLine("[K] e' la chiave"); }
-        if (showMarlo) { GameConsole.WriteLine("[T] e' Takumi"); }
+
+        if (showKey)
+        {
+            GameConsole.WriteLine("[K] e' la chiave");
+        }
+
+        if (showMarlo)
+        {
+            GameConsole.WriteLine("[T] e' Takumi");
+        }
 
     }
 

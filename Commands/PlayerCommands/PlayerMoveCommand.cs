@@ -94,7 +94,7 @@ public class PlayerMoveCommand(GameManager game, Direction direction) : BaseComm
                     break;
 
                 case Key:
-                    GameConsole.WriteLine($"Questa stanza è più stretta delle altre{(game.Player.KeyItems.OfType<Torch>().Any() ? ",grazie alla torcia posso vedere tutto chiaramente" : string.Empty)}. " +
+                    GameConsole.WriteLine($"Questa stanza è più stretta delle altre{(game.Player.KeyItems.OfType<Torch>().Any() ? ", grazie alla torcia posso vedere tutto chiaramente" : string.Empty)}. " +
                         "In fondo, appesa ad un muro, sembrerebbe esserci una chiave dorata. Non posso lasciarla li', mi tornera' sicuramente utile.");
                     break;
             }
