@@ -66,6 +66,7 @@ public class GameConsole : IConsole, ILoggable
                 {
                     Console.Write(message[(i + 1)..]);
                 }
+
                 break;
             }
 

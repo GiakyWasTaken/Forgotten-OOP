@@ -34,6 +34,10 @@ public class TeleportAltar()
     /// <inheritdoc />
     public override void Use(GameManager game)
     {
+        // After using the teleport altar
+        // The current room should not be closed to being able to return to retake Marlo
+        game.Player.CurrentRoom.IsClosed = false;
+
         game.Player.Teleport(game.GameMap.GetRandomRoom(room =>
             !(
                 room.IsPinkRoom
