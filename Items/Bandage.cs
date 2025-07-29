@@ -55,7 +55,7 @@ public class Bandage() : Item("Bende", "Delle bende curative, permettono di recu
     {
         player.Backpack.Push(this);
 
-        GameLogger.Log($"{Name} è stato aggiunto allo zaino.");
+        GameLogger.Log($"{Name} has been added to the player's backpack");
 
         GameConsole.WriteLine($"Hai raccolto: {Name}");
         GameConsole.WriteLine(Description);
